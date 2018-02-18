@@ -1,0 +1,23 @@
+begin
+  begin
+    d := 4;
+  end; 
+ b := 2;
+  a := 3;
+  a := not -5;
+
+ if a if b c := 5;
+
+  begin
+    d := 4;
+  end;
+  a := (b + (b * a) / (5 - 3)) < (a - b - 3);
+  while 3 a := c;
+ 
+  if a
+  begin
+    b := c
+  end
+  else
+    c := 1
+end
