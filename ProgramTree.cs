@@ -157,6 +157,7 @@ namespace ProgramTree
             ElseB = elseBranch;
         }
     }
+
     public class CycleNode : StatementNode
     {
         public override void Visit(Visitor v)
@@ -171,6 +172,30 @@ namespace ProgramTree
             Expr = expr;
             Stat = stat;
         }
+    }
+
+    public class ForCycleNode : StatementNode
+    {
+        public override void Visit(Visitor v)
+        {
+            v.VisitForCycleNode(this);
+        }
+
+        public IdNode Counter { get; set; }
+        public ExprNode LeftBound { get; set; }
+        public ExprNode RightBound { get; set; }
+        public ExprNode Step { get; set; }
+        public StatementNode Stat { get; set; }
+
+        public ForCycleNode(IdNode counter, ExprNode left, ExprNode right, ExprNode step, StatementNode stat)
+        {
+            Counter = counter;
+            LeftBound = left;
+            RightBound = right;
+            Step = step;
+            Stat = stat;
+        }
+
     }
 
     public class BlockNode : StatementNode

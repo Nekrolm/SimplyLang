@@ -1,8 +1,14 @@
 begin
+  for b in (x, y, z)
+  begin
+	c := 5;
+  end;
+
+
   begin
     d := 4;
   end; 
- b := 2;
+  b := 2;
   a := 3;
   a := not -5;
 
@@ -13,7 +19,7 @@ begin
   end;
   a := (b + (b * a) / (5 - 3)) < (a - b - 3);
   while 3 a := c;
- 
+  
   if a
   begin
     b := c

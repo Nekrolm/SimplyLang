@@ -44,6 +44,7 @@ ID {Alpha}{AlphaDigit}*
 ">"  { return '>';}
 ">=" { return (int)Tokens.GE; }
 "<=" { return (int)Tokens.LE; }
+","  { return ','; }
 "!=" { return (int)Tokens.UNEQUALS; }
  
 [^ \r\n] {
@@ -86,6 +87,9 @@ class ScannerHelper
     keywords.Add("and", (int)Tokens.AND);
     keywords.Add("not", (int)Tokens.NOT);
     keywords.Add("print", (int)Tokens.PRINT);
+    keywords.Add("for", (int)Tokens.FOR);
+    keywords.Add("in", (int)Tokens.IN);
+    
   }
 
   public static int GetIDToken(string s)

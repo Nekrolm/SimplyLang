@@ -63,7 +63,6 @@ namespace SimpleLang.Visitors
             }
         }
 
-
         public static String ConvertCompOpType(BinaryCompareOpType t)
         {
             switch (t)
@@ -113,6 +112,21 @@ namespace SimpleLang.Visitors
             Text += " " + ConvertBoolOpType(binop.OpType) + " ";
             binop.RightNode.Visit(this);
             Text += ")";
+        }
+
+        public override void VisitForCycleNode(ForCycleNode fc)
+        {
+            Text += IndentStr() + "for ";
+            fc.Counter.Visit(this);
+            Text += " in (";
+            fc.LeftBound.Visit(this);
+            Text += ", ";
+            fc.RightBound.Visit(this);
+            Text += ", ";
+            fc.Step.Visit(this);
+            Text += ")";
+            Text += Environment.NewLine;
+            fc.Stat.Visit(this);
         }
 
         public override void VisitIfNode(IfNode bl)
