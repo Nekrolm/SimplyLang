@@ -16,5 +16,10 @@ namespace SimpleLang.Visitors
         public override void VisitWriteNode(WriteNode w) 
         {
         }     
+        public override void VisitForCycleNode(ForCycleNode fc)
+        {
+            fc.Stat.Visit(this);
+        }
+
     }
 }

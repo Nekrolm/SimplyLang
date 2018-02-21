@@ -1,7 +1,13 @@
 ﻿<Properties StartupConfiguration="{12B9D996-7B4A-4EE4-9AD8-2E24EAF3F574}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Main.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="ProgramTree.cs">
     <Files>
-      <File FileName="Main.cs" Line="43" Column="1" />
+      <File FileName="Main.cs" Line="47" Column="21" />
+      <File FileName="ProgramTree.cs" Line="13" Column="5" />
+      <File FileName="Visitors/Visitor.cs" Line="21" Column="66" />
+      <File FileName="Visitors/AutoVisitor.cs" Line="63" Column="33" />
+      <File FileName="Visitors/PrettyPrintVisitor.cs" Line="132" Column="4" />
+      <File FileName="Visitors/AssignCountVisitor.cs" Line="21" Column="33" />
+      <File FileName="SimpleYacc.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
