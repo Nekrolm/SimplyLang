@@ -6,12 +6,7 @@ namespace ProgramTree
     public enum AssignType { Assign, AssignPlus, AssignMinus, AssignMult, AssignDivide };
     public enum BinaryOpType { Minus, Plus, Multiplies, Divides, Less, 
         Greater, Equals, UnEquals, LessOrEquals, GreaterOrEquals, And, Or, Not };
-
     
-
-
-    
-
 
    
     public abstract class Node // базовый класс для всех узлов    

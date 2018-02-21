@@ -4,7 +4,7 @@
 
 // GPPG version 1.3.6
 // Machine:  ds-pc
-// DateTime: 21.02.2018 21:43:55
+// DateTime: 21.02.2018 21:48:43
 // UserName: ds
 // Input file <SimpleYacc.y>
 
