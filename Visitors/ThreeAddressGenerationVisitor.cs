@@ -2,7 +2,7 @@
 
 namespace SimpleLang.Visitors
 {
-    public class TreeAddressGenerationVisitor : AutoVisitor
+    public class ThreeAddressGenerationVisitor : AutoVisitor
     {
         // TODO 21.02.18 13.09 Add sctructure of tree-address code (List<Five>)
 

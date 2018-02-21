@@ -46,7 +46,7 @@
     <Compile Include="Visitors\AssignCountVisitor.cs" />
     <Compile Include="Visitors\AutoVisitor.cs" />
     <Compile Include="Visitors\PrettyPrintVisitor.cs" />
-    <Compile Include="Visitors\TreeAddressGenerationVisitor.cs" />
+    <Compile Include="Visitors\ThreeAddressGenerationVisitor.cs" />
     <Compile Include="Visitors\Visitor.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="ParserHelper.cs" />
