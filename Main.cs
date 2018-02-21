@@ -16,7 +16,7 @@ namespace SimpleCompiler
         }
     }
 
-        public class SimpleCompilerMain
+    public class SimpleCompilerMain
     {
         public static void Main()
         {
@@ -33,7 +33,7 @@ namespace SimpleCompiler
                 CapitalizerVisitor vc = new CapitalizerVisitor();
 
                 Parser parser = new Parser(scanner);
-                      
+
 
                 var b = parser.Parse();
                 if (!b)
@@ -42,7 +42,7 @@ namespace SimpleCompiler
                 {
                     Console.WriteLine("Программа распознана");
 
-                    
+
                     Console.WriteLine(parser.root.StList.Count);
 
                     parser.root.Visit(avis);
@@ -54,10 +54,7 @@ namespace SimpleCompiler
                     parser.root.Visit(ppvis);
 
                     Console.Write(ppvis.Text);
-
                 }
-
-
             }
             catch (FileNotFoundException)
             {
@@ -74,6 +71,5 @@ namespace SimpleCompiler
 
             Console.ReadLine();
         }
-
     }
 }
