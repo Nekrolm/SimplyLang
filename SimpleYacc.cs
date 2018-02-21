@@ -4,7 +4,7 @@
 
 // GPPG version 1.3.6
 // Machine:  ds-pc
-// DateTime: 21.02.2018 13:27:42
+// DateTime: 21.02.2018 21:43:55
 // UserName: ds
 // Input file <SimpleYacc.y>
 
@@ -34,9 +34,7 @@ public struct ValueType
           public CycleNode CycleN;
           public ExprNode ExprN;
           public IdNode IdN;
-          public BinaryNumericOpNode BinaryNumericOpN;
-          public BinaryCompareOpNode BinaryCompareOpN; 
-          public BinaryBoolOpNode BinaryBoolOpN;
+          public BinaryOpNode BinaryOpN;
           public BlockNode BlockN; 
           public WriteNode WriteN;
           public IntNumNode IntNumN;
@@ -252,52 +250,52 @@ public class Parser: ShiftReduceParser<ValueType, LexLocation>
 { CurrentSemanticValue.StatementN = new AssignNode(ValueStack[ValueStack.Depth-3].ExprN as IdNode, ValueStack[ValueStack.Depth-1].ExprN); }
         break;
       case 18: // expr -> NOT, boolexpr
-{ CurrentSemanticValue.ExprN = new BinaryBoolOpNode(null, BinaryBoolOpType.Not, ValueStack[ValueStack.Depth-1].ExprN); }
+{ CurrentSemanticValue.ExprN = new BinaryOpNode(null, BinaryOpType.Not, ValueStack[ValueStack.Depth-1].ExprN); }
         break;
       case 19: // expr -> expr, OR, boolexpr
-{ CurrentSemanticValue.ExprN = new BinaryBoolOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryBoolOpType.Or, ValueStack[ValueStack.Depth-1].ExprN);  }
+{ CurrentSemanticValue.ExprN = new BinaryOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryOpType.Or, ValueStack[ValueStack.Depth-1].ExprN);  }
         break;
       case 20: // expr -> expr, AND, boolexpr
-{ CurrentSemanticValue.ExprN = new BinaryBoolOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryBoolOpType.And, ValueStack[ValueStack.Depth-1].ExprN); }
+{ CurrentSemanticValue.ExprN = new BinaryOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryOpType.And, ValueStack[ValueStack.Depth-1].ExprN); }
         break;
       case 21: // write -> PRINT, expr
 { CurrentSemanticValue.StatementN = new WriteNode(ValueStack[ValueStack.Depth-1].ExprN);}
         break;
       case 23: // boolexpr -> boolexpr, '<', ariphm
-{ CurrentSemanticValue.ExprN = new BinaryCompareOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryCompareOpType.Less, ValueStack[ValueStack.Depth-1].ExprN);}
+{ CurrentSemanticValue.ExprN = new BinaryOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryOpType.Less, ValueStack[ValueStack.Depth-1].ExprN);}
         break;
       case 24: // boolexpr -> boolexpr, '>', ariphm
-{ CurrentSemanticValue.ExprN = new BinaryCompareOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryCompareOpType.Greater, ValueStack[ValueStack.Depth-1].ExprN);}
+{ CurrentSemanticValue.ExprN = new BinaryOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryOpType.Greater, ValueStack[ValueStack.Depth-1].ExprN);}
         break;
       case 25: // boolexpr -> boolexpr, EQUALS, ariphm
-{ CurrentSemanticValue.ExprN = new BinaryCompareOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryCompareOpType.Equals, ValueStack[ValueStack.Depth-1].ExprN);}
+{ CurrentSemanticValue.ExprN = new BinaryOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryOpType.Equals, ValueStack[ValueStack.Depth-1].ExprN);}
         break;
       case 26: // boolexpr -> boolexpr, UNEQUALS, ariphm
-{ CurrentSemanticValue.ExprN = new BinaryCompareOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryCompareOpType.UnEquals, ValueStack[ValueStack.Depth-1].ExprN);}
+{ CurrentSemanticValue.ExprN = new BinaryOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryOpType.UnEquals, ValueStack[ValueStack.Depth-1].ExprN);}
         break;
       case 27: // boolexpr -> boolexpr, GE, ariphm
-{ CurrentSemanticValue.ExprN = new BinaryCompareOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryCompareOpType.GreaterOrEquals, ValueStack[ValueStack.Depth-1].ExprN);}
+{ CurrentSemanticValue.ExprN = new BinaryOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryOpType.GreaterOrEquals, ValueStack[ValueStack.Depth-1].ExprN);}
         break;
       case 28: // boolexpr -> boolexpr, LE, ariphm
-{ CurrentSemanticValue.ExprN = new BinaryCompareOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryCompareOpType.LessOrEquals, ValueStack[ValueStack.Depth-1].ExprN);}
+{ CurrentSemanticValue.ExprN = new BinaryOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryOpType.LessOrEquals, ValueStack[ValueStack.Depth-1].ExprN);}
         break;
       case 30: // ariphm -> '+', mult
 {CurrentSemanticValue.ExprN = ValueStack[ValueStack.Depth-1].ExprN;}
         break;
       case 31: // ariphm -> '-', mult
-{CurrentSemanticValue.ExprN = new BinaryNumericOpNode(null, BinaryNumericOpType.Minus, ValueStack[ValueStack.Depth-1].ExprN);}
+{CurrentSemanticValue.ExprN = new BinaryOpNode(null, BinaryOpType.Minus, ValueStack[ValueStack.Depth-1].ExprN);}
         break;
       case 32: // ariphm -> ariphm, '+', mult
-{ CurrentSemanticValue.ExprN = new BinaryNumericOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryNumericOpType.Plus, ValueStack[ValueStack.Depth-1].ExprN);}
+{ CurrentSemanticValue.ExprN = new BinaryOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryOpType.Plus, ValueStack[ValueStack.Depth-1].ExprN);}
         break;
       case 33: // ariphm -> ariphm, '-', mult
-{ CurrentSemanticValue.ExprN = new BinaryNumericOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryNumericOpType.Minus, ValueStack[ValueStack.Depth-1].ExprN); }
+{ CurrentSemanticValue.ExprN = new BinaryOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryOpType.Minus, ValueStack[ValueStack.Depth-1].ExprN); }
         break;
       case 35: // mult -> mult, '*', term
-{CurrentSemanticValue.ExprN = new BinaryNumericOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryNumericOpType.Multiplies, ValueStack[ValueStack.Depth-1].ExprN);}
+{CurrentSemanticValue.ExprN = new BinaryOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryOpType.Multiplies, ValueStack[ValueStack.Depth-1].ExprN);}
         break;
       case 36: // mult -> mult, '/', term
-{CurrentSemanticValue.ExprN = new BinaryNumericOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryNumericOpType.Divides, ValueStack[ValueStack.Depth-1].ExprN);}
+{CurrentSemanticValue.ExprN = new BinaryOpNode(ValueStack[ValueStack.Depth-3].ExprN, BinaryOpType.Divides, ValueStack[ValueStack.Depth-1].ExprN);}
         break;
       case 38: // term -> INUM
 {CurrentSemanticValue.ExprN = new IntNumNode(ValueStack[ValueStack.Depth-1].intT); }
