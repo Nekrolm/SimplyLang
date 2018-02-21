@@ -1,10 +1,21 @@
-﻿using ProgramTree;
+﻿using System.Collections.Generic;
+using ProgramTree;
+using ThreeAddr;
 
 namespace SimpleLang.Visitors
 {
     public class ThreeAddressGenerationVisitor : AutoVisitor
     {
-        // TODO 21.02.18 13.09 Add sctructure of tree-address code (List<Five>)
+        public List<ThreeAddrLine> Data { get; }
+
+        public override void VisitBinNumOpNode(BinaryNumericOpNode binop)
+        {
+            
+        }
+
+        public override void VisitAssignNode(AssignNode a)
+        {
+        }
 
         public override void VisitIfNode(IfNode bl)
         {

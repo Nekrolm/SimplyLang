@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="Visitors\AssignCountVisitor.cs" />
     <Compile Include="Visitors\AutoVisitor.cs" />
+    <Compile Include="Visitors\EmptyStruct.cs" />
     <Compile Include="Visitors\PrettyPrintVisitor.cs" />
     <Compile Include="Visitors\ThreeAddressGenerationVisitor.cs" />
     <Compile Include="Visitors\Visitor.cs" />
