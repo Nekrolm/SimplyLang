@@ -20,9 +20,7 @@
           public CycleNode CycleN;
           public ExprNode ExprN;
           public IdNode IdN;
-          public BinaryNumericOpNode BinaryNumericOpN;
-          public BinaryCompareOpNode BinaryCompareOpN; 
-          public BinaryBoolOpNode BinaryBoolOpN;
+          public BinaryOpNode BinaryOpN;
           public BlockNode BlockN; 
           public WriteNode WriteN;
           public IntNumNode IntNumN;
@@ -83,33 +81,33 @@ assign 	: ident ASSIGN expr { $$ = new AssignNode($1 as IdNode, $3); }
 
 
 expr    : boolexpr
-		| NOT boolexpr { $$ = new BinaryBoolOpNode(null, BinaryBoolOpType.Not, $2); }
-		| expr OR boolexpr  { $$ = new BinaryBoolOpNode($1, BinaryBoolOpType.Or, $3);  }
-		| expr AND boolexpr { $$ = new BinaryBoolOpNode($1, BinaryBoolOpType.And, $3); }
+		| NOT boolexpr { $$ = new BinaryOpNode(null, BinaryOpType.Not, $2); }
+		| expr OR boolexpr  { $$ = new BinaryOpNode($1, BinaryOpType.Or, $3);  }
+		| expr AND boolexpr { $$ = new BinaryOpNode($1, BinaryOpType.And, $3); }
 		;
 
 write   : PRINT expr { $$ = new WriteNode($2);}
 		;
 
 boolexpr : ariphm
-		 |  boolexpr '<' ariphm { $$ = new BinaryCompareOpNode($1, BinaryCompareOpType.Less, $3);}
-		 |  boolexpr '>' ariphm { $$ = new BinaryCompareOpNode($1, BinaryCompareOpType.Greater, $3);}
-		 |  boolexpr EQUALS ariphm { $$ = new BinaryCompareOpNode($1, BinaryCompareOpType.Equals, $3);}
-		 |  boolexpr UNEQUALS ariphm { $$ = new BinaryCompareOpNode($1, BinaryCompareOpType.UnEquals, $3);}
-		 |  boolexpr GE ariphm { $$ = new BinaryCompareOpNode($1, BinaryCompareOpType.GreaterOrEquals, $3);}
-		 | boolexpr  LE ariphm { $$ = new BinaryCompareOpNode($1, BinaryCompareOpType.LessOrEquals, $3);}
+		 |  boolexpr '<' ariphm { $$ = new BinaryOpNode($1, BinaryOpType.Less, $3);}
+		 |  boolexpr '>' ariphm { $$ = new BinaryOpNode($1, BinaryOpType.Greater, $3);}
+		 |  boolexpr EQUALS ariphm { $$ = new BinaryOpNode($1, BinaryOpType.Equals, $3);}
+		 |  boolexpr UNEQUALS ariphm { $$ = new BinaryOpNode($1, BinaryOpType.UnEquals, $3);}
+		 |  boolexpr GE ariphm { $$ = new BinaryOpNode($1, BinaryOpType.GreaterOrEquals, $3);}
+		 | boolexpr  LE ariphm { $$ = new BinaryOpNode($1, BinaryOpType.LessOrEquals, $3);}
 		 ;
 
 ariphm  : mult
 		| '+' mult {$$ = $2;}
-		| '-' mult {$$ = new BinaryNumericOpNode(null, BinaryNumericOpType.Minus, $2);}
-        | ariphm '+' mult { $$ = new BinaryNumericOpNode($1, BinaryNumericOpType.Plus, $3);}
-        | ariphm '-' mult { $$ = new BinaryNumericOpNode($1, BinaryNumericOpType.Minus, $3); }
+		| '-' mult {$$ = new BinaryOpNode(null, BinaryOpType.Minus, $2);}
+        | ariphm '+' mult { $$ = new BinaryOpNode($1, BinaryOpType.Plus, $3);}
+        | ariphm '-' mult { $$ = new BinaryOpNode($1, BinaryOpType.Minus, $3); }
         ;
 
 mult    : term
-        | mult '*' term {$$ = new BinaryNumericOpNode($1, BinaryNumericOpType.Multiplies, $3);}
-        | mult '/' term {$$ = new BinaryNumericOpNode($1, BinaryNumericOpType.Divides, $3);}
+        | mult '*' term {$$ = new BinaryOpNode($1, BinaryOpType.Multiplies, $3);}
+        | mult '/' term {$$ = new BinaryOpNode($1, BinaryOpType.Divides, $3);}
         ;
 
 term    : ident

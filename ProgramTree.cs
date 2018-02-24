@@ -4,15 +4,9 @@ using SimpleLang.Visitors;
 namespace ProgramTree
 {
     public enum AssignType { Assign, AssignPlus, AssignMinus, AssignMult, AssignDivide };
-    public enum BinaryNumericOpType { Minus, Plus, Multiplies, Divides };
-    public enum BinaryCompareOpType { Less, Greater, Equals, UnEquals, LessOrEquals, GreaterOrEquals };
-    public enum BinaryBoolOpType { And, Or, Not };
-
+    public enum BinaryOpType { Minus, Plus, Multiplies, Divides, Less, 
+        Greater, Equals, UnEquals, LessOrEquals, GreaterOrEquals, And, Or, Not };
     
-
-
-    
-
 
    
     public abstract class Node // базовый класс для всех узлов    
@@ -26,65 +20,29 @@ namespace ProgramTree
     }
 
 
-    public abstract class BinaryOpNode : ExprNode
+    public class BinaryOpNode : ExprNode
     {
         public ExprNode LeftNode { get; set; }
         public ExprNode RightNode { get; set; }
 
-        public BinaryOpNode(ExprNode left, ExprNode right)
+        public BinaryOpType OpType { get; set; }
+
+
+        public override void Visit(Visitor v)
+        {
+            v.VisitBinaryOpNode(this);
+        }
+
+        public BinaryOpNode(ExprNode left, BinaryOpType opType, ExprNode right)
         {
             LeftNode = left;
             RightNode = right;
+            OpType = opType;
         }
 
     }
     
 
-    public class BinaryNumericOpNode : BinaryOpNode
-    {
-        public override void Visit(Visitor v)
-        {
-            v.VisitBinNumOpNode(this);
-        }
-
-        public BinaryNumericOpType OpType { get; set; }
-        public BinaryNumericOpNode(ExprNode left, BinaryNumericOpType opType, ExprNode right)
-            : base(left, right)
-        {
-            OpType = opType;
-        }
-    }
-
-    public class BinaryBoolOpNode : BinaryOpNode
-    {
-        public override void Visit(Visitor v)
-        {
-            v.VisitBinBoolOpNode(this);
-        }
-
-        public BinaryBoolOpType OpType { get; set; }
-        public BinaryBoolOpNode(ExprNode left, BinaryBoolOpType opType, ExprNode right)
-            : base(left, right)
-        {
-            OpType = opType;
-        }
-    }
-
-
-    public class BinaryCompareOpNode : BinaryOpNode
-    {
-        public override void Visit(Visitor v)
-        {
-            v.VisitBinCompOpNode(this);
-        }
-
-        public BinaryCompareOpType OpType { get; set; }
-        public BinaryCompareOpNode(ExprNode left, BinaryCompareOpType opType, ExprNode right)
-            : base(left, right)
-        {
-            OpType = opType;
-        }
-    }
 
     public class IdNode : ExprNode
     {

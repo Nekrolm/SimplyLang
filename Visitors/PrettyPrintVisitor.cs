@@ -32,47 +32,32 @@ namespace SimpleLang.Visitors
             Text += num.Num.ToString();
         }
 
-        public static String ConvertNumericOpType(BinaryNumericOpType t)
+
+
+        public static String ConvertOpType(BinaryOpType t)
         {
             switch (t)
             {
-                case BinaryNumericOpType.Divides: return "/";
+                case BinaryOpType.Divides: return "/";
 
-                case BinaryNumericOpType.Multiplies: return "*";
+                case BinaryOpType.Multiplies: return "*";
 
-                case BinaryNumericOpType.Minus: return "-";
+                case BinaryOpType.Minus: return "-";
 
-                case BinaryNumericOpType.Plus: return "+";
-                default:
-                    return "";
-            }
-        }
+                case BinaryOpType.Plus: return "+";
 
-        public static String ConvertBoolOpType(BinaryBoolOpType t)
-        {
-            switch (t)
-            {
-                case BinaryBoolOpType.And: return "and";
+                case BinaryOpType.And: return "and";
 
-                case BinaryBoolOpType.Or: return "or";
+                case BinaryOpType.Or: return "or";
 
-                case BinaryBoolOpType.Not: return "not";
+                case BinaryOpType.Not: return "not";
 
-                default:
-                    return "";
-            }
-        }
-
-        public static String ConvertCompOpType(BinaryCompareOpType t)
-        {
-            switch (t)
-            {
-                case BinaryCompareOpType.Equals: return "==";
-                case BinaryCompareOpType.Greater: return ">";
-                case BinaryCompareOpType.GreaterOrEquals: return ">=";
-                case BinaryCompareOpType.Less: return "<";
-                case BinaryCompareOpType.LessOrEquals: return "<=";
-                case BinaryCompareOpType.UnEquals: return "!=";
+                case BinaryOpType.Equals: return "==";
+                case BinaryOpType.Greater: return ">";
+                case BinaryOpType.GreaterOrEquals: return ">=";
+                case BinaryOpType.Less: return "<";
+                case BinaryOpType.LessOrEquals: return "<=";
+                case BinaryOpType.UnEquals: return "!=";
 
                 default:
                     return "";
@@ -80,39 +65,18 @@ namespace SimpleLang.Visitors
         }
 
 
-        public override void VisitBinNumOpNode(BinaryNumericOpNode binop) 
+        public override void VisitBinaryOpNode(BinaryOpNode binop) 
         {
             Text += "(";
 
             if (binop.LeftNode != null)
                 binop.LeftNode.Visit(this);
 
-            Text += " " + ConvertNumericOpType(binop.OpType) + " ";
+            Text += " " + ConvertOpType(binop.OpType) + " ";
             binop.RightNode.Visit(this);
             Text += ")";
         }
 
-        public override void VisitBinCompOpNode(BinaryCompareOpNode binop)
-        {
-            Text += "(";
-
-            if (binop.LeftNode != null)
-                binop.LeftNode.Visit(this);
-
-            Text += " " + ConvertCompOpType(binop.OpType) + " ";
-            binop.RightNode.Visit(this);
-            Text += ")";
-        }
-
-        public override void VisitBinBoolOpNode(BinaryBoolOpNode binop)
-        {
-            Text += "(";
-            if (binop.LeftNode != null)
-                binop.LeftNode.Visit(this);
-            Text += " " + ConvertBoolOpType(binop.OpType) + " ";
-            binop.RightNode.Visit(this);
-            Text += ")";
-        }
 
         public override void VisitForCycleNode(ForCycleNode fc)
         {

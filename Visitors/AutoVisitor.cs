@@ -8,21 +8,9 @@ namespace SimpleLang.Visitors
 {
     public class AutoVisitor : Visitor
     {
-        public override void VisitBinNumOpNode(BinaryNumericOpNode binop)
-        {
-            if (binop == null) return;
-            if (binop.LeftNode != null)
-                binop.LeftNode.Visit(this);
-            binop.RightNode.Visit(this);
-        }
-        public override void VisitBinCompOpNode(BinaryCompareOpNode binop)
-        {
-            if (binop == null) return;
-            binop.LeftNode.Visit(this);
-            binop.RightNode.Visit(this);
-        }
+        
 
-        public override void VisitBinBoolOpNode(BinaryBoolOpNode binop)
+        public override void VisitBinaryOpNode(BinaryOpNode binop)
         {
             if (binop == null) return;
             if (binop.LeftNode != null)
