@@ -8,7 +8,7 @@ namespace SimpleLang.Visitors
 {
     class idRegistVisitor : AutoVisitor
     {
-        public List<string> idList;
+        public List<string> idList =new List<string>();
 
         public override void VisitIdNode(IdNode id)
         {
