@@ -6,19 +6,15 @@ namespace ProgramTree
     public enum AssignType { Assign, AssignPlus, AssignMinus, AssignMult, AssignDivide };
     public enum BinaryOpType { Minus, Plus, Multiplies, Divides, Less, 
         Greater, Equals, UnEquals, LessOrEquals, GreaterOrEquals, And, Or, Not };
-    
-
-   
+       
     public abstract class Node // базовый класс для всех узлов    
     {
         public abstract void Visit(Visitor v);
     }
-
     
     public abstract class ExprNode : Node // базовый класс для всех выражений
     {
     }
-
 
     public class BinaryOpNode : ExprNode
     {
@@ -42,8 +38,6 @@ namespace ProgramTree
 
     }
     
-
-
     public class IdNode : ExprNode
     {
         public override void Visit(Visitor v)
@@ -97,7 +91,6 @@ namespace ProgramTree
             AssOp = assop;
         }
     }
-
 
     public class IfNode : StatementNode
     {

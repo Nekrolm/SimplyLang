@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using ProgramTree;
 using ThreeAddr;
 
@@ -8,13 +9,14 @@ namespace SimpleLang.Visitors
     {
         public List<ThreeAddrLine> Data { get; }
 
-        public override void VisitBinNumOpNode(BinaryNumericOpNode binop)
+        public override void VisitIntNumNode(IntNumNode num)
         {
             
         }
 
-        public override void VisitAssignNode(AssignNode a)
+        public override void VisitIdNode(IdNode id)
         {
+            
         }
 
         public override void VisitIfNode(IfNode bl)

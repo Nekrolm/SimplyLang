@@ -15,25 +15,27 @@ namespace SimpleLang.Visitors
         {
             return new string(' ', Indent);
         }
+        
         private void IndentPlus()
         {
             Indent += 2;
         }
+        
         private void IndentMinus()
         {
             Indent -= 2;
         }
+        
         public override void VisitIdNode(IdNode id) 
         {
             Text += id.Name;
         }
+        
         public override void VisitIntNumNode(IntNumNode num) 
         {
             Text += num.Num.ToString();
         }
-
-
-
+        
         public static String ConvertOpType(BinaryOpType t)
         {
             switch (t)
@@ -63,8 +65,7 @@ namespace SimpleLang.Visitors
                     return "";
             }
         }
-
-
+        
         public override void VisitBinaryOpNode(BinaryOpNode binop) 
         {
             Text += "(";
@@ -76,8 +77,7 @@ namespace SimpleLang.Visitors
             binop.RightNode.Visit(this);
             Text += ")";
         }
-
-
+        
         public override void VisitForCycleNode(ForCycleNode fc)
         {
             Text += IndentStr() + "for ";
@@ -116,6 +116,7 @@ namespace SimpleLang.Visitors
             Text += " := ";
             a.Expr.Visit(this);
         }
+        
         public override void VisitCycleNode(CycleNode c) 
         {
             Text += IndentStr() + "while ";
@@ -123,16 +124,17 @@ namespace SimpleLang.Visitors
             Text += Environment.NewLine;
             c.Stat.Visit(this);
         }
+        
         public override void VisitBlockNode(BlockNode bl) 
         {
             Text += IndentStr() + "begin" + Environment.NewLine;
             IndentPlus();
 
-            var Count = bl.StList.Count;
+            var count = bl.StList.Count;
 
-            if (Count>0)
+            if (count>0)
                 bl.StList[0].Visit(this);
-            for (var i = 1; i < Count; i++)
+            for (var i = 1; i < count; i++)
             {
                 Text += ';';
                 if (!(bl.StList[i] == null))
@@ -144,12 +146,12 @@ namespace SimpleLang.Visitors
             IndentMinus();
             Text += Environment.NewLine + IndentStr() + "end";
         }
+        
         public override void VisitWriteNode(WriteNode w) 
         {
             Text += IndentStr() + "print (";
             w.Expr.Visit(this);
             Text += ")";
         }
-        
     }
 }
