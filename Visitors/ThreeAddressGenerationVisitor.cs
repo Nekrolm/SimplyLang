@@ -16,7 +16,15 @@ namespace SimpleLang.Visitors
 
         public List<ThreeAddrLine> Data { get; }
 
+
         private int _temporaryVariablesCount;
+
+        private void InsertNop(){;
+            var line = new ThreeAddrLine();
+            line.Label = GenNewLabel();
+            line.OpType = "nop";
+            Data.Add(line);
+        }
 
         private String GenNewTemporaryVariable(){
             return TempVariableName + (++_temporaryVariablesCount);
@@ -74,6 +82,9 @@ namespace SimpleLang.Visitors
             }
         }
 
+
+
+
         public override void VisitAssignNode(AssignNode a)
         {
             Console.WriteLine(Tag + " VisitAssingNode");
@@ -128,12 +139,38 @@ namespace SimpleLang.Visitors
             Data.Add(outsideIfLine);
             ifThenLine.RightOp = GenNewLabel();
             bl.ThenB.Visit(this);
-            outsideIfLine.RightOp = GenNewLabel();
+            InsertNop();
+            outsideIfLine.RightOp = GetLastLine().Label;
         }
 
         public override void VisitCycleNode(CycleNode c)
         {
             Console.WriteLine(Tag + " VsitCycleNode");
+
+            var startLoopLabel = GenNewLabel();
+            c.Expr.Visit(this);
+
+            var whileLine = new ThreeAddrLine();
+            whileLine.Label = GenNewLabel();
+            whileLine.LeftOp = GetLastLine().Accum;
+            whileLine.OpType = "ifgoto";
+            Data.Add(whileLine);
+
+            var outsideWhileLine = new ThreeAddrLine();
+            outsideWhileLine.Label = GenNewLabel();
+            outsideWhileLine.OpType = "goto";
+            Data.Add(outsideWhileLine);
+            whileLine.RightOp = GenNewLabel();
+            c.Stat.Visit(this);
+
+            var gotoStartLine = new ThreeAddrLine();
+            gotoStartLine.Label = GenNewLabel();
+            gotoStartLine.OpType = "goto";
+            gotoStartLine.RightOp = startLoopLabel;
+            Data.Add(gotoStartLine);
+
+            InsertNop();
+            outsideWhileLine.RightOp = GetLastLine().Label;
         }
 
         public override void VisitWriteNode(WriteNode w)
@@ -148,8 +185,6 @@ namespace SimpleLang.Visitors
 
         public override string ToString()
         {
-
-
             var builder = new StringBuilder();
             foreach (var line in Data.Where(l => l.OpType != null ))
             {

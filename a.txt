@@ -32,4 +32,7 @@ begin
   print x + y;
   
   print (x * y - 5);  
+  
+  while (4 + 6) x := 5;
+  
 end
