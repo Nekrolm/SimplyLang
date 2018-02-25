@@ -48,7 +48,13 @@ namespace SimpleCompiler
 
                     parser.root.Visit(threeAddressGenerationVisitor);
 
-                    Console.WriteLine(threeAddressGenerationVisitor);
+                    var codeBlocks = BaseBlockGenerator.GenBaseBlocks(threeAddressGenerationVisitor.Data);
+
+                    foreach (var block in codeBlocks)
+                        Console.Write(block);
+
+
+                    //Console.WriteLine(threeAddressGenerationVisitor);
                 }
             }
             catch (FileNotFoundException)

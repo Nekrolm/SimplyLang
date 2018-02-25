@@ -250,7 +250,7 @@ namespace SimpleLang.Visitors
         public override string ToString()
         {
             var builder = new StringBuilder();
-            foreach (var line in Data.Where(l => l.OpType != null ))
+            foreach (var line in Data)
             {
                 if (line.IsEmpty())
                 {
@@ -258,15 +258,7 @@ namespace SimpleLang.Visitors
                 }
 
                 builder
-                    .Append(line.Label)
-                    .Append(": ")
-                    .Append(line.Accum)
-                    .Append(" = ")
-                    .Append(line.LeftOp)
-                    .Append(" ")
-                    .Append(line.OpType)
-                    .Append(" ")
-                    .Append(line.RightOp)
+                    .Append(line.ToString())
                     .Append(Environment.NewLine);
             }
 
