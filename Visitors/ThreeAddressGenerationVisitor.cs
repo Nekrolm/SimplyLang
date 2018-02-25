@@ -24,6 +24,17 @@ namespace SimpleLang.Visitors
             _temporaryVariablesCount = 0;
         }
 
+        private void VisitBinaryExpression(BinaryOpNode binaryOpNode)
+        {
+            if (binaryOpNode == null) return;
+            if (binaryOpNode.LeftNode != null)
+            {
+                binaryOpNode.LeftNode.Visit(this, NodeOrder.Left);
+            }
+
+            binaryOpNode.RightNode.Visit(this, NodeOrder.Right);
+        }
+
         public override void VisitBlockNode(BlockNode bl)
         {
             Console.WriteLine(Tag + " VisitBlockNode");
@@ -51,15 +62,7 @@ namespace SimpleLang.Visitors
         public override void VisitBinaryOpNode(BinaryOpNode binop)
         {
             Console.WriteLine(Tag + " VisitBinaryOpNode");
-            if (binop == null) return;
-            if (binop.LeftNode != null)
-            {
-                binop.LeftNode.Visit(this, NodeOrder.Left);
-            }
-
-            binop.RightNode.Visit(this, NodeOrder.Right);
-
-            
+            VisitBinaryExpression(binop);
             _entryExpressionLine.Peek().OpType = ToStringHelper.ToString(binop.OpType);
         }
 
@@ -67,14 +70,7 @@ namespace SimpleLang.Visitors
         {
             Console.WriteLine(Tag + " VisitBinaryOpNode with order");
             _entryExpressionLine.Push(new ThreeAddrLine());
-            if (binop == null) return;
-            if (binop.LeftNode != null)
-            {
-                binop.LeftNode.Visit(this, NodeOrder.Left);
-            }
-
-            binop.RightNode.Visit(this, NodeOrder.Right);
-
+            VisitBinaryExpression(binop);
             var line = _entryExpressionLine.Pop();
             line.OpType = ToStringHelper.ToString(binop.OpType);
             line.Accum = TempVariableName + _temporaryVariablesCount++;
@@ -86,6 +82,7 @@ namespace SimpleLang.Visitors
             {
                 _entryExpressionLine.Peek().RightOp = line.Accum;
             }
+
             Data.Add(line);
         }
 
