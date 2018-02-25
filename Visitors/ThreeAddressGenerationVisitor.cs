@@ -127,6 +127,10 @@ namespace SimpleLang.Visitors
         public override void VisitIfNode(IfNode bl)
         {
             Console.WriteLine(Tag + " VisitIfNode");
+            ExprNode tmp = bl.Cond;
+            _entryExpressionLine.Peek().SrcDst = "tmp";
+            _entryExpressionLine.Peek().LeftOp = "129";
+
         }
 
         public override void VisitCycleNode(CycleNode c)
