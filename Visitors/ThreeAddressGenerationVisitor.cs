@@ -24,23 +24,6 @@ namespace SimpleLang.Visitors
             _temporaryVariablesCount = 0;
         }
 
-        private void VisitEntryExpression(BinaryOpNode binOp, NodeOrder order)
-        {
-            _entryExpressionLine.Push(new ThreeAddrLine());
-            if (order == NodeOrder.Left)
-            {
-                binOp.LeftNode.Visit(this, NodeOrder.Left);
-            }
-            else
-            {
-                binOp.RightNode.Visit(this, NodeOrder.Right);
-            }
-
-            var line = _entryExpressionLine.Pop();
-            line.SrcDst = TempVariableName + _temporaryVariablesCount++;
-            Data.Add(line);
-        }
-
         public override void VisitBlockNode(BlockNode bl)
         {
             Console.WriteLine(Tag + " VisitBlockNode");
@@ -76,21 +59,34 @@ namespace SimpleLang.Visitors
 
             binop.RightNode.Visit(this, NodeOrder.Right);
 
+            
             _entryExpressionLine.Peek().OpType = ToStringHelper.ToString(binop.OpType);
         }
 
         public override void VisitBinaryOpNode(BinaryOpNode binop, NodeOrder order)
         {
-            Console.WriteLine(Tag + "VisitBinaryOpNode with order");
+            Console.WriteLine(Tag + " VisitBinaryOpNode with order");
+            _entryExpressionLine.Push(new ThreeAddrLine());
             if (binop == null) return;
             if (binop.LeftNode != null)
             {
-                VisitEntryExpression(binop, NodeOrder.Left);
+                binop.LeftNode.Visit(this, NodeOrder.Left);
             }
 
-            VisitEntryExpression(binop, NodeOrder.Right);
+            binop.RightNode.Visit(this, NodeOrder.Right);
 
-            _entryExpressionLine.Peek().OpType = ToStringHelper.ToString(binop.OpType);
+            var line = _entryExpressionLine.Pop();
+            line.OpType = ToStringHelper.ToString(binop.OpType);
+            line.SrcDst = TempVariableName + _temporaryVariablesCount++;
+            if (order == NodeOrder.Left)
+            {
+                _entryExpressionLine.Peek().LeftOp = line.SrcDst;
+            }
+            else
+            {
+                _entryExpressionLine.Peek().RightOp = line.SrcDst;
+            }
+            Data.Add(line);
         }
 
         public override void VisitIdNode(IdNode id)

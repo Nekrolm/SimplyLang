@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 using SimpleScanner;
@@ -20,8 +21,8 @@ namespace SimpleCompiler
     public class SimpleCompilerMain
     {
         public static void Main()
-        {
-            string FileName = "../../aa.txt";
+        {   
+            string FileName = "../../a.txt";
             try
             {
                 string Text = File.ReadAllText(FileName);
