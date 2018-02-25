@@ -2,7 +2,7 @@
 
 namespace ThreeAddr
 {
-    public struct ThreeAddrLine
+    public class ThreeAddrLine
     {
         public string Label { get; set; }
         public string SrcDst { get; set; }

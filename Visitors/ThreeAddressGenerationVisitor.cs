@@ -10,14 +10,35 @@ namespace SimpleLang.Visitors
 {
     public class ThreeAddressGenerationVisitor : AutoVisitor
     {
-        private const string Tag = "ThreeAddressGenerator";
+        private const string Tag = "Generator";
+        private const string TempVariableName = "p";
 
         public List<ThreeAddrLine> Data { get; }
-        private ThreeAddrLine _currentLine;
+        private Stack<ThreeAddrLine> _entryExpressionLine;
+        private int _temporaryVariablesCount;
 
         public ThreeAddressGenerationVisitor()
         {
             Data = new List<ThreeAddrLine>();
+            _entryExpressionLine = new Stack<ThreeAddrLine>();
+            _temporaryVariablesCount = 0;
+        }
+
+        private void VisitEntryExpression(BinaryOpNode binOp, NodeOrder order)
+        {
+            _entryExpressionLine.Push(new ThreeAddrLine());
+            if (order == NodeOrder.Left)
+            {
+                binOp.LeftNode.Visit(this, NodeOrder.Left);
+            }
+            else
+            {
+                binOp.RightNode.Visit(this, NodeOrder.Right);
+            }
+
+            var line = _entryExpressionLine.Pop();
+            line.SrcDst = TempVariableName + _temporaryVariablesCount++;
+            Data.Add(line);
         }
 
         public override void VisitBlockNode(BlockNode bl)
@@ -26,13 +47,13 @@ namespace SimpleLang.Visitors
             if (bl == null) return;
             foreach (var st in bl.StList)
             {
-                _currentLine = new ThreeAddrLine();
+                _entryExpressionLine.Push(new ThreeAddrLine());
                 if (st != null)
                 {
                     st.Visit(this);
                 }
 
-                Data.Add(_currentLine);
+                Data.Add(_entryExpressionLine.Pop());
             }
         }
 
@@ -55,50 +76,58 @@ namespace SimpleLang.Visitors
 
             binop.RightNode.Visit(this, NodeOrder.Right);
 
-            _currentLine.OpType = ToStringHelper.ToString(binop.OpType);
+            _entryExpressionLine.Peek().OpType = ToStringHelper.ToString(binop.OpType);
         }
 
         public override void VisitBinaryOpNode(BinaryOpNode binop, NodeOrder order)
         {
-            Console.WriteLine(Tag + " VisitBinaryOpNode");
-            VisitBinaryOpNode(binop);
+            Console.WriteLine(Tag + "VisitBinaryOpNode with order");
+            if (binop == null) return;
+            if (binop.LeftNode != null)
+            {
+                VisitEntryExpression(binop, NodeOrder.Left);
+            }
+
+            VisitEntryExpression(binop, NodeOrder.Right);
+
+            _entryExpressionLine.Peek().OpType = ToStringHelper.ToString(binop.OpType);
         }
 
         public override void VisitIdNode(IdNode id)
         {
             Console.WriteLine(Tag + " VisitIdNode");
-            _currentLine.SrcDst = id.Name;
+            _entryExpressionLine.Peek().SrcDst = id.Name;
         }
 
         public override void VisitIdNode(IdNode id, NodeOrder order)
         {
-            Console.WriteLine(Tag + " VisitIdNode");
+            Console.WriteLine(Tag + " VisitIdNode with order");
             if (order == NodeOrder.Left)
             {
-                _currentLine.LeftOp = id.Name;
+                _entryExpressionLine.Peek().LeftOp = id.Name;
             }
             else
             {
-                _currentLine.RightOp = id.Name;
+                _entryExpressionLine.Peek().RightOp = id.Name;
             }
         }
 
         public override void VisitIntNumNode(IntNumNode num)
         {
             Console.WriteLine(Tag + " VisiIntNumNode");
-            _currentLine.LeftOp = num.Num.ToString();
+            _entryExpressionLine.Peek().LeftOp = num.Num.ToString();
         }
 
         public override void VisitIntNumNode(IntNumNode num, NodeOrder order)
         {
-            Console.WriteLine(Tag + " VisitInNumNode");
+            Console.WriteLine(Tag + " VisitInNumNode with order");
             if (order == NodeOrder.Left)
             {
-                _currentLine.LeftOp = num.Num.ToString();
+                _entryExpressionLine.Peek().LeftOp = num.Num.ToString();
             }
             else
             {
-                _currentLine.RightOp = num.Num.ToString();
+                _entryExpressionLine.Peek().RightOp = num.Num.ToString();
             }
         }
 
