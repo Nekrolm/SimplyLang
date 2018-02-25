@@ -15,21 +15,21 @@ namespace SimpleLang.Visitors
                 binop.LeftNode.Visit(this);
             binop.RightNode.Visit(this);
         }
-        
+
         public override void VisitAssignNode(AssignNode a)
         {
             if (a == null) return;
             a.Id.Visit(this);
             a.Expr.Visit(this);
         }
-        
+
         public override void VisitCycleNode(CycleNode c)
         {
             if (c == null) return;
             c.Expr.Visit(this);
             c.Stat.Visit(this);
         }
-        
+
         public override void VisitBlockNode(BlockNode bl)
         {
             if (bl == null) return;
@@ -37,13 +37,13 @@ namespace SimpleLang.Visitors
                 if (st != null)
                     st.Visit(this);
         }
-        
+
         public override void VisitWriteNode(WriteNode w)
         {
             if (w == null) return;
             w.Expr.Visit(this);
         }
-        
+
         public override void VisitForCycleNode(ForCycleNode fc)
         {
             fc.Counter.Visit(this);

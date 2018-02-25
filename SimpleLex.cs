@@ -17,6 +17,7 @@
 // Version 1.1.3 of 18-April-2010
 //
 //
+
 #define BACKUP
 #define PERSIST
 
@@ -27,24 +28,21 @@ using System.Globalization;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Diagnostics.CodeAnalysis;
-
 using SimpleParser;
 using QUT.Gppg;
 using System.Linq;
 
 namespace SimpleScanner
-{   
+{
     /// <summary>
     /// Summary Canonical example of GPLEX automaton
     /// </summary>
-    
 #if STANDALONE
-    //
-    // These are the dummy declarations for stand-alone GPLEX applications
-    // normally these declarations would come from the parser.
-    // If you declare /noparser, or %option noparser then you get this.
-    //
-
+//
+// These are the dummy declarations for stand-alone GPLEX applications
+// normally these declarations would come from the parser.
+// If you declare /noparser, or %option noparser then you get this.
+//
      public enum Tokens
     { 
       EOF = 0, maxParseToken = int.MaxValue 
@@ -81,7 +79,7 @@ namespace SimpleScanner
     }
 
 #endif // STANDALONE
-    
+
     // If the compiler can't find the scanner base class maybe you
     // need to run GPPG with the /gplex option, or GPLEX with /noparser
 #if BABEL
@@ -101,27 +99,36 @@ namespace SimpleScanner
              set { currentScOrd = value;   // i.e. BEGIN(value);
                    currentStart = startState[value]; }
         }
-#else  // BABEL
-     public sealed partial class Scanner : ScanBase
+#else // BABEL
+    public sealed partial class Scanner : ScanBase
     {
         private ScanBuff buffer;
-        int currentScOrd;  // start condition ordinal
+        int currentScOrd; // start condition ordinal
 #endif // BABEL
-        
+
         /// <summary>
         /// The input buffer for this scanner.
         /// </summary>
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public ScanBuff Buffer { get { return buffer; } }
-        
-        private static int GetMaxParseToken() {
-     System.Reflection.FieldInfo f = typeof(Tokens).GetField("maxParseToken");
-            return (f == null ? int.MaxValue : (int)f.GetValue(null));
+        public ScanBuff Buffer
+        {
+            get { return buffer; }
         }
-        
+
+        private static int GetMaxParseToken()
+        {
+            System.Reflection.FieldInfo f = typeof(Tokens).GetField("maxParseToken");
+            return (f == null ? int.MaxValue : (int) f.GetValue(null));
+        }
+
         static int parserMax = GetMaxParseToken();
-        
-        enum Result {accept, noMatch, contextFound};
+
+        enum Result
+        {
+            accept,
+            noMatch,
+            contextFound
+        };
 
         const int maxAccept = 22;
         const int initial = 23;
@@ -129,68 +136,86 @@ namespace SimpleScanner
         const int goStart = -1;
         const int INITIAL = 0;
 
-#region user code
-#endregion user code
+        #region user code
+
+        #endregion user code
 
         int state;
         int currentStart = startState[0];
-        int code;      // last code read
-        int cCol;      // column number of code
-        int lNum;      // current line number
+        int code; // last code read
+        int cCol; // column number of code
+
+        int lNum; // current line number
+
         //
         // The following instance variables are used, among other
         // things, for constructing the yylloc location objects.
         //
-        int tokPos;        // buffer position at start of token
-        int tokCol;        // zero-based column number at start of token
-        int tokLin;        // line number at start of token
-        int tokEPos;       // buffer position at end of token
-        int tokECol;       // column number at end of token
-        int tokELin;       // line number at end of token
-        string tokTxt;     // lazily constructed text of token
-#if STACK          
+        int tokPos; // buffer position at start of token
+        int tokCol; // zero-based column number at start of token
+        int tokLin; // line number at start of token
+        int tokEPos; // buffer position at end of token
+        int tokECol; // column number at end of token
+        int tokELin; // line number at end of token
+        string tokTxt; // lazily constructed text of token
+#if STACK
         private Stack<int> scStack = new Stack<int>();
 #endif // STACK
 
-#region ScannerTables
-    struct Table {
-        public int min; public int rng; public int dflt;
-        public sbyte[] nxt;
-        public Table(int m, int x, int d, sbyte[] n) {
-            min = m; rng = x; dflt = d; nxt = n;
+        #region ScannerTables
+
+        struct Table
+        {
+            public int min;
+            public int rng;
+            public int dflt;
+            public sbyte[] nxt;
+
+            public Table(int m, int x, int d, sbyte[] n)
+            {
+                min = m;
+                rng = x;
+                dflt = d;
+                nxt = n;
+            }
+        };
+
+        static int[] startState = new int[] {23, 0};
+
+        #region CompressedCharacterMap
+
+        //
+        // There are 18 equivalence classes
+        // There are 2 character sequence regions
+        // There are 1 tables, 123 entries
+        // There are 1 runs, 0 singletons
+        // Decision tree depth is 1
+        //
+        static sbyte[] mapC0 = new sbyte[123]
+        {
+/*     '\0' */ 17, 17, 17, 17, 17, 17, 17, 17, 17, 0, 0, 17, 17, 0, 17, 17,
+/*   '\x10' */ 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17,
+/*   '\x20' */ 0, 16, 17, 17, 17, 17, 17, 17, 11, 12, 9, 7, 15, 8, 2, 10,
+/*      '0' */ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 6, 13, 5, 14, 17,
+/*      '@' */ 17, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+/*      'P' */ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 17, 17, 17, 17, 3,
+/*      '`' */ 17, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+/*      'p' */ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3
+        };
+
+        static sbyte MapC(int code)
+        {
+            // '\0' <= code <= '\U0010FFFF'
+            if (code < 123) // '\0' <= code <= 'z'
+                return mapC0[code - 0];
+            else // '{' <= code <= '\U0010FFFF'
+                return (sbyte) 17;
         }
-    };
 
-    static int[] startState = new int[] {23, 0};
+        #endregion
 
-#region CompressedCharacterMap
-    //
-    // There are 18 equivalence classes
-    // There are 2 character sequence regions
-    // There are 1 tables, 123 entries
-    // There are 1 runs, 0 singletons
-    // Decision tree depth is 1
-    //
-    static sbyte[] mapC0 = new sbyte[123] {
-/*     '\0' */ 17, 17, 17, 17, 17, 17, 17, 17, 17, 0, 0, 17, 17, 0, 17, 17, 
-/*   '\x10' */ 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 
-/*   '\x20' */ 0, 16, 17, 17, 17, 17, 17, 17, 11, 12, 9, 7, 15, 8, 2, 10, 
-/*      '0' */ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 4, 6, 13, 5, 14, 17, 
-/*      '@' */ 17, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 
-/*      'P' */ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 17, 17, 17, 17, 3, 
-/*      '`' */ 17, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 
-/*      'p' */ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3 };
-
-    static sbyte MapC(int code)
-    { // '\0' <= code <= '\U0010FFFF'
-      if (code < 123) // '\0' <= code <= 'z'
-        return mapC0[code - 0];
-      else // '{' <= code <= '\U0010FFFF'
-        return (sbyte)17;
-    }
-#endregion
-
-    static Table[] NxS = new Table[25] {
+        static Table[] NxS = new Table[25]
+        {
 /* NxS[   0] */ new Table(0, 0, 0, null),
 /* NxS[   1] */ new Table(1, 2, -1, new sbyte[] {1, 24}),
 /* NxS[   2] */ new Table(0, 0, -1, null),
@@ -214,26 +239,31 @@ namespace SimpleScanner
 /* NxS[  20] */ new Table(0, 0, -1, null),
 /* NxS[  21] */ new Table(0, 0, -1, null),
 /* NxS[  22] */ new Table(1, 1, -1, new sbyte[] {22}),
-/* NxS[  23] */ new Table(1, 17, -1, new sbyte[] {1, 2, 3, 4, 5, 6, 
-          7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 2}),
+/* NxS[  23] */ new Table(1, 17, -1, new sbyte[]
+            {
+                1, 2, 3, 4, 5, 6,
+                7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 2
+            }),
 /* NxS[  24] */ new Table(1, 1, -1, new sbyte[] {22}),
-    };
+        };
 
-int NextState() {
-    if (code == ScanBuff.EndOfFile)
-        return eofNum;
-    else
-        unchecked {
-            int rslt;
-            int idx = MapC(code) - NxS[state].min;
-            if (idx < 0) idx += 18;
-            if ((uint)idx >= (uint)NxS[state].rng) rslt = NxS[state].dflt;
-            else rslt = NxS[state].nxt[idx];
-            return rslt;
+        int NextState()
+        {
+            if (code == ScanBuff.EndOfFile)
+                return eofNum;
+            else
+                unchecked
+                {
+                    int rslt;
+                    int idx = MapC(code) - NxS[state].min;
+                    if (idx < 0) idx += 18;
+                    if ((uint) idx >= (uint) NxS[state].rng) rslt = NxS[state].dflt;
+                    else rslt = NxS[state].nxt[idx];
+                    return rslt;
+                }
         }
-}
 
-#endregion
+        #endregion
 
 
 #if BACKUP
@@ -250,7 +280,7 @@ int NextState() {
             public int state;
             public int cChr;
         }
-        
+
         private Context ctx = new Context();
 #endif // BACKUP
 
@@ -258,12 +288,13 @@ int NextState() {
         // ==== Nested struct to support input switching in scanners ====
         // ==============================================================
 
-		struct BufferContext {
+        struct BufferContext
+        {
             internal ScanBuff buffSv;
-			internal int chrSv;
-			internal int cColSv;
-			internal int lNumSv;
-		}
+            internal int chrSv;
+            internal int cColSv;
+            internal int lNumSv;
+        }
 
         // ==============================================================
         // ===== Private methods to save and restore buffer contexts ====
@@ -276,14 +307,14 @@ int NextState() {
         /// </summary>
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         BufferContext MkBuffCtx()
-		{
-			BufferContext rslt;
-			rslt.buffSv = this.buffer;
-			rslt.chrSv = this.code;
-			rslt.cColSv = this.cCol;
-			rslt.lNumSv = this.lNum;
-			return rslt;
-		}
+        {
+            BufferContext rslt;
+            rslt.buffSv = this.buffer;
+            rslt.chrSv = this.code;
+            rslt.cColSv = this.cCol;
+            rslt.lNumSv = this.lNum;
+            return rslt;
+        }
 
         /// <summary>
         /// This method restores the buffer value and allied
@@ -291,37 +322,42 @@ int NextState() {
         /// </summary>
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         void RestoreBuffCtx(BufferContext value)
-		{
-			this.buffer = value.buffSv;
-			this.code = value.chrSv;
-			this.cCol = value.cColSv;
-			this.lNum = value.lNumSv;
-        } 
+        {
+            this.buffer = value.buffSv;
+            this.code = value.chrSv;
+            this.cCol = value.cColSv;
+            this.lNum = value.lNumSv;
+        }
         // =================== End Nested classes =======================
 
 #if !NOFILES
-     public Scanner(Stream file) {
+        public Scanner(Stream file)
+        {
             SetSource(file, 0); // unicode option
         }
 
-        public Scanner(Stream file, string codepage) {
+        public Scanner(Stream file, string codepage)
+        {
             SetSource(file, CodePageHandling.GetCodePage(codepage));
         }
-        
+
 #endif // !NOFILES
 
-     public Scanner() { }
+        public Scanner()
+        {
+        }
 
         private int readPos;
 
         void GetCode()
         {
-            if (code == '\n')  // This needs to be fixed for other conventions
-                               // i.e. [\r\n\205\u2028\u2029]
-            { 
+            if (code == '\n') // This needs to be fixed for other conventions
+                // i.e. [\r\n\205\u2028\u2029]
+            {
                 cCol = -1;
                 lNum++;
             }
+
             readPos = buffer.Pos;
 
             // Now read new codepoint.
@@ -351,7 +387,7 @@ int NextState() {
             tokLin = lNum;
             tokCol = cCol;
         }
-        
+
         void MarkEnd()
         {
             tokTxt = null;
@@ -364,8 +400,12 @@ int NextState() {
         int Peek()
         {
             int rslt, codeSv = code, cColSv = cCol, lNumSv = lNum, bPosSv = buffer.Pos;
-            GetCode(); rslt = code;
-            lNum = lNumSv; cCol = cColSv; code = codeSv; buffer.Pos = bPosSv;
+            GetCode();
+            rslt = code;
+            lNum = lNumSv;
+            cCol = cColSv;
+            code = codeSv;
+            buffer.Pos = bPosSv;
             return rslt;
         }
 
@@ -388,7 +428,7 @@ int NextState() {
             GetCode();
         }
 
-#if !NOFILES        
+#if !NOFILES
         // ================ LineBuffer Initialization ===================
 
         /// <summary>
@@ -419,7 +459,7 @@ int NextState() {
             this.code = '\n'; // to initialize yyline, yycol and lineStart
             GetCode();
         }
-        
+
 #if !BYTEMODE
         // ================ TextBuffer Initialization ===================
 
@@ -440,19 +480,19 @@ int NextState() {
         }
 #endif // !BYTEMODE
 #endif // !NOFILES
-        
+
         // ==============================================================
 
 #if BABEL
-        //
-        //  Get the next token for Visual Studio
-        //
-        //  "state" is the inout mode variable that maintains scanner
-        //  state between calls, using the EolState property. In principle,
-        //  if the calls of EolState are costly set could be called once
-        //  only per line, at the start; and get called only at the end
-        //  of the line. This needs more infrastructure ...
-        //
+//
+//  Get the next token for Visual Studio
+//
+//  "state" is the inout mode variable that maintains scanner
+//  state between calls, using the EolState property. In principle,
+//  if the calls of EolState are costly set could be called once
+//  only per line, at the start; and get called only at the end
+//  of the line. This needs more infrastructure ...
+//
         public int GetNext(ref int state, out int start, out int end)
         {
                 Tokens next;
@@ -479,27 +519,40 @@ int NextState() {
             // enumeration.  If maxParseToken is defined
             // that is used, otherwise int.MaxValue is used.
             int next;
-            do { next = Scan(); } while (next >= parserMax);
+            do
+            {
+                next = Scan();
+            } while (next >= parserMax);
+
             return next;
         }
-        
+
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        int yypos { get { return tokPos; } }
-        
+        int yypos
+        {
+            get { return tokPos; }
+        }
+
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        int yyline { get { return tokLin; } }
-        
+        int yyline
+        {
+            get { return tokLin; }
+        }
+
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        int yycol { get { return tokCol; } }
+        int yycol
+        {
+            get { return tokCol; }
+        }
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         [SuppressMessage("Microsoft.Naming", "CA1709:IdentifiersShouldBeCasedCorrectly", MessageId = "yytext")]
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "yytext")]
         public string yytext
         {
-            get 
+            get
             {
-                if (tokTxt == null) 
+                if (tokTxt == null)
                     tokTxt = buffer.GetString(tokPos, tokEPos);
                 return tokTxt;
             }
@@ -510,7 +563,7 @@ int NextState() {
         {
             buffer.Pos = tokPos;
             // Must read at least one char, so set before start.
-            cCol = tokCol - 1; 
+            cCol = tokCol - 1;
             GetCode();
             // Now ensure that line counting is correct.
             lNum = tokLin;
@@ -518,15 +571,18 @@ int NextState() {
             for (int i = 0; i < n; i++) GetCode();
             MarkEnd();
         }
-       
+
         //
         //  It would be nice to count backward in the text
         //  but it does not seem possible to re-establish
         //  the correct column counts except by going forward.
         //
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        void _yytrunc(int n) { yyless(yyleng - n); }
-        
+        void _yytrunc(int n)
+        {
+            yyless(yyleng - n);
+        }
+
         //
         // This is painful, but we no longer count
         // codepoints.  For the overwhelming majority 
@@ -541,40 +597,48 @@ int NextState() {
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "yyleng")]
         public int yyleng
         {
-            get {
+            get
+            {
 #if BYTEMODE
                 return tokEPos - tokPos;
-#else   
+#else
                 if (tokELin == tokLin)
                     return tokECol - tokCol;
-                else {
+                else
+                {
                     int ch;
                     int count = 0;
                     int save = buffer.Pos;
                     buffer.Pos = tokPos;
-                    do {
+                    do
+                    {
                         ch = buffer.Read();
-                        if (!char.IsHighSurrogate((char)ch)) count++;
+                        if (!char.IsHighSurrogate((char) ch)) count++;
                     } while (buffer.Pos < tokEPos && ch != ScanBuff.EndOfFile);
-                    buffer.Pos = save; 
+
+                    buffer.Pos = save;
                     return count;
                 }
 #endif // BYTEMODE
             }
         }
-        
+
         // ============ methods available in actions ==============
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal int YY_START {
+        internal int YY_START
+        {
             get { return currentScOrd; }
-            set { currentScOrd = value; 
-                  currentStart = startState[value]; 
-            } 
+            set
+            {
+                currentScOrd = value;
+                currentStart = startState[value];
+            }
         }
-        
+
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal void BEGIN(int next) {
+        internal void BEGIN(int next)
+        {
             currentScOrd = next;
             currentStart = startState[next];
         }
@@ -583,10 +647,11 @@ int NextState() {
 
         int Scan()
         {
-            try {
-                for (; ; )
+            try
+            {
+                for (;;)
                 {
-                    int next;              // next state to enter                   
+                    int next; // next state to enter                   
 #if BACKUP
                     Result rslt = Result.noMatch;
 #endif // BACKUP
@@ -614,7 +679,7 @@ int NextState() {
                     MarkToken();
                     state = next;
                     GetCode();
-                    
+
                     while ((next = NextState()) > eofNum) // Exit for goStart AND for eofNum
 #if BACKUP
                         if (state <= maxAccept && next > maxAccept) // need to prepare backup data
@@ -623,9 +688,9 @@ int NextState() {
                             // mutated by the call to Recurse2.
                             // On return the data in ctx is the
                             // *latest* accept state that was found.
-                            
+
                             rslt = Recurse2(ref ctx, next);
-                            if (rslt == Result.noMatch) 
+                            if (rslt == Result.noMatch)
                                 RestoreStateAndPos(ref ctx);
                             break;
                         }
@@ -635,95 +700,102 @@ int NextState() {
                             state = next;
                             GetCode();
                         }
-                    if (state <= maxAccept) 
+
+                    if (state <= maxAccept)
                     {
                         MarkEnd();
-#region ActionSwitch
+
+                        #region ActionSwitch
+
 #pragma warning disable 162
-    switch (state)
-    {
-        case eofNum:
-            if (yywrap())
-                return (int)Tokens.EOF;
-            break;
-        case 1:
-yylval.intT = int.Parse(yytext);
-  return (int)Tokens.INUM;
-            break;
-        case 2:
-        case 4:
-        case 5:
-        case 16:
-LexError();
-	return (int)Tokens.EOF;
-            break;
-        case 3:
-int res = ScannerHelper.GetIDToken(yytext);
-  if (res == (int)Tokens.ID){
-  	yylval.stringT = yytext; 
-  }
-  return res;
-            break;
-        case 6:
-return (int)Tokens.SEMICOLON;
-            break;
-        case 7:
-return '+';
-            break;
-        case 8:
-return '-';
-            break;
-        case 9:
-return '*';
-            break;
-        case 10:
-return '/';
-            break;
-        case 11:
-return '(';
-            break;
-        case 12:
-return ')';
-            break;
-        case 13:
-return '<';
-            break;
-        case 14:
-return '>';
-            break;
-        case 15:
-return ',';
-            break;
-        case 17:
-return (int)Tokens.UNEQUALS;
-            break;
-        case 18:
-return (int)Tokens.GE;
-            break;
-        case 19:
-return (int)Tokens.LE;
-            break;
-        case 20:
-return (int)Tokens.EQUALS;
-            break;
-        case 21:
-return (int)Tokens.ASSIGN;
-            break;
-        case 22:
-yylval.doubleT = double.Parse(yytext);
-  return (int)Tokens.RNUM;
-            break;
-        default:
-            break;
-    }
+                        switch (state)
+                        {
+                            case eofNum:
+                                if (yywrap())
+                                    return (int) Tokens.EOF;
+                                break;
+                            case 1:
+                                yylval.intT = int.Parse(yytext);
+                                return (int) Tokens.INUM;
+                                break;
+                            case 2:
+                            case 4:
+                            case 5:
+                            case 16:
+                                LexError();
+                                return (int) Tokens.EOF;
+                                break;
+                            case 3:
+                                int res = ScannerHelper.GetIDToken(yytext);
+                                if (res == (int) Tokens.ID)
+                                {
+                                    yylval.stringT = yytext;
+                                }
+
+                                return res;
+                                break;
+                            case 6:
+                                return (int) Tokens.SEMICOLON;
+                                break;
+                            case 7:
+                                return '+';
+                                break;
+                            case 8:
+                                return '-';
+                                break;
+                            case 9:
+                                return '*';
+                                break;
+                            case 10:
+                                return '/';
+                                break;
+                            case 11:
+                                return '(';
+                                break;
+                            case 12:
+                                return ')';
+                                break;
+                            case 13:
+                                return '<';
+                                break;
+                            case 14:
+                                return '>';
+                                break;
+                            case 15:
+                                return ',';
+                                break;
+                            case 17:
+                                return (int) Tokens.UNEQUALS;
+                                break;
+                            case 18:
+                                return (int) Tokens.GE;
+                                break;
+                            case 19:
+                                return (int) Tokens.LE;
+                                break;
+                            case 20:
+                                return (int) Tokens.EQUALS;
+                                break;
+                            case 21:
+                                return (int) Tokens.ASSIGN;
+                                break;
+                            case 22:
+                                yylval.doubleT = double.Parse(yytext);
+                                return (int) Tokens.RNUM;
+                                break;
+                            default:
+                                break;
+                        }
 #pragma warning restore 162
-#endregion
+
+                        #endregion
                     }
                 }
             } // end try
-            finally {
+            finally
+            {
 // User-specified epilog to scan()
-yylloc = new LexLocation(tokLin, tokCol, tokELin, tokECol);
+                yylloc = new LexLocation(tokLin, tokCol, tokELin, tokECol);
 // End, user-specified epilog
             } // end finally
         }
@@ -745,36 +817,37 @@ yylloc = new LexLocation(tokLin, tokCol, tokELin, tokECol);
                     SaveStateAndPos(ref ctx);
                 state = next;
                 if (state == eofNum) return Result.accept;
-                GetCode(); 
+                GetCode();
             }
+
             return (state <= maxAccept ? Result.accept : Result.noMatch);
         }
 
         void SaveStateAndPos(ref Context ctx)
         {
-            ctx.bPos  = buffer.Pos;
-            ctx.rPos  = readPos;
-            ctx.cCol  = cCol;
-            ctx.lNum  = lNum;
+            ctx.bPos = buffer.Pos;
+            ctx.rPos = readPos;
+            ctx.cCol = cCol;
+            ctx.lNum = lNum;
             ctx.state = state;
-            ctx.cChr  = code;
+            ctx.cChr = code;
         }
 
         void RestoreStateAndPos(ref Context ctx)
         {
             buffer.Pos = ctx.bPos;
             readPos = ctx.rPos;
-            cCol  = ctx.cCol;
-            lNum  = ctx.lNum;
+            cCol = ctx.cCol;
+            lNum = ctx.lNum;
             state = ctx.state;
-            code  = ctx.cChr;
+            code = ctx.cChr;
         }
 
 #endif // BACKUP
 
         // ============= End of the tokenizer code ================
 
-#if STACK        
+#if STACK
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal void yy_clear_stack() { scStack.Clear(); }
         
@@ -798,54 +871,57 @@ yylloc = new LexLocation(tokLin, tokCol, tokELin, tokECol);
  #endif // STACK
 
         [SuppressMessage("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal void ECHO() { Console.Out.Write(yytext); }
-        
-#region UserCodeSection
+        internal void ECHO()
+        {
+            Console.Out.Write(yytext);
+        }
 
-public override void yyerror(string format, params object[] args) // об�?або�?ка син�?акси�?ески�? о�?ибок
-{
-  var ww = args.Skip(1).Cast<string>().ToArray();
-  string errorMsg = string.Format("({0},{1}): found {2}, expected {3}", yyline, yycol, args[0], string.Join(" or ", ww));
-  throw new SyntaxException(errorMsg);
-}
+        #region UserCodeSection
 
-public void LexError()
-{
-	string errorMsg = string.Format("({0},{1}): unknown symbol {2}", yyline, yycol, yytext);
-    throw new LexException(errorMsg);
-}
+        public override void yyerror(string format, params object[] args) // об�?або�?ка син�?акси�?ески�? о�?ибок
+        {
+            var ww = args.Skip(1).Cast<string>().ToArray();
+            string errorMsg = string.Format("({0},{1}): found {2}, expected {3}", yyline, yycol, args[0],
+                string.Join(" or ", ww));
+            throw new SyntaxException(errorMsg);
+        }
 
-class ScannerHelper 
-{
-  private static Dictionary<string,int> keywords;
+        public void LexError()
+        {
+            string errorMsg = string.Format("({0},{1}): unknown symbol {2}", yyline, yycol, yytext);
+            throw new LexException(errorMsg);
+        }
 
-  static ScannerHelper() 
-  {
-    keywords = new Dictionary<string,int>();
-    keywords.Add("begin",(int)Tokens.BEGIN);
-    keywords.Add("end",(int)Tokens.END);
-    keywords.Add("while",(int)Tokens.CYCLE);
-    keywords.Add("if", (int)Tokens.IF);
-    keywords.Add("else", (int)Tokens.ELSE); 
-    keywords.Add("or", (int)Tokens.OR);
-    keywords.Add("and", (int)Tokens.AND);
-    keywords.Add("not", (int)Tokens.NOT);
-    keywords.Add("print", (int)Tokens.PRINT);
-    keywords.Add("for", (int)Tokens.FOR);
-    keywords.Add("in", (int)Tokens.IN);
-    
-  }
+        class ScannerHelper
+        {
+            private static Dictionary<string, int> keywords;
 
-  public static int GetIDToken(string s)
-  {
-    if (keywords.ContainsKey(s.ToLower())) // яз�?к не�?�?вс�?ви�?елен к �?егис�?�?�?
-      return keywords[s];
-    else
-      return (int)Tokens.ID;
-  }
-}
+            static ScannerHelper()
+            {
+                keywords = new Dictionary<string, int>();
+                keywords.Add("begin", (int) Tokens.BEGIN);
+                keywords.Add("end", (int) Tokens.END);
+                keywords.Add("while", (int) Tokens.CYCLE);
+                keywords.Add("if", (int) Tokens.IF);
+                keywords.Add("else", (int) Tokens.ELSE);
+                keywords.Add("or", (int) Tokens.OR);
+                keywords.Add("and", (int) Tokens.AND);
+                keywords.Add("not", (int) Tokens.NOT);
+                keywords.Add("print", (int) Tokens.PRINT);
+                keywords.Add("for", (int) Tokens.FOR);
+                keywords.Add("in", (int) Tokens.IN);
+            }
 
-#endregion
+            public static int GetIDToken(string s)
+            {
+                if (keywords.ContainsKey(s.ToLower())) // яз�?к не�?�?вс�?ви�?елен к �?егис�?�?�?
+                    return keywords[s];
+                else
+                    return (int) Tokens.ID;
+            }
+        }
+
+        #endregion
     } // end class $Scanner
 
 // ==============================================================
@@ -860,12 +936,23 @@ class ScannerHelper
     [Serializable]
     public class BufferException : Exception
     {
-        public BufferException() { }
-        public BufferException(string message) : base(message) { }
+        public BufferException()
+        {
+        }
+
+        public BufferException(string message) : base(message)
+        {
+        }
+
         public BufferException(string message, Exception innerException)
-            : base(message, innerException) { }
+            : base(message, innerException)
+        {
+        }
+
         protected BufferException(SerializationInfo info, StreamingContext context)
-            : base(info, context) { }
+            : base(info, context)
+        {
+        }
     }
 
     public abstract class ScanBuff
@@ -875,12 +962,23 @@ class ScannerHelper
         public const int EndOfFile = -1;
         public const int UnicodeReplacementChar = 0xFFFD;
 
-        public bool IsFile { get { return (fileNm != null); } }
-        public string FileName { get { return fileNm; } set { fileNm = value; } }
+        public bool IsFile
+        {
+            get { return (fileNm != null); }
+        }
+
+        public string FileName
+        {
+            get { return fileNm; }
+            set { fileNm = value; }
+        }
 
         public abstract int Pos { get; set; }
         public abstract int Read();
-        public virtual void Mark() { }
+
+        public virtual void Mark()
+        {
+        }
 
         public abstract string GetString(int begin, int limit);
 
@@ -921,8 +1019,8 @@ class ScannerHelper
     /// </summary>
     sealed class StringBuffer : ScanBuff
     {
-        string str;        // input buffer
-        int bPos;          // current position in buffer
+        string str; // input buffer
+        int bPos; // current position in buffer
         int sLen;
 
         public StringBuffer(string source)
@@ -935,8 +1033,16 @@ class ScannerHelper
         public override int Read()
         {
             if (bPos < sLen) return str[bPos++];
-            else if (bPos == sLen) { bPos++; return '\n'; }   // one strike, see new line
-            else { bPos++; return EndOfFile; }                // two strikes and you're out!
+            else if (bPos == sLen)
+            {
+                bPos++;
+                return '\n';
+            } // one strike, see new line
+            else
+            {
+                bPos++;
+                return EndOfFile;
+            } // two strikes and you're out!
         }
 
         public override string GetString(int begin, int limit)
@@ -958,7 +1064,10 @@ class ScannerHelper
             set { bPos = value; }
         }
 
-        public override string ToString() { return "StringBuffer"; }
+        public override string ToString()
+        {
+            return "StringBuffer";
+        }
     }
 
     // ==============================================================
@@ -968,15 +1077,15 @@ class ScannerHelper
 
     sealed class LineBuffer : ScanBuff
     {
-        IList<string> line;    // list of source lines from a file
-        int numLines;          // number of strings in line list
-        string curLine;        // current line in that list
-        int cLine;             // index of current line in the list
-        int curLen;            // length of current line
-        int curLineStart;      // position of line start in whole file
-        int curLineEnd;        // position of line end in whole file
-        int maxPos;            // max position ever visited in whole file
-        int cPos;              // ordinal number of code in source
+        IList<string> line; // list of source lines from a file
+        int numLines; // number of strings in line list
+        string curLine; // current line in that list
+        int cLine; // index of current line in the list
+        int curLen; // length of current line
+        int curLineStart; // position of line start in whole file
+        int curLineEnd; // position of line end in whole file
+        int maxPos; // max position ever visited in whole file
+        int cPos; // ordinal number of code in source
 
         // Constructed from a list of strings, one per source line.
         // The lines have had trailing '\n' characters removed.
@@ -1021,19 +1130,22 @@ class ScannerHelper
         {
             if (pos >= cachedPosition)
             {
-                ix = cachedIxdex; lstart = cachedLineStart;
+                ix = cachedIxdex;
+                lstart = cachedLineStart;
             }
             else
             {
                 ix = lstart = 0;
             }
-            for (; ; )
+
+            for (;;)
             {
                 int len = line[ix].Length + 1;
                 if (pos < lstart + len) break;
                 lstart += len;
                 ix++;
             }
+
             cachedPosition = pos;
             cachedIxdex = ix;
             cachedLineStart = lstart;
@@ -1051,21 +1163,23 @@ class ScannerHelper
             if (begIx == endIx)
             {
                 // the usual case, substring all on one line
-                return (endCol <= s.Length) ?
-                    s.Substring(begCol, endCol - begCol)
+                return (endCol <= s.Length)
+                    ? s.Substring(begCol, endCol - begCol)
                     : s.Substring(begCol) + "\n";
             }
+
             // the string spans multiple lines, yuk!
             StringBuilder sb = new StringBuilder();
             if (begCol < s.Length)
                 sb.Append(s.Substring(begCol));
-            for (; ; )
+            for (;;)
             {
                 sb.Append("\n");
                 s = line[++begIx];
                 if (begIx >= endIx) break;
                 sb.Append(s);
             }
+
             if (endCol <= s.Length)
             {
                 sb.Append(s.Substring(0, endCol));
@@ -1075,6 +1189,7 @@ class ScannerHelper
                 sb.Append(s);
                 sb.Append("\n");
             }
+
             return sb.ToString();
         }
 
@@ -1090,7 +1205,10 @@ class ScannerHelper
             }
         }
 
-        public override string ToString() { return "LineBuffer"; }
+        public override string ToString()
+        {
+            return "LineBuffer";
+        }
     }
 
 
@@ -1110,9 +1228,14 @@ class ScannerHelper
             int brkIx;
             bool appendToNext;
 
-            internal BufferElement() { }
+            internal BufferElement()
+            {
+            }
 
-            internal int MaxIndex { get { return maxIx; } }
+            internal int MaxIndex
+            {
+                get { return maxIx; }
+            }
             // internal int MinIndex { get { return minIx; } }
 
             internal char this[int index]
@@ -1174,7 +1297,7 @@ class ScannerHelper
 
         BufferElement data = new BufferElement();
 
-        int bPos;            // Postion index in the StringBuilder
+        int bPos; // Postion index in the StringBuilder
         BlockReader NextBlk; // Delegate that serves char-arrays;
 
         private string EncodingName
@@ -1208,7 +1331,10 @@ class ScannerHelper
         /// needs to call GetString at arbitrary past locations 
         /// in the input stream, Mark() is not called.
         /// </summary>
-        public override void Mark() { data.Mark(bPos - 2); }
+        public override void Mark()
+        {
+            data.Mark(bPos - 2);
+        }
 
         public override int Pos
         {
@@ -1233,7 +1359,7 @@ class ScannerHelper
             if (bPos < data.MaxIndex)
             {
                 // ch0 cannot be EOF
-                return (int)data[bPos++];
+                return (int) data[bPos++];
             }
             else // Read from underlying stream
             {
@@ -1245,7 +1371,7 @@ class ScannerHelper
                 else
                 {
                     data.Append(chrs, count);
-                    return (int)data[bPos++];
+                    return (int) data[bPos++];
                 }
             }
         }
@@ -1280,7 +1406,7 @@ class ScannerHelper
                 int i = 0;
                 int j = index;
                 for (; i < count; i++, j++)
-                    block[j] = (char)b[i];
+                    block[j] = (char) b[i];
                 return count;
             };
         }
@@ -1291,7 +1417,7 @@ class ScannerHelper
             Encoding encoding;
             int preamble = Preamble(stream);
 
-            if (preamble != 0)  // There is a valid BOM here!
+            if (preamble != 0) // There is a valid BOM here!
                 encoding = Encoding.GetEncoding(preamble);
             else if (fallbackCodePage == -1) // Fallback is "raw" bytes
                 return Raw(stream);
@@ -1305,9 +1431,10 @@ class ScannerHelper
                     encoding = Encoding.ASCII;
                 else if (guess == 65001)
                     encoding = Encoding.UTF8;
-                else             // ==> use the machine default
+                else // ==> use the machine default
                     encoding = Encoding.Default;
             }
+
             StreamReader reader = new StreamReader(stream, encoding);
             return reader.Read;
         }
@@ -1334,6 +1461,7 @@ class ScannerHelper
         }
 #endif // !BYTEMODE
     }
+
     #endregion Buffer classes
 
     // ==============================================================
@@ -1373,10 +1501,13 @@ class ScannerHelper
                 Console.Error.WriteLine(
                     "Unknown code page \"{0}\", using machine default", option);
             }
+
             return 0;
         }
     }
-#region guesser
+
+    #region guesser
+
 #if (!BYTEMODE)
     // ==============================================================
     // ============          Encoding Guesser           =============
@@ -1394,7 +1525,10 @@ class ScannerHelper
     {
         ScanBuff buffer;
 
-        public int GuessCodePage() { return Scan(); }
+        public int GuessCodePage()
+        {
+            return Scan();
+        }
 
         const int maxAccept = 10;
         const int initial = 0;
@@ -1404,12 +1538,14 @@ class ScannerHelper
         const int EndToken = 0;
 
         #region user code
+
         /* 
          *  Reads the bytes of a file to determine if it is 
          *  UTF-8 or a single-byte code page file.
          */
         public long utfX;
         public long uppr;
+
         #endregion user code
 
         int state;
@@ -1417,29 +1553,35 @@ class ScannerHelper
         int code;
 
         #region ScannerTables
-        static int[] startState = new int[] { 11, 0 };
+
+        static int[] startState = new int[] {11, 0};
 
         #region CharacterMap
-        static sbyte[] map = new sbyte[256] {
-/*     '\0' */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-/*   '\x10' */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-/*   '\x20' */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-/*      '0' */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-/*      '@' */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-/*      'P' */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-/*      '`' */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-/*      'p' */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
-/*   '\x80' */ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
-/*   '\x90' */ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
-/*   '\xA0' */ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
-/*   '\xB0' */ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 
-/*   '\xC0' */ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-/*   '\xD0' */ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
-/*   '\xE0' */ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 
-/*   '\xF0' */ 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5 };
+
+        static sbyte[] map = new sbyte[256]
+        {
+/*     '\0' */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+/*   '\x10' */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+/*   '\x20' */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+/*      '0' */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+/*      '@' */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+/*      'P' */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+/*      '`' */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+/*      'p' */ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+/*   '\x80' */ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+/*   '\x90' */ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+/*   '\xA0' */ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+/*   '\xB0' */ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
+/*   '\xC0' */ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+/*   '\xD0' */ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+/*   '\xE0' */ 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
+/*   '\xF0' */ 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5
+        };
+
         #endregion
 
-        static sbyte[][] nextState = new sbyte[][] {
+        static sbyte[][] nextState = new sbyte[][]
+        {
             new sbyte[] {0, 0, 0, 0, 0, 0},
             new sbyte[] {-1, -1, 10, -1, -1, -1},
             new sbyte[] {-1, -1, -1, -1, -1, -1},
@@ -1471,9 +1613,13 @@ class ScannerHelper
             else
                 return nextState[state][map[code]];
         }
+
         #endregion
 
-        public Guesser(System.IO.Stream file) { SetSource(file); }
+        public Guesser(System.IO.Stream file)
+        {
+            SetSource(file);
+        }
 
         public void SetSource(System.IO.Stream source)
         {
@@ -1483,7 +1629,7 @@ class ScannerHelper
 
         int Scan()
         {
-            for (; ; )
+            for (;;)
             {
                 int next;
                 state = currentStart;
@@ -1498,9 +1644,11 @@ class ScannerHelper
                     state = next;
                     code = buffer.Read();
                 }
+
                 if (state <= maxAccept)
                 {
                     #region ActionSwitch
+
 #pragma warning disable 162
                     switch (state)
                     {
@@ -1509,10 +1657,11 @@ class ScannerHelper
                             {
                                 case 11:
                                     if (utfX == 0 && uppr == 0) return -1; /* raw ascii */
-                                    else if (uppr * 10 > utfX) return 0;   /* default code page */
-                                    else return 65001;                     /* UTF-8 encoding */
+                                    else if (uppr * 10 > utfX) return 0; /* default code page */
+                                    else return 65001; /* UTF-8 encoding */
                                     break;
                             }
+
                             return EndToken;
                         case 1: // Recognized '{Upper128}',	Shortest string "\xC0"
                         case 2: // Recognized '{Upper128}',	Shortest string "\x80"
@@ -1542,15 +1691,16 @@ class ScannerHelper
                             break;
                     }
 #pragma warning restore 162
+
                     #endregion
                 }
             }
         }
     } // end class Guesser
-    
+
 #endif // !BYTEMODE
-#endregion
+
+    #endregion
 
 // End of code copied from embedded resource
-
 } // end namespace

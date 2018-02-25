@@ -1,19 +1,50 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using SimpleLang.Visitors;
 
 namespace ProgramTree
 {
-    public enum AssignType { Assign, AssignPlus, AssignMinus, AssignMult, AssignDivide };
-    public enum BinaryOpType { Minus, Plus, Multiplies, Divides, Less, 
-        Greater, Equals, UnEquals, LessOrEquals, GreaterOrEquals, And, Or, Not };
-       
+    public enum AssignType
+    {
+        Assign,
+        AssignPlus,
+        AssignMinus,
+        AssignMult,
+        AssignDivide
+    };
+
+    public enum BinaryOpType
+    {
+        Minus,
+        Plus,
+        Multiplies,
+        Divides,
+        Less,
+        Greater,
+        Equals,
+        UnEquals,
+        LessOrEquals,
+        GreaterOrEquals,
+        And,
+        Or,
+        Not
+    };
+
+    public enum NodeOrder
+    {
+        Left,
+        Right
+    }
+
     public abstract class Node // базовый класс для всех узлов    
     {
         public abstract void Visit(Visitor v);
     }
-    
+
     public abstract class ExprNode : Node // базовый класс для всех выражений
     {
+        public abstract void Visit(Visitor v, NodeOrder order);
     }
 
     public class BinaryOpNode : ExprNode
@@ -23,10 +54,14 @@ namespace ProgramTree
 
         public BinaryOpType OpType { get; set; }
 
-
         public override void Visit(Visitor v)
         {
             v.VisitBinaryOpNode(this);
+        }
+
+        public override void Visit(Visitor v, NodeOrder order)
+        {
+            v.VisitBinaryOpNode(this, order);
         }
 
         public BinaryOpNode(ExprNode left, BinaryOpType opType, ExprNode right)
@@ -35,17 +70,26 @@ namespace ProgramTree
             RightNode = right;
             OpType = opType;
         }
-
     }
-    
+
     public class IdNode : ExprNode
     {
         public override void Visit(Visitor v)
         {
             v.VisitIdNode(this);
         }
+
+        public override void Visit(Visitor v, NodeOrder order)
+        {
+            v.VisitIdNode(this, order);
+        }
+
         public string Name { get; set; }
-        public IdNode(string name) { Name = name; }
+
+        public IdNode(string name)
+        {
+            Name = name;
+        }
     }
 
     public class IntNumNode : ExprNode
@@ -54,8 +98,18 @@ namespace ProgramTree
         {
             v.VisitIntNumNode(this);
         }
+
+        public override void Visit(Visitor v, NodeOrder order)
+        {
+            v.VisitIntNumNode(this, order);
+        }
+
         public int Num { get; set; }
-        public IntNumNode(int num) { Num = num; }
+
+        public IntNumNode(int num)
+        {
+            Num = num;
+        }
     }
 
     public abstract class StatementNode : Node // базовый класс для всех операторов
@@ -68,7 +122,9 @@ namespace ProgramTree
         {
             v.VisitWriteNode(this);
         }
+
         public ExprNode Expr { get; set; }
+
         public WriteNode(ExprNode expr)
         {
             Expr = expr;
@@ -77,13 +133,15 @@ namespace ProgramTree
 
     public class AssignNode : StatementNode
     {
+        public IdNode Id { get; set; }
+        public ExprNode Expr { get; set; }
+        public AssignType AssOp { get; set; }
+
         public override void Visit(Visitor v)
         {
             v.VisitAssignNode(this);
         }
-        public IdNode Id { get; set; }
-        public ExprNode Expr { get; set; }
-        public AssignType AssOp { get; set; }
+
         public AssignNode(IdNode id, ExprNode expr, AssignType assop = AssignType.Assign)
         {
             Id = id;
@@ -98,9 +156,11 @@ namespace ProgramTree
         {
             v.VisitIfNode(this);
         }
-        public ExprNode Cond { get; set;  }
+
+        public ExprNode Cond { get; set; }
         public StatementNode ThenB { get; set; }
         public StatementNode ElseB { get; set; }
+
         public IfNode(ExprNode cond, StatementNode thenBranch, StatementNode elseBranch = null)
         {
             Cond = cond;
@@ -118,6 +178,7 @@ namespace ProgramTree
 
         public ExprNode Expr { get; set; }
         public StatementNode Stat { get; set; }
+
         public CycleNode(ExprNode expr, StatementNode stat)
         {
             Expr = expr;
@@ -146,25 +207,25 @@ namespace ProgramTree
             Step = step;
             Stat = stat;
         }
-
     }
 
     public class BlockNode : StatementNode
     {
+        public List<StatementNode> StList = new List<StatementNode>();
+
         public override void Visit(Visitor v)
         {
             v.VisitBlockNode(this);
         }
 
-        public List<StatementNode> StList = new List<StatementNode>();
         public BlockNode(StatementNode stat)
         {
             Add(stat);
         }
+
         public void Add(StatementNode stat)
         {
             StList.Add(stat);
         }
     }
-
 }

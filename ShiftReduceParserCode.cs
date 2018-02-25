@@ -1,6 +1,7 @@
 // Gardens Point Parser Generator
 // Copyright (c) Wayne Kelly, QUT 2005-2009
 // (see accompanying GPPGcopyright.rtf)
+
 #define EXPORT_GPPG
 
 using System;
@@ -25,13 +26,15 @@ namespace QUT.Gppg
 #else
     internal abstract class ShiftReduceParser<TValue, TSpan>
 #endif
- where TSpan : IMerge<TSpan>, new()
+        where TSpan : IMerge<TSpan>, new()
     {
         public AbstractScanner<TValue, TSpan> scanner;
+
         /// <summary>
         /// The abstract scanner for this parser.
         /// </summary>
-        protected AbstractScanner<TValue, TSpan> Scanner {
+        protected AbstractScanner<TValue, TSpan> Scanner
+        {
             get { return scanner; }
             set { scanner = value; }
         }
@@ -88,12 +91,18 @@ namespace QUT.Gppg
         /// <summary>
         /// The stack of semantic value (YYSTYPE) values.
         /// </summary>
-        protected PushdownPrefixState<TValue> ValueStack { get { return valueStack; } }
+        protected PushdownPrefixState<TValue> ValueStack
+        {
+            get { return valueStack; }
+        }
 
         /// <summary>
         /// The stack of location value (YYLTYPE) varlues.
         /// </summary>
-        protected PushdownPrefixState<TSpan> LocationStack { get { return locationStack; } }
+        protected PushdownPrefixState<TSpan> LocationStack
+        {
+            get { return locationStack; }
+        }
 
         private int errorToken;
         private int endOfFileToken;
@@ -106,20 +115,29 @@ namespace QUT.Gppg
         /// to insert the rule list into this base class.
         /// </summary>
         /// <param name="rules">The array of Rule objects</param>
-        protected void InitRules(Rule[] rules) { this.rules = rules; }
+        protected void InitRules(Rule[] rules)
+        {
+            this.rules = rules;
+        }
 
-      /// <summary>
-      /// Initialization method to allow derived classes to
-      /// insert the states table into this base class.
-      /// </summary>
-      /// <param name="states">The pre-initialized states table</param>
-        protected void InitStates(State[] states) { this.states = states; }
+        /// <summary>
+        /// Initialization method to allow derived classes to
+        /// insert the states table into this base class.
+        /// </summary>
+        /// <param name="states">The pre-initialized states table</param>
+        protected void InitStates(State[] states)
+        {
+            this.states = states;
+        }
 
-      /// <summary>
-      /// OBSOLETE FOR VERSION 1.4.0
-      /// </summary>
-      /// <param name="size"></param>
-        protected void InitStateTable(int size) { states = new State[size]; }
+        /// <summary>
+        /// OBSOLETE FOR VERSION 1.4.0
+        /// </summary>
+        /// <param name="size"></param>
+        protected void InitStateTable(int size)
+        {
+            states = new State[size];
+        }
 
         /// <summary>
         /// Initialization method to allow derived classes
@@ -138,35 +156,56 @@ namespace QUT.Gppg
         /// insert the non-terminal symbol names into this base class.
         /// </summary>
         /// <param name="names">Non-terminal symbol names</param>
-        protected void InitNonTerminals(string[] names) { nonTerminals = names; }
+        protected void InitNonTerminals(string[] names)
+        {
+            nonTerminals = names;
+        }
 
         #region YYAbort, YYAccept etcetera.
+
         [Serializable]
         [SuppressMessage("Microsoft.Design", "CA1064:ExceptionsShouldBePublic")]
         // Reason for FxCop message suppression -
         // This exception cannot escape from the local context
         private class AcceptException : Exception
         {
-            internal AcceptException() { }
-            protected AcceptException(SerializationInfo i, StreamingContext c) : base(i, c) { }
+            internal AcceptException()
+            {
+            }
+
+            protected AcceptException(SerializationInfo i, StreamingContext c) : base(i, c)
+            {
+            }
         }
+
         [Serializable]
         [SuppressMessage("Microsoft.Design", "CA1064:ExceptionsShouldBePublic")]
         // Reason for FxCop message suppression -
         // This exception cannot escape from the local context
         private class AbortException : Exception
         {
-            internal AbortException() { }
-            protected AbortException(SerializationInfo i, StreamingContext c) : base(i, c) { }
+            internal AbortException()
+            {
+            }
+
+            protected AbortException(SerializationInfo i, StreamingContext c) : base(i, c)
+            {
+            }
         }
+
         [Serializable]
         [SuppressMessage("Microsoft.Design", "CA1064:ExceptionsShouldBePublic")]
         // Reason for FxCop message suppression -
         // This exception cannot escape from the local context
         private class ErrorException : Exception
         {
-            internal ErrorException() { }
-            protected ErrorException(SerializationInfo i, StreamingContext c) : base(i, c) { }
+            internal ErrorException()
+            {
+            }
+
+            protected ErrorException(SerializationInfo i, StreamingContext c) : base(i, c)
+            {
+            }
         }
 
         // The following methods are only called from within
@@ -177,23 +216,36 @@ namespace QUT.Gppg
         /// <summary>
         /// Force parser to terminate, returning "true"
         /// </summary>
-        protected static void YYAccept() { throw new AcceptException(); }
+        protected static void YYAccept()
+        {
+            throw new AcceptException();
+        }
 
         /// <summary>
         /// Force parser to terminate, returning "false"
         /// </summary>
-        protected static void YYAbort() { throw new AbortException(); }
+        protected static void YYAbort()
+        {
+            throw new AbortException();
+        }
 
         /// <summary>
         /// Force parser to terminate, returning
         /// "false" if error recovery fails.
         /// </summary>
-        protected static void YYError() { throw new ErrorException(); }
+        protected static void YYError()
+        {
+            throw new ErrorException();
+        }
 
         /// <summary>
         /// Check if parser in error recovery state.
         /// </summary>
-        protected bool YYRecovering { get { return recovering; } }
+        protected bool YYRecovering
+        {
+            get { return recovering; }
+        }
+
         #endregion
 
         /// <summary>
@@ -210,7 +262,7 @@ namespace QUT.Gppg
         /// unrecoverable errors</returns>
         public bool Parse()
         {
-            Initialize();	// allow derived classes to instantiate rules, states and nonTerminals
+            Initialize(); // allow derived classes to instantiate rules, states and nonTerminals
 
             NextToken = 0;
             FsaState = states[0];
@@ -247,16 +299,16 @@ namespace QUT.Gppg
                         action = FsaState.ParserTable[NextToken];
                 }
 
-                if (action > 0)         // shift
+                if (action > 0) // shift
                 {
                     Shift(action);
                 }
-                else if (action < 0)   // reduce
+                else if (action < 0) // reduce
                 {
                     try
                     {
                         Reduce(-action);
-                        if (action == -1)	// accept
+                        if (action == -1) // accept
                             return true;
                     }
                     catch (Exception x)
@@ -268,11 +320,10 @@ namespace QUT.Gppg
                         else if (x is ErrorException && !ErrorRecovery())
                             return false;
                         else
-                            throw;  // Rethrow x, preserving information.
-
+                            throw; // Rethrow x, preserving information.
                     }
                 }
-                else if (action == 0)   // error
+                else if (action == 0) // error
                     if (!ErrorRecovery())
                         return false;
             }
@@ -313,7 +364,7 @@ namespace QUT.Gppg
             //
             if (rule.RightHandSide.Length == 1)
             {
-                CurrentSemanticValue = valueStack.TopElement();    // Default action: $$ = $1;
+                CurrentSemanticValue = valueStack.TopElement(); // Default action: $$ = $1;
                 CurrentLocationSpan = LocationStack.TopElement(); // Default action "@$ = @1;
             }
             else
@@ -327,9 +378,9 @@ namespace QUT.Gppg
                     // beginning of the next lexeme, and end with the finish of the
                     // previous lexeme.  This gives the correct behaviour when this
                     // nonsense value is used in later Merge operations.
-                    CurrentLocationSpan = (scanner.yylloc != null && LastSpan != null ?
-                        scanner.yylloc.Merge(LastSpan) :
-                        default(TSpan));
+                    CurrentLocationSpan = (scanner.yylloc != null && LastSpan != null
+                        ? scanner.yylloc.Merge(LastSpan)
+                        : default(TSpan));
                 }
                 else
                 {
@@ -338,7 +389,7 @@ namespace QUT.Gppg
                     //  Default action "@$ = @1.Merge(@N)" for location info.
                     TSpan at1 = LocationStack[LocationStack.Depth - rule.RightHandSide.Length];
                     TSpan atN = LocationStack[LocationStack.Depth - 1];
-                    CurrentLocationSpan = 
+                    CurrentLocationSpan =
                         ((at1 != null && atN != null) ? at1.Merge(atN) : default(TSpan));
                 }
             }
@@ -412,20 +463,22 @@ namespace QUT.Gppg
                     first = false;
                 }
             }
+
             scanner.yyerror(errorMsg.ToString());
         }
 
         private void ReportError()
         {
-            object[] args = new object[FsaState.ParserTable.Keys.Count+1];
+            object[] args = new object[FsaState.ParserTable.Keys.Count + 1];
             args[0] = TerminalToString(NextToken);
-            int i=1;
+            int i = 1;
             foreach (int terminal in FsaState.ParserTable.Keys)
             {
                 args[i] = TerminalToString(terminal);
                 i++;
             }
-            scanner.yyerror("",args);
+
+            scanner.yyerror("", args);
         }
 
         private void ShiftErrorToken()
@@ -443,7 +496,7 @@ namespace QUT.Gppg
 
         private bool FindErrorRecoveryState()
         {
-            while (true)    // pop states until one found that accepts error token
+            while (true) // pop states until one found that accepts error token
             {
                 if (FsaState.ParserTable != null &&
                     FsaState.ParserTable.ContainsKey(errorToken) &&
@@ -474,7 +527,6 @@ namespace QUT.Gppg
 
         private bool DiscardInvalidTokens()
         {
-
             int action = FsaState.defaultAction;
 
             if (FsaState.ParserTable != null)
@@ -486,7 +538,7 @@ namespace QUT.Gppg
                     {
 #if TRACE_ACTIONS
                             Console.Error.Write("Reading a token: ");
-#endif                       
+#endif
                         NextToken = scanner.yylex();
                     }
 
@@ -536,7 +588,6 @@ namespace QUT.Gppg
             }
             else
                 return true;
-
         }
 
         /// <summary>
@@ -546,7 +597,10 @@ namespace QUT.Gppg
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "yyclearin")]
         // Reason for FxCop message suppression -
         // This is a traditional name for YACC-like functionality
-        protected void yyclearin() { NextToken = 0; }
+        protected void yyclearin()
+        {
+            NextToken = 0;
+        }
 
         /// <summary>
         /// Tradional YACC method. Clear the "recovering" flag.
@@ -676,37 +730,50 @@ namespace QUT.Gppg
     internal class LexLocation : IMerge<LexLocation>
 #endif
     {
-        private int startLine;   // start line
+        private int startLine; // start line
         private int startColumn; // start column
-        private int endLine;     // end line
-        private int endColumn;   // end column
+        private int endLine; // end line
+        private int endColumn; // end column
 
         /// <summary>
         /// The line at which the text span starts.
         /// </summary>
-        public int StartLine { get { return startLine; } }
+        public int StartLine
+        {
+            get { return startLine; }
+        }
 
         /// <summary>
         /// The column at which the text span starts.
         /// </summary>
-        public int StartColumn { get { return startColumn; } }
+        public int StartColumn
+        {
+            get { return startColumn; }
+        }
 
         /// <summary>
         /// The line on which the text span ends.
         /// </summary>
-        public int EndLine { get { return endLine; } }
+        public int EndLine
+        {
+            get { return endLine; }
+        }
 
         /// <summary>
         /// The column of the first character
         /// beyond the end of the text span.
         /// </summary>
-        public int EndColumn { get { return endColumn; } }
+        public int EndColumn
+        {
+            get { return endColumn; }
+        }
 
         /// <summary>
         /// Default no-arg constructor.
         /// </summary>
         public LexLocation()
-        { }
+        {
+        }
 
         /// <summary>
         /// Constructor for text-span with given start and end.
@@ -716,7 +783,12 @@ namespace QUT.Gppg
         /// <param name="el">end line </param>
         /// <param name="ec">end column</param>
         public LexLocation(int sl, int sc, int el, int ec)
-        { startLine = sl; startColumn = sc; endLine = el; endColumn = ec; }
+        {
+            startLine = sl;
+            startColumn = sc;
+            endLine = el;
+            endColumn = ec;
+        }
 
         /// <summary>
         /// Create a text location which spans from the 
@@ -725,8 +797,9 @@ namespace QUT.Gppg
         /// <param name="last">The last location in the result span</param>
         /// <returns>The merged span</returns>
         public LexLocation Merge(LexLocation last)
-        { return new LexLocation(this.startLine, this.startColumn, last.endLine, last.endColumn); }
-
+        {
+            return new LexLocation(this.startLine, this.startColumn, last.endLine, last.endColumn);
+        }
     }
 
     /// <summary>
@@ -755,7 +828,7 @@ namespace QUT.Gppg
         // since it may be instantiated by a value struct.  If it were 
         // implemented as a property, machine generated code in derived
         // types would not be able to select on the returned value.
-        public TValue yylval;                     // Lexical value: set by scanner
+        public TValue yylval; // Lexical value: set by scanner
 
         /// <summary>
         /// Current scanner location property. The value is of the
@@ -767,8 +840,11 @@ namespace QUT.Gppg
         // This is a traditional name for YACC-like functionality
         public virtual TSpan yylloc
         {
-            get { return default(TSpan); }       // Empty implementation allowing
-            set { /* skip */ }                   // yylloc to be ignored entirely.
+            get { return default(TSpan); } // Empty implementation allowing
+            set
+            {
+                /* skip */
+            } // yylloc to be ignored entirely.
         }
 
         /// <summary>
@@ -792,7 +868,9 @@ namespace QUT.Gppg
         [SuppressMessage("Microsoft.Naming", "CA1704:IdentifiersShouldBeSpelledCorrectly", MessageId = "yyerror")]
         // Reason for FxCop message suppression -
         // This is a traditional name for YACC-like functionality
-        public virtual void yyerror(string format, params object[] args) { }
+        public virtual void yyerror(string format, params object[] args)
+        {
+        }
     }
 
     /// <summary>
@@ -806,8 +884,8 @@ namespace QUT.Gppg
 #endif
     {
         internal int number;
-        internal Dictionary<int, int> ParserTable;   // Terminal -> ParseAction
-        internal Dictionary<int, int> Goto;          // NonTerminal -> State;
+        internal Dictionary<int, int> ParserTable; // Terminal -> ParseAction
+        internal Dictionary<int, int> Goto; // NonTerminal -> State;
         internal int defaultAction; // = 0;		     // ParseAction
 
         /// <summary>
@@ -912,12 +990,18 @@ namespace QUT.Gppg
         /// </summary>
         /// <param name="index">index of the element, starting from the bottom</param>
         /// <returns>the selected element</returns>
-        public T this[int index] { get { return array[index]; } }
+        public T this[int index]
+        {
+            get { return array[index]; }
+        }
 
         /// <summary>
         /// The current depth of the stack.
         /// </summary>
-        public int Depth { get { return tos; } }
+        public int Depth
+        {
+            get { return tos; }
+        }
 
         internal void Push(T value)
         {
@@ -927,6 +1011,7 @@ namespace QUT.Gppg
                 System.Array.Copy(array, newarray, tos);
                 array = newarray;
             }
+
             array[tos++] = value;
         }
 
@@ -937,8 +1022,14 @@ namespace QUT.Gppg
             return rslt;
         }
 
-        internal T TopElement() { return array[tos - 1]; }
+        internal T TopElement()
+        {
+            return array[tos - 1];
+        }
 
-        internal bool IsEmpty() { return tos == 0; }
+        internal bool IsEmpty()
+        {
+            return tos == 0;
+        }
     }
 }

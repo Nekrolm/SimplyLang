@@ -6,7 +6,7 @@ using ProgramTree;
 
 namespace SimpleLang.Visitors
 {
-    public class PrettyPrintVisitor: Visitor
+    public class PrettyPrintVisitor : Visitor
     {
         public string Text = "";
         private int Indent = 0;
@@ -15,27 +15,27 @@ namespace SimpleLang.Visitors
         {
             return new string(' ', Indent);
         }
-        
+
         private void IndentPlus()
         {
             Indent += 2;
         }
-        
+
         private void IndentMinus()
         {
             Indent -= 2;
         }
-        
-        public override void VisitIdNode(IdNode id) 
+
+        public override void VisitIdNode(IdNode id)
         {
             Text += id.Name;
         }
-        
-        public override void VisitIntNumNode(IntNumNode num) 
+
+        public override void VisitIntNumNode(IntNumNode num)
         {
             Text += num.Num.ToString();
         }
-        
+
         public static String ConvertOpType(BinaryOpType t)
         {
             switch (t)
@@ -65,8 +65,8 @@ namespace SimpleLang.Visitors
                     return "";
             }
         }
-        
-        public override void VisitBinaryOpNode(BinaryOpNode binop) 
+
+        public override void VisitBinaryOpNode(BinaryOpNode binop)
         {
             Text += "(";
 
@@ -77,7 +77,7 @@ namespace SimpleLang.Visitors
             binop.RightNode.Visit(this);
             Text += ")";
         }
-        
+
         public override void VisitForCycleNode(ForCycleNode fc)
         {
             Text += IndentStr() + "for ";
@@ -106,33 +106,32 @@ namespace SimpleLang.Visitors
                 Text += Environment.NewLine;
                 bl.ElseB.Visit(this);
             }
-
         }
 
-        public override void VisitAssignNode(AssignNode a) 
+        public override void VisitAssignNode(AssignNode a)
         {
             Text += IndentStr();
             a.Id.Visit(this);
             Text += " := ";
             a.Expr.Visit(this);
         }
-        
-        public override void VisitCycleNode(CycleNode c) 
+
+        public override void VisitCycleNode(CycleNode c)
         {
             Text += IndentStr() + "while ";
             c.Expr.Visit(this);
             Text += Environment.NewLine;
             c.Stat.Visit(this);
         }
-        
-        public override void VisitBlockNode(BlockNode bl) 
+
+        public override void VisitBlockNode(BlockNode bl)
         {
             Text += IndentStr() + "begin" + Environment.NewLine;
             IndentPlus();
 
             var count = bl.StList.Count;
 
-            if (count>0)
+            if (count > 0)
                 bl.StList[0].Visit(this);
             for (var i = 1; i < count; i++)
             {
@@ -143,11 +142,12 @@ namespace SimpleLang.Visitors
                     bl.StList[i].Visit(this);
                 }
             }
+
             IndentMinus();
             Text += Environment.NewLine + IndentStr() + "end";
         }
-        
-        public override void VisitWriteNode(WriteNode w) 
+
+        public override void VisitWriteNode(WriteNode w)
         {
             Text += IndentStr() + "print (";
             w.Expr.Visit(this);

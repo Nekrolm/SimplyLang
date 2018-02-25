@@ -5,6 +5,7 @@ using SimpleScanner;
 using ProgramTree;
 using SimpleParser;
 using SimpleLang.Visitors;
+using ThreeAddr;
 
 namespace SimpleCompiler
 {
@@ -20,7 +21,7 @@ namespace SimpleCompiler
     {
         public static void Main()
         {
-            string FileName = "../../a.txt";
+            string FileName = "../../aa.txt";
             try
             {
                 string Text = File.ReadAllText(FileName);
@@ -32,8 +33,9 @@ namespace SimpleCompiler
                 PrettyPrintVisitor ppvis = new PrettyPrintVisitor();
                 CapitalizerVisitor vc = new CapitalizerVisitor();
 
+                var threeAddressGenerationVisitor = new ThreeAddressGenerationVisitor();
+                
                 Parser parser = new Parser(scanner);
-
 
                 var b = parser.Parse();
                 if (!b)
@@ -42,7 +44,6 @@ namespace SimpleCompiler
                 {
                     Console.WriteLine("Программа распознана");
 
-
                     Console.WriteLine(parser.root.StList.Count);
 
                     parser.root.Visit(avis);
@@ -50,10 +51,14 @@ namespace SimpleCompiler
                     Console.WriteLine(avis.Count);
 
                     parser.root.Visit(vc);
-
+                    
                     parser.root.Visit(ppvis);
 
-                    Console.Write(ppvis.Text);
+                    parser.root.Visit(threeAddressGenerationVisitor);
+                    
+                    Console.WriteLine(ppvis.Text);
+                    
+                    Console.WriteLine(threeAddressGenerationVisitor);
                 }
             }
             catch (FileNotFoundException)
