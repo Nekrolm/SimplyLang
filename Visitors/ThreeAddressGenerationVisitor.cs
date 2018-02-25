@@ -92,7 +92,7 @@ namespace SimpleLang.Visitors
             a.Expr.Visit(this);
             var line = new ThreeAddrLine();
             line.Accum = a.Id.Name;
-            line.LeftOp = GetLastLine().Accum;
+            line.RightOp = GetLastLine().Accum;
             line.Label = GenNewLabel();
             line.OpType = "assign";
             Data.Add(line);
@@ -105,9 +105,10 @@ namespace SimpleLang.Visitors
         {
             Console.WriteLine(Tag + " VisitIdNode");
             var line = new ThreeAddrLine();
-            line.Accum = id.Name;
+            line.Accum = GenNewTemporaryVariable();
             line.Label = GenNewLabel();
-            line.OpType = "nop";
+            line.OpType = "assign";
+            line.RightOp = id.Name;
             Data.Add(line);
         }
 
@@ -145,7 +146,7 @@ namespace SimpleLang.Visitors
 
         public override void VisitCycleNode(CycleNode c)
         {
-            Console.WriteLine(Tag + " VsitCycleNode");
+            Console.WriteLine(Tag + " VisitCycleNode");
 
             var startLoopLabel = GenNewLabel();
             c.Expr.Visit(this);
@@ -176,11 +177,74 @@ namespace SimpleLang.Visitors
         public override void VisitWriteNode(WriteNode w)
         {
             Console.WriteLine(Tag + " VisitWriteNode");
+            w.Expr.Visit(this);
+            var printLine = new ThreeAddrLine();
+            printLine.Label = GenNewLabel();
+            printLine.RightOp = GetLastLine().Accum;
+            printLine.OpType = "write";
+            Data.Add(printLine);
         }
 
         public override void VisitForCycleNode(ForCycleNode fc)
         {
             Console.WriteLine(Tag + " VisitForCycleNoe");
+
+            fc.Step.Visit(this);
+            var step = GetLastLine().Accum;
+            fc.LeftBound.Visit(this);
+            var L = GetLastLine().Accum;
+            fc.RightBound.Visit(this);
+            var R = GetLastLine().Accum;
+
+            var initCounterLine = new ThreeAddrLine();
+            initCounterLine.Accum = fc.Counter.Name;
+            initCounterLine.OpType = "assign";
+            initCounterLine.RightOp = L;
+
+            Data.Add(initCounterLine);
+
+            var startLoopLabel = GenNewLabel();
+
+            var checkLine = new ThreeAddrLine();
+            checkLine.Label = startLoopLabel;
+            checkLine.Accum = GenNewTemporaryVariable();
+            checkLine.LeftOp = fc.Counter.Name;
+            checkLine.OpType = ToStringHelper.ToString(BinaryOpType.Less);
+            checkLine.RightOp = R;
+
+            Data.Add(checkLine);
+
+            var whileLine = new ThreeAddrLine();
+            whileLine.Label = GenNewLabel();
+            whileLine.LeftOp = GetLastLine().Accum;
+            whileLine.OpType = "ifgoto";
+            Data.Add(whileLine);
+
+            var outsideWhileLine = new ThreeAddrLine();
+            outsideWhileLine.Label = GenNewLabel();
+            outsideWhileLine.OpType = "goto";
+            Data.Add(outsideWhileLine);
+            whileLine.RightOp = GenNewLabel();
+            fc.Stat.Visit(this);
+
+            var counterIncLine = new ThreeAddrLine();
+            counterIncLine.Label = GenNewLabel();
+            counterIncLine.Accum = fc.Counter.Name;
+            counterIncLine.LeftOp = fc.Counter.Name;
+            counterIncLine.OpType = ToStringHelper.ToString(BinaryOpType.Plus);
+            counterIncLine.RightOp = step;
+            Data.Add(counterIncLine);
+
+
+            var gotoStartLine = new ThreeAddrLine();
+            gotoStartLine.Label = GenNewLabel();
+            gotoStartLine.OpType = "goto";
+            gotoStartLine.RightOp = startLoopLabel;
+            Data.Add(gotoStartLine);
+
+            InsertNop();
+            outsideWhileLine.RightOp = GetLastLine().Label;
+
         }
 
         public override string ToString()
