@@ -77,14 +77,14 @@ namespace SimpleLang.Visitors
 
             var line = _entryExpressionLine.Pop();
             line.OpType = ToStringHelper.ToString(binop.OpType);
-            line.SrcDst = TempVariableName + _temporaryVariablesCount++;
+            line.Accum = TempVariableName + _temporaryVariablesCount++;
             if (order == NodeOrder.Left)
             {
-                _entryExpressionLine.Peek().LeftOp = line.SrcDst;
+                _entryExpressionLine.Peek().LeftOp = line.Accum;
             }
             else
             {
-                _entryExpressionLine.Peek().RightOp = line.SrcDst;
+                _entryExpressionLine.Peek().RightOp = line.Accum;
             }
             Data.Add(line);
         }
@@ -92,7 +92,7 @@ namespace SimpleLang.Visitors
         public override void VisitIdNode(IdNode id)
         {
             Console.WriteLine(Tag + " VisitIdNode");
-            _entryExpressionLine.Peek().SrcDst = id.Name;
+            _entryExpressionLine.Peek().Accum = id.Name;
         }
 
         public override void VisitIdNode(IdNode id, NodeOrder order)
@@ -158,7 +158,7 @@ namespace SimpleLang.Visitors
                 }
 
                 builder
-                    .Append(line.SrcDst)
+                    .Append(line.Accum)
                     .Append(" ")
                     .Append(line.LeftOp)
                     .Append(" ")
