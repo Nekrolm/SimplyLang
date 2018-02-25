@@ -1,14 +1,16 @@
 ﻿<Properties StartupConfiguration="{12B9D996-7B4A-4EE4-9AD8-2E24EAF3F574}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="ThreeAddr.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Utility/ToStringHelper.cs">
     <Files>
-      <File FileName="Main.cs" Line="47" Column="21" />
-      <File FileName="ProgramTree.cs" Line="1" Column="1" />
-      <File FileName="Visitors/Visitor.cs" Line="12" Column="64" />
-      <File FileName="Visitors/AutoVisitor.cs" Line="11" Column="7" />
-      <File FileName="Visitors/PrettyPrintVisitor.cs" Line="65" Column="10" />
-      <File FileName="Visitors/AssignCountVisitor.cs" Line="21" Column="33" />
+      <File FileName="Main.cs" Line="10" Column="1" />
+      <File FileName="ProgramTree.cs" Line="94" Column="9" />
+      <File FileName="Visitors/Visitor.cs" Line="15" Column="9" />
+      <File FileName="Visitors/AutoVisitor.cs" Line="11" Column="9" />
+      <File FileName="Visitors/PrettyPrintVisitor.cs" Line="83" Column="42" />
+      <File FileName="Visitors/AssignCountVisitor.cs" Line="21" Column="1" />
       <File FileName="SimpleYacc.cs" Line="1" Column="1" />
-      <File FileName="ThreeAddr.cs" Line="12" Column="6" />
+      <File FileName="ThreeAddr.cs" Line="7" Column="42" />
+      <File FileName="Visitors/ThreeAddressGenerationVisitor.cs" Line="6" Column="21" />
+      <File FileName="Utility/ToStringHelper.cs" Line="3" Column="22" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />

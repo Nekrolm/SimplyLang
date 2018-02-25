@@ -11,6 +11,8 @@ begin
   b := 2;
   a := 3;
   a := not -5;
+  
+  z := x or y and (not 5);
 
  if a if b c := 5;
 
@@ -22,8 +24,12 @@ begin
   
   if a
   begin
-    b := c
+    b := c;
   end
   else
-    c := 1
+    c := 1;
+    
+  print x + y;
+  
+  print (x * y - 5);  
 end

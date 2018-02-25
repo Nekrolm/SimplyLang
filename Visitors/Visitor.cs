@@ -12,23 +12,15 @@ namespace SimpleLang.Visitors
         {
         }
 
-        public virtual void VisitIdNode(IdNode id, NodeOrder order)
-        {
-        }
+
         
         public virtual void VisitIntNumNode(IntNumNode num)
         {
         }
 
-        public virtual void VisitIntNumNode(IntNumNode num, NodeOrder order)
-        {
-        }
+
         
         public virtual void VisitBinaryOpNode(BinaryOpNode binop)
-        {
-        }
-
-        public virtual void VisitBinaryOpNode(BinaryOpNode binop, NodeOrder order)
         {
         }
         

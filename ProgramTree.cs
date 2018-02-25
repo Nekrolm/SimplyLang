@@ -44,7 +44,7 @@ namespace ProgramTree
 
     public abstract class ExprNode : Node // базовый класс для всех выражений
     {
-        public abstract void Visit(Visitor v, NodeOrder order);
+        
     }
 
     public class BinaryOpNode : ExprNode
@@ -59,10 +59,6 @@ namespace ProgramTree
             v.VisitBinaryOpNode(this);
         }
 
-        public override void Visit(Visitor v, NodeOrder order)
-        {
-            v.VisitBinaryOpNode(this, order);
-        }
 
         public BinaryOpNode(ExprNode left, BinaryOpType opType, ExprNode right)
         {
@@ -79,10 +75,6 @@ namespace ProgramTree
             v.VisitIdNode(this);
         }
 
-        public override void Visit(Visitor v, NodeOrder order)
-        {
-            v.VisitIdNode(this, order);
-        }
 
         public string Name { get; set; }
 
@@ -99,10 +91,7 @@ namespace ProgramTree
             v.VisitIntNumNode(this);
         }
 
-        public override void Visit(Visitor v, NodeOrder order)
-        {
-            v.VisitIntNumNode(this, order);
-        }
+
 
         public int Num { get; set; }
 

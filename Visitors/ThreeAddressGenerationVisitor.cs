@@ -5,6 +5,7 @@ using System.Text;
 using ProgramTree;
 using SimpleLang.Utility;
 using ThreeAddr;
+using System.Linq;
 
 namespace SimpleLang.Visitors
 {
@@ -14,25 +15,50 @@ namespace SimpleLang.Visitors
         private const string TempVariableName = "p";
 
         public List<ThreeAddrLine> Data { get; }
-        private Stack<ThreeAddrLine> _entryExpressionLine;
+
         private int _temporaryVariablesCount;
+
+        private String GenNewTemporaryVariable(){
+            return TempVariableName + (++_temporaryVariablesCount);
+        }
+
+        private String GenNewLabel(){
+            return Data.Count.ToString();
+        }
+
+        private ThreeAddrLine GetLastLine() {
+            var id = Data.Count;
+            if (id > 0) 
+                return Data[id - 1];
+            return null;
+        }
 
         public ThreeAddressGenerationVisitor()
         {
             Data = new List<ThreeAddrLine>();
-            _entryExpressionLine = new Stack<ThreeAddrLine>();
             _temporaryVariablesCount = 0;
         }
 
-        private void VisitBinaryExpression(BinaryOpNode binaryOpNode)
+        public override void VisitBinaryOpNode(BinaryOpNode binop)
         {
-            if (binaryOpNode == null) return;
-            if (binaryOpNode.LeftNode != null)
+            if (binop == null) return;
+
+            var line = new ThreeAddrLine();
+
+            line.Accum = GenNewTemporaryVariable();
+
+            if (binop.LeftNode != null)
             {
-                binaryOpNode.LeftNode.Visit(this, NodeOrder.Left);
+                binop.LeftNode.Visit(this);
+                line.LeftOp = GetLastLine().Accum;
             }
 
-            binaryOpNode.RightNode.Visit(this, NodeOrder.Right);
+            binop.RightNode.Visit(this);
+            line.RightOp = GetLastLine().Accum;
+            line.OpType = ToStringHelper.ToString(binop.OpType);
+            line.Label = GenNewLabel();
+
+            Data.Add(line);
         }
 
         public override void VisitBlockNode(BlockNode bl)
@@ -41,13 +67,10 @@ namespace SimpleLang.Visitors
             if (bl == null) return;
             foreach (var st in bl.StList)
             {
-                _entryExpressionLine.Push(new ThreeAddrLine());
                 if (st != null)
                 {
                     st.Visit(this);
                 }
-
-                Data.Add(_entryExpressionLine.Pop());
             }
         }
 
@@ -55,82 +78,57 @@ namespace SimpleLang.Visitors
         {
             Console.WriteLine(Tag + " VisitAssingNode");
             if (a == null) return;
-            a.Id.Visit(this);
             a.Expr.Visit(this);
-        }
-
-        public override void VisitBinaryOpNode(BinaryOpNode binop)
-        {
-            Console.WriteLine(Tag + " VisitBinaryOpNode");
-            VisitBinaryExpression(binop);
-            _entryExpressionLine.Peek().OpType = ToStringHelper.ToString(binop.OpType);
-        }
-
-        public override void VisitBinaryOpNode(BinaryOpNode binop, NodeOrder order)
-        {
-            Console.WriteLine(Tag + " VisitBinaryOpNode with order");
-            _entryExpressionLine.Push(new ThreeAddrLine());
-            VisitBinaryExpression(binop);
-            var line = _entryExpressionLine.Pop();
-            line.OpType = ToStringHelper.ToString(binop.OpType);
-            line.Accum = TempVariableName + _temporaryVariablesCount++;
-            if (order == NodeOrder.Left)
-            {
-                _entryExpressionLine.Peek().LeftOp = line.Accum;
-            }
-            else
-            {
-                _entryExpressionLine.Peek().RightOp = line.Accum;
-            }
-
+            var line = new ThreeAddrLine();
+            line.Accum = a.Id.Name;
+            line.LeftOp = GetLastLine().Accum;
+            line.Label = GenNewLabel();
+            line.OpType = "assign";
             Data.Add(line);
         }
+
+
+
 
         public override void VisitIdNode(IdNode id)
         {
             Console.WriteLine(Tag + " VisitIdNode");
-            _entryExpressionLine.Peek().Accum = id.Name;
+            var line = new ThreeAddrLine();
+            line.Accum = id.Name;
+            line.Label = GenNewLabel();
+            line.OpType = "nop";
+            Data.Add(line);
         }
 
-        public override void VisitIdNode(IdNode id, NodeOrder order)
-        {
-            Console.WriteLine(Tag + " VisitIdNode with order");
-            if (order == NodeOrder.Left)
-            {
-                _entryExpressionLine.Peek().LeftOp = id.Name;
-            }
-            else
-            {
-                _entryExpressionLine.Peek().RightOp = id.Name;
-            }
-        }
 
         public override void VisitIntNumNode(IntNumNode num)
         {
-            Console.WriteLine(Tag + " VisiIntNumNode");
-            _entryExpressionLine.Peek().LeftOp = num.Num.ToString();
+            var line = new ThreeAddrLine();
+            line.Accum = num.Num.ToString();
+            line.Label = GenNewLabel();
+            line.OpType = "nop";
+            Data.Add(line);
         }
 
-        public override void VisitIntNumNode(IntNumNode num, NodeOrder order)
-        {
-            Console.WriteLine(Tag + " VisitInNumNode with order");
-            if (order == NodeOrder.Left)
-            {
-                _entryExpressionLine.Peek().LeftOp = num.Num.ToString();
-            }
-            else
-            {
-                _entryExpressionLine.Peek().RightOp = num.Num.ToString();
-            }
-        }
 
         public override void VisitIfNode(IfNode bl)
         {
             Console.WriteLine(Tag + " VisitIfNode");
-            ExprNode tmp = bl.Cond;
-            _entryExpressionLine.Peek().SrcDst = "tmp";
-            _entryExpressionLine.Peek().LeftOp = "129";
 
+            bl.Cond.Visit(this);
+            var ifThenLine = new ThreeAddrLine();
+            ifThenLine.Label = GenNewLabel();
+            ifThenLine.LeftOp = GetLastLine().Accum;
+            ifThenLine.OpType = "ifgoto";
+            Data.Add(ifThenLine);
+            if (bl.ElseB != null) bl.ElseB.Visit(this);
+            var outsideIfLine = new ThreeAddrLine();
+            outsideIfLine.Label = GenNewLabel();
+            outsideIfLine.OpType = "goto";
+            Data.Add(outsideIfLine);
+            ifThenLine.RightOp = GenNewLabel();
+            bl.ThenB.Visit(this);
+            outsideIfLine.RightOp = GenNewLabel();
         }
 
         public override void VisitCycleNode(CycleNode c)
@@ -150,8 +148,10 @@ namespace SimpleLang.Visitors
 
         public override string ToString()
         {
+
+
             var builder = new StringBuilder();
-            foreach (var line in Data)
+            foreach (var line in Data.Where(l => l.OpType != null ))
             {
                 if (line.IsEmpty())
                 {
@@ -159,8 +159,10 @@ namespace SimpleLang.Visitors
                 }
 
                 builder
+                    .Append(line.Label)
+                    .Append(": ")
                     .Append(line.Accum)
-                    .Append(" ")
+                    .Append(" = ")
                     .Append(line.LeftOp)
                     .Append(" ")
                     .Append(line.OpType)

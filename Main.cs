@@ -45,20 +45,9 @@ namespace SimpleCompiler
                 {
                     Console.WriteLine("Программа распознана");
 
-                    Console.WriteLine(parser.root.StList.Count);
-
-                    parser.root.Visit(avis);
-
-                    Console.WriteLine(avis.Count);
-
-                    parser.root.Visit(vc);
-                    
-                    parser.root.Visit(ppvis);
 
                     parser.root.Visit(threeAddressGenerationVisitor);
-                    
-                    Console.WriteLine(ppvis.Text);
-                    
+
                     Console.WriteLine(threeAddressGenerationVisitor);
                 }
             }
