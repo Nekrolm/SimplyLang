@@ -38,6 +38,8 @@ namespace ThreeAddr
         public int StartLabel { get { return int.Parse(Code[0].Label); } }
         public int EndLabel { get { return int.Parse(Code[Code.Count-1].Label); } }
     
+        public ThreeAddrLine LastLine { get { return Code[Code.Count - 1]; }}
+
         public override string ToString()
         {
             var builder = new StringBuilder();
@@ -55,8 +57,41 @@ namespace ThreeAddr
         }
     }
 
-    public static class BaseBlockGenerator
+    public class ControlFlowGraph
     {
+        public Dictionary<int, List<int>> Graph { get; set; };
+        public int StartBlockId { get; set; }
+
+        private Dictionary<int, BaseBlock> _baseBlockByStart;
+
+        public ControlFlowGraph(List<BaseBlock> baseBlocks){
+            Graph = new Dictionary<int, List<int>>();
+            StartBlockId = baseBlocks[0].StartLabel;
+            _baseBlockByStart = new Dictionary<int, BaseBlock>();
+            foreach (var bblock in baseBlocks)
+                _baseBlockByStart[bblock.StartLabel] = bblock;
+
+            foreach (var bblock in baseBlocks)
+            {
+                Graph[bblock.StartLabel] = new List<int>();
+                var next = bblock.EndLabel + 1;
+                if (_baseBlockByStart.ContainsKey(next))
+                    Graph[bblock.StartLabel].Add(next);
+                if (bblock.LastLine.OpType.EndsWith("goto"))
+                    Graph[bblock.StartLabel].Add(int.Parse(bblock.LastLine.RightOp));
+
+            }
+        
+
+        }
+
+
+
+    }
+
+    public static class BaseBlockHelper
+    {
+
         public static List<BaseBlock> GenBaseBlocks(List<ThreeAddrLine> code)
         {
 
@@ -77,6 +112,9 @@ namespace ThreeAddr
                 if (_isNewBlock[i])
                     baseBlocks.Add(new BaseBlock());
                 baseBlocks[baseBlocks.Count - 1].Code.Add(code[i]);
+
+
+
             }
                     
             return baseBlocks;

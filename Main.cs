@@ -48,7 +48,7 @@ namespace SimpleCompiler
 
                     parser.root.Visit(threeAddressGenerationVisitor);
 
-                    var codeBlocks = BaseBlockGenerator.GenBaseBlocks(threeAddressGenerationVisitor.Data);
+                    var codeBlocks = BaseBlockHelper.GenBaseBlocks(threeAddressGenerationVisitor.Data);
 
                     foreach (var block in codeBlocks)
                         Console.Write(block);
