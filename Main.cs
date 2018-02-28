@@ -20,6 +20,23 @@ namespace SimpleCompiler
 
     public class SimpleCompilerMain
     {
+        public static void Compile(BlockNode prog)
+        {
+            var threeAddressGenerationVisitor = new ThreeAddressGenerationVisitor();
+            var varRenamerVisitor = new VariableIdUnificationVisitor();    
+
+            prog.Visit(varRenamerVisitor);
+            prog.Visit(threeAddressGenerationVisitor);
+
+            var codeBlocks = BaseBlockHelper.GenBaseBlocks(threeAddressGenerationVisitor.Data);
+
+            foreach (var block in codeBlocks)
+                Console.Write(block);
+
+        }
+
+
+
         public static void Main()
         {   
             string FileName = "../../a.txt";
@@ -30,12 +47,7 @@ namespace SimpleCompiler
                 Scanner scanner = new Scanner();
                 scanner.SetSource(Text, 0);
 
-                AssignCountVisitor avis = new AssignCountVisitor();
-                PrettyPrintVisitor ppvis = new PrettyPrintVisitor();
-                CapitalizerVisitor vc = new CapitalizerVisitor();
 
-                var threeAddressGenerationVisitor = new ThreeAddressGenerationVisitor();
-                
                 Parser parser = new Parser(scanner);
 
                 var b = parser.Parse();
@@ -45,16 +57,7 @@ namespace SimpleCompiler
                 {
                     Console.WriteLine("Программа распознана");
 
-
-                    parser.root.Visit(threeAddressGenerationVisitor);
-
-                    var codeBlocks = BaseBlockHelper.GenBaseBlocks(threeAddressGenerationVisitor.Data);
-
-                    foreach (var block in codeBlocks)
-                        Console.Write(block);
-
-
-                    //Console.WriteLine(threeAddressGenerationVisitor);
+                    Compile(parser.root);
                 }
             }
             catch (FileNotFoundException)

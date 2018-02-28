@@ -59,7 +59,7 @@ namespace ThreeAddr
 
     public class ControlFlowGraph
     {
-        public Dictionary<int, List<int>> Graph { get; set; };
+        public Dictionary<int, List<int>> Graph { get; set; }
         public int StartBlockId { get; set; }
 
         private Dictionary<int, BaseBlock> _baseBlockByStart;

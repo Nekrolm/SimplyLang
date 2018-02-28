@@ -1,13 +1,15 @@
 ﻿<Properties StartupConfiguration="{12B9D996-7B4A-4EE4-9AD8-2E24EAF3F574}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="ThreeAddr.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Visitors/Visitor.cs">
     <Files>
-      <File FileName="Main.cs" Line="53" Column="21" />
-      <File FileName="ProgramTree.cs" Line="1" Column="1" />
+      <File FileName="Main.cs" Line="26" Column="23" />
+      <File FileName="ProgramTree.cs" Line="94" Column="1" />
       <File FileName="Visitors/Visitor.cs" Line="1" Column="1" />
       <File FileName="Visitors/AutoVisitor.cs" Line="1" Column="1" />
-      <File FileName="Visitors/ThreeAddressGenerationVisitor.cs" Line="53" Column="13" />
-      <File FileName="Utility/ToStringHelper.cs" Line="1" Column="1" />
-      <File FileName="ThreeAddr.cs" Line="55" Column="21" />
+      <File FileName="Visitors/ThreeAddressGenerationVisitor.cs" Line="201" Column="47" />
+      <File FileName="Utility/ToStringHelper.cs" Line="5" Column="39" />
+      <File FileName="ThreeAddr.cs" Line="60" Column="14" />
+      <File FileName="Visitors/VariableIdUnificationVisitor.cs" Line="22" Column="51" />
+      <File FileName="Optimizations/Optimization.cs" Line="7" Column="10" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />

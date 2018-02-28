@@ -200,6 +200,7 @@ namespace SimpleLang.Visitors
             initCounterLine.Accum = fc.Counter.Name;
             initCounterLine.OpType = "assign";
             initCounterLine.RightOp = L;
+            initCounterLine.Label = GenNewLabel();
 
             Data.Add(initCounterLine);
 
