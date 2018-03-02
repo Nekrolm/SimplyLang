@@ -14,6 +14,11 @@ namespace SimpleLang.Optimizations
         }
         private void recognize(ThreeAddrLine line) // метод получает строку трехадресного кода, конвертирует операнты и записывает результат.
         {
+            int a = int.Parse(line.LeftOp); // Получаем левый оперант.
+            int b = int.Parse(line.RightOp); // Получаем правый оперант.
+            line.RightOp = calculate(a, b, line.OpType); // Записываем вправо вычисленное значение.
+            line.LeftOp = null; // Просто зануляем.
+            line.OpType = "assign"; // записываем в тип операции assign.
         }
         private int calculate(int a, int b, string OpType) // Метод в зависимости от операции выполняет вычисление и возвращает значение.
         {
