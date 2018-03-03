@@ -18,14 +18,14 @@ namespace SimpleLang.Optimizations
                     recognize(bblock.Code[i]); // Выполняем оптимизацию.
                         Answer = true; // перекидываем флажок.
                 }
-                { }
+                }
                 return Answer;
                         }
         private void recognize(ThreeAddrLine line) // метод получает строку трехадресного кода, конвертирует операнты и записывает результат.
         {
             int a = int.Parse(line.LeftOp); // Получаем левый оперант.
             int b = int.Parse(line.RightOp); // Получаем правый оперант.
-            line.RightOp = calculate(a, b, line.OpType); // Записываем вправо вычисленное значение.
+            line.RightOp = calculate(a, b, line.OpType).ToString(); // Записываем вправо вычисленное значение.
             line.LeftOp = null; // Просто зануляем.
             line.OpType = "assign"; // записываем в тип операции assign.
         }
@@ -33,7 +33,7 @@ namespace SimpleLang.Optimizations
         {
             switch (OpType)
             {
-                case "+": return a + b; // Если найден плюс: верн\тся сумма.
+                case "+": return a + b; // Если найден плюс: вернётся сумма.
                 case "-": return a - b; // Если минус: то разность.
                 case "*": return a * b;
                 case "/": return a / b;
@@ -41,8 +41,8 @@ namespace SimpleLang.Optimizations
                 case ">": if (a > b) return 1; else return 0;
                 case "==": if (a == b) return 1; else return 0;
                     case "not": if (b == 0) return 1; else return 0;
-                    case "and": if ((bool)a && (bool)b) return 1; else return 0;
-                    case "or": if ((bool)a || (bool)b) return 1; else return 0;
+                    case "and": if (Convert.ToBoolean(a) && Convert.ToBoolean(b)) return 1; else return 0;
+                    case "or": if (Convert.ToBoolean(a) || Convert.ToBoolean(b)) return 1; else return 0;
                 default: return 0; // В остальных случаях будет возвращён ноль.
             }
         }
