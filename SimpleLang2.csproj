@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Optimizations\convolutionConstantsOptimisation.cs" />
     <Compile Include="Utility\ToStringHelper.cs" />
     <Compile Include="Visitors\AssignCountVisitor.cs" />
     <Compile Include="Visitors\AutoVisitor.cs" />
@@ -60,9 +61,7 @@
     <Compile Include="Visitors\VariableIdUnificationVisitor.cs" />
     <Compile Include="Optimizations\Optimization.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Optimizations\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
