@@ -22,7 +22,7 @@ namespace SimpleLang.Visitors
         private void InsertNop(){;
             var line = new ThreeAddrLine();
             line.Label = GenNewLabel();
-            line.OpType = "nop";
+            line.OpType = ThreeAddrOpType.Nop;
             Data.Add(line);
         }
 
@@ -94,7 +94,7 @@ namespace SimpleLang.Visitors
             line.Accum = a.Id.Name;
             line.RightOp = GetLastLine().Accum;
             line.Label = GenNewLabel();
-            line.OpType = "assign";
+            line.OpType = ThreeAddrOpType.Assign;
             Data.Add(line);
         }
 
@@ -107,7 +107,7 @@ namespace SimpleLang.Visitors
             var line = new ThreeAddrLine();
             line.Accum = GenNewTemporaryVariable();
             line.Label = GenNewLabel();
-            line.OpType = "assign";
+            line.OpType = ThreeAddrOpType.Assign;
             line.RightOp = id.Name;
             Data.Add(line);
         }
@@ -118,7 +118,7 @@ namespace SimpleLang.Visitors
             var line = new ThreeAddrLine();
             line.Accum = num.Num.ToString();
             line.Label = GenNewLabel();
-            line.OpType = "nop";
+            line.OpType = ThreeAddrOpType.Nop;
             Data.Add(line);
         }
 
@@ -131,12 +131,12 @@ namespace SimpleLang.Visitors
             var ifThenLine = new ThreeAddrLine();
             ifThenLine.Label = GenNewLabel();
             ifThenLine.LeftOp = GetLastLine().Accum;
-            ifThenLine.OpType = "ifgoto";
+            ifThenLine.OpType = ThreeAddrOpType.IfGoto;
             Data.Add(ifThenLine);
             if (bl.ElseB != null) bl.ElseB.Visit(this);
             var outsideIfLine = new ThreeAddrLine();
             outsideIfLine.Label = GenNewLabel();
-            outsideIfLine.OpType = "goto";
+            outsideIfLine.OpType = ThreeAddrOpType.Goto;
             Data.Add(outsideIfLine);
             ifThenLine.RightOp = GenNewLabel();
             bl.ThenB.Visit(this);
@@ -154,19 +154,19 @@ namespace SimpleLang.Visitors
             var whileLine = new ThreeAddrLine();
             whileLine.Label = GenNewLabel();
             whileLine.LeftOp = GetLastLine().Accum;
-            whileLine.OpType = "ifgoto";
+            whileLine.OpType = ThreeAddrOpType.IfGoto;
             Data.Add(whileLine);
 
             var outsideWhileLine = new ThreeAddrLine();
             outsideWhileLine.Label = GenNewLabel();
-            outsideWhileLine.OpType = "goto";
+            outsideWhileLine.OpType = ThreeAddrOpType.Goto;
             Data.Add(outsideWhileLine);
             whileLine.RightOp = GenNewLabel();
             c.Stat.Visit(this);
 
             var gotoStartLine = new ThreeAddrLine();
             gotoStartLine.Label = GenNewLabel();
-            gotoStartLine.OpType = "goto";
+            gotoStartLine.OpType = ThreeAddrOpType.Goto;
             gotoStartLine.RightOp = startLoopLabel;
             Data.Add(gotoStartLine);
 
@@ -181,7 +181,7 @@ namespace SimpleLang.Visitors
             var printLine = new ThreeAddrLine();
             printLine.Label = GenNewLabel();
             printLine.RightOp = GetLastLine().Accum;
-            printLine.OpType = "write";
+            printLine.OpType = ThreeAddrOpType.Write;
             Data.Add(printLine);
         }
 
@@ -198,7 +198,7 @@ namespace SimpleLang.Visitors
 
             var initCounterLine = new ThreeAddrLine();
             initCounterLine.Accum = fc.Counter.Name;
-            initCounterLine.OpType = "assign";
+            initCounterLine.OpType = ThreeAddrOpType.Assign;
             initCounterLine.RightOp = L;
             initCounterLine.Label = GenNewLabel();
 
@@ -218,12 +218,12 @@ namespace SimpleLang.Visitors
             var whileLine = new ThreeAddrLine();
             whileLine.Label = GenNewLabel();
             whileLine.LeftOp = GetLastLine().Accum;
-            whileLine.OpType = "ifgoto";
+            whileLine.OpType = ThreeAddrOpType.IfGoto;
             Data.Add(whileLine);
 
             var outsideWhileLine = new ThreeAddrLine();
             outsideWhileLine.Label = GenNewLabel();
-            outsideWhileLine.OpType = "goto";
+            outsideWhileLine.OpType = ThreeAddrOpType.Goto;
             Data.Add(outsideWhileLine);
             whileLine.RightOp = GenNewLabel();
             fc.Stat.Visit(this);
@@ -239,7 +239,7 @@ namespace SimpleLang.Visitors
 
             var gotoStartLine = new ThreeAddrLine();
             gotoStartLine.Label = GenNewLabel();
-            gotoStartLine.OpType = "goto";
+            gotoStartLine.OpType = ThreeAddrOpType.Goto;
             gotoStartLine.RightOp = startLoopLabel;
             Data.Add(gotoStartLine);
 

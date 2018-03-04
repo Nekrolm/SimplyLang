@@ -7,6 +7,7 @@ using ProgramTree;
 using SimpleParser;
 using SimpleLang.Visitors;
 using ThreeAddr;
+using SimpleLang.Optimizations;
 
 namespace SimpleCompiler
 {
@@ -20,6 +21,17 @@ namespace SimpleCompiler
 
     public class SimpleCompilerMain
     {
+        public static void Optimize(List<BaseBlock> codeBlocks)
+        {
+            Console.WriteLine("Optimize");
+            var optimizator = new BaseBlockOptimizator();
+            optimizator.AddOptimization(new ConstantsOptimization());
+            optimizator.AddOptimization(new IfGotoOptimization());
+
+            optimizator.Optimize(codeBlocks);
+
+        }
+
         public static void Compile(BlockNode prog)
         {
             var threeAddressGenerationVisitor = new ThreeAddressGenerationVisitor();
@@ -30,8 +42,17 @@ namespace SimpleCompiler
 
             var codeBlocks = BaseBlockHelper.GenBaseBlocks(threeAddressGenerationVisitor.Data);
 
+
+
             foreach (var block in codeBlocks)
                 Console.Write(block);
+
+            Optimize(codeBlocks);
+
+
+            foreach (var block in codeBlocks)
+                Console.Write(block);
+
 
         }
 

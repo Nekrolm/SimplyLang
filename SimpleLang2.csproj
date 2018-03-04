@@ -43,7 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Optimizations\convolutionConstantsOptimisation.cs" />
+    <Compile Include="Optimizations\ConstantsOptimization.cs" />
     <Compile Include="Utility\ToStringHelper.cs" />
     <Compile Include="Visitors\AssignCountVisitor.cs" />
     <Compile Include="Visitors\AutoVisitor.cs" />
@@ -60,6 +60,7 @@
     <Compile Include="ThreeAddr.cs" />
     <Compile Include="Visitors\VariableIdUnificationVisitor.cs" />
     <Compile Include="Optimizations\Optimization.cs" />
+    <Compile Include="Optimizations\IfGotoOptimization.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

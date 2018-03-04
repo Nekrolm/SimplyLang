@@ -5,6 +5,33 @@ using System.Text;
 
 namespace ThreeAddr
 {
+    public static class ThreeAddrOpType{
+        public const string Plus = "+";
+        public const string Minus = "-";
+        public const string Mul = "*";
+        public const string Div = "/";
+        public const string Assign = "assign";
+        public const string Less = "<";
+        public const string Greater = ">";
+        public const string LessOrEq = "<=";
+        public const string GreaterOrEq = "<=";
+        public const string Eq = "==";
+        public const string UnEq = "!=";
+        public const string Goto = "goto";
+        public const string IfGoto = "ifgoto";
+        public const string Nop = "nop";
+        public const string Not = "not";
+        public const string Or = "or";
+        public const string And = "and";
+        public const string Write = "write";
+
+        public static List<String> Computable = new List<string>{
+            Plus, Minus, Div, Mul, Less, Greater, LessOrEq, GreaterOrEq, Eq, UnEq, Not, Or, And 
+        };
+
+
+    }
+
     public class ThreeAddrLine
     {
         public string Label { get; set; }
