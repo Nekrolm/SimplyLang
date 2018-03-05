@@ -5,9 +5,9 @@
       <File FileName="Main.cs" Line="28" Column="15" />
       <File FileName="SimpleLex.cs" Line="104" Column="6" />
       <File FileName="Optimizations/ConstantsOptimization.cs" Line="27" Column="51" />
-      <File FileName="Optimizations/CopyPropagationOptimization.cs" Line="69" Column="34" />
+      <File FileName="Optimizations/CopyPropagationOptimization.cs" Line="10" Column="45" />
       <File FileName="ThreeAddr.cs" Line="33" Column="6" />
-      <File FileName="Optimizations/EmptyClass.cs" Line="1" Column="3" />
+      <File FileName="Optimizations/EmptyClass.cs" Line="33" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
