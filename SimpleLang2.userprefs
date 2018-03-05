@@ -1,0 +1,20 @@
+﻿<Properties StartupConfiguration="{12B9D996-7B4A-4EE4-9AD8-2E24EAF3F574}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Optimizations/CopyPropagationOptimization.cs">
+    <Files>
+      <File FileName="ShiftReduceParserCode.cs" Line="19" Column="20" />
+      <File FileName="Main.cs" Line="28" Column="15" />
+      <File FileName="SimpleLex.cs" Line="104" Column="6" />
+      <File FileName="Optimizations/ConstantsOptimization.cs" Line="27" Column="51" />
+      <File FileName="Optimizations/CopyPropagationOptimization.cs" Line="69" Column="34" />
+      <File FileName="ThreeAddr.cs" Line="33" Column="6" />
+      <File FileName="Optimizations/EmptyClass.cs" Line="1" Column="3" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.SimpleLang2 PreferredExecutionTarget="MonoDevelop.Default" />
+</Properties>

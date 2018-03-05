@@ -1,38 +1,19 @@
 begin
-  for b in (x, y, z)
+  
   begin
-	c := 5;
+    b := 2;
+    a := b + b;
+    b := 9;
+    x := b;
+
+
+    b := h;
+    c := b + b;
+
+
+    b := a + x;
+    h := b + b;
+
   end;
 
-
-  begin
-    d := 4;
-  end; 
-  b := 2;
-  a := 3;
-  a := not -5;
-  
-  z := x or y and (not 5);
-
- if a if b c := 5;
-
-  begin
-    d := 4;
-  end;
-  a := (b + (b * a) / (5 - 3)) < (a - b - 3);
-  while 3 a := c;
-  
-  if a
-  begin
-    b := c;
-  end
-  else
-    c := 1;
-    
-  print x + y;
-  
-  print (x * y - 5);  
-  
-  while (4 + 6) x := 5;
-  
 end
