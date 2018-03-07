@@ -58,9 +58,12 @@ namespace SimpleCompiler
         }
 
 
-        public static void Main()
+        public static void Main(String[] arg)
         {   
             string FileName = "../../a.txt";
+
+            if (arg.Length == 1) FileName = arg[0];
+
             try
             {
                 string Text = File.ReadAllText(FileName);
