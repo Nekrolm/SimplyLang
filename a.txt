@@ -1,5 +1,8 @@
 begin
   
+   a := 5;
+   read a;
+
   begin
     b := 2;
     a := b + b;
