@@ -29,7 +29,7 @@ namespace SimpleLang.Optimizations
                 a = 0;
             }
             string res;
-            if ((isaconst == isbconst) || (line.LeftOp != line.RightOp)) return false; //если у нас обе константы, или обе переменны, которые не равны друг другу, то не наш случай
+            if ((isaconst && isbconst) || (!isaconst && !isbconst && (line.LeftOp != line.RightOp))) return false; //если у нас обе константы, или обе переменны, которые не равны друг другу, то не наш случай
 
             // Конвертируем операнды и считаем результат
             if (isaconst && (a == 1 || a == 0)) { res = Compute(line.RightOp, a, line.OpType).ToString();  }
