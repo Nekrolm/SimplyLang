@@ -185,6 +185,15 @@ namespace SimpleLang.Visitors
             Data.Add(printLine);
         }
 
+        public override void VisitReadNode(ReadNode rd)
+        {
+            var readLine = new ThreeAddrLine();
+            readLine.Label = GenNewLabel();
+            readLine.Accum = rd.Id.Name;
+            readLine.OpType = ThreeAddrOpType.Read;
+            Data.Add(readLine);
+        }
+
         public override void VisitForCycleNode(ForCycleNode fc)
         {
             Console.WriteLine(Tag + " VisitForCycleNoe");

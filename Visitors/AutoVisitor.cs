@@ -44,6 +44,11 @@ namespace SimpleLang.Visitors
             w.Expr.Visit(this);
         }
 
+        public override void VisitReadNode(ReadNode rd)
+        {
+            rd.Id.Visit(this);
+        }
+
         public override void VisitForCycleNode(ForCycleNode fc)
         {
             fc.Counter.Visit(this);

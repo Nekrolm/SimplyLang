@@ -14,7 +14,7 @@ namespace ThreeAddr
         public const string Less = "<";
         public const string Greater = ">";
         public const string LessOrEq = "<=";
-        public const string GreaterOrEq = "<=";
+        public const string GreaterOrEq = ">=";
         public const string Eq = "==";
         public const string UnEq = "!=";
         public const string Goto = "goto";
@@ -24,6 +24,7 @@ namespace ThreeAddr
         public const string Or = "or";
         public const string And = "and";
         public const string Write = "write";
+        public const string Read = "read";
 
         public static List<String> Computable = new List<string>{
             Plus, Minus, Div, Mul, Less, Greater, LessOrEq, GreaterOrEq, Eq, UnEq, Not, Or, And 

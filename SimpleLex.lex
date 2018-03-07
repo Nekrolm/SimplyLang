@@ -89,6 +89,8 @@ class ScannerHelper
     keywords.Add("print", (int)Tokens.PRINT);
     keywords.Add("for", (int)Tokens.FOR);
     keywords.Add("in", (int)Tokens.IN);
+    keywords.Add("read", (int)Tokens.READ);
+    
     
   }
 

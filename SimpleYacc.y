@@ -23,6 +23,7 @@
           public BinaryOpNode BinaryOpN;
           public BlockNode BlockN; 
           public WriteNode WriteN;
+          public ReadNode ReadN;
           public IntNumNode IntNumN;
           public IfNode IfN;
           public ForCycleNode ForN;
@@ -30,7 +31,7 @@
        }
 
 
-%token BEGIN END CYCLE ASSIGN SEMICOLON EQUALS IF ELSE AND OR NOT LE GE UNEQUALS PRINT FOR IN
+%token BEGIN END CYCLE ASSIGN SEMICOLON EQUALS IF ELSE AND OR NOT LE GE UNEQUALS PRINT FOR IN READ
 
 
 %token <intT> INUM 
@@ -38,7 +39,7 @@
 %token <stringT> ID
 
 %type <ExprN> ariphm ident mult term expr boolexpr
-%type <StatementN> assign statement cycle empty if write forcycle
+%type <StatementN> assign statement cycle empty if write forcycle reads
 %type <BlockN> stlist block
 
 
@@ -59,9 +60,14 @@ statement:  block {$$ = $1;}
 		| cycle {$$ = $1;}
 		| if {$$ = $1;}
 		| write {$$ = $1;}
+		| reads {$$ = $1;}
 		| empty {$$ = $1;}
 		| forcycle {$$ = $1;}
 		;
+
+
+reads : READ ident { $$ = new ReadNode($2 as IdNode); }
+	 ;
 
 
 if  : IF expr statement { $$ = new IfNode($2, $3); }
