@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Optimizations\AlgebraIdentity.cs" />
     <Compile Include="Optimizations\ConstantsOptimization.cs" />
     <Compile Include="Utility\ToStringHelper.cs" />
     <Compile Include="Visitors\AssignCountVisitor.cs" />
