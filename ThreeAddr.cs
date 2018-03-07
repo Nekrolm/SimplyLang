@@ -14,7 +14,7 @@ namespace ThreeAddr
         public const string Less = "<";
         public const string Greater = ">";
         public const string LessOrEq = "<=";
-        public const string GreaterOrEq = "<=";
+        public const string GreaterOrEq = ">=";
         public const string Eq = "==";
         public const string UnEq = "!=";
         public const string Goto = "goto";

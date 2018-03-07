@@ -1,6 +1,7 @@
 ﻿using System;
 using ThreeAddr;
 
+// Считается, что перед этой оптимизацией выполнена обработка констант.
 namespace SimpleLang.Optimizations
 {
     public class AlgebraIdentity : BaseBlockOptimization
@@ -31,8 +32,9 @@ namespace SimpleLang.Optimizations
 			string res=null;
 			if (!isaconst && !isbconst && (line.LeftOp != line.RightOp)) return false; // обе переменны, которые не равны друг другу, то не наш случай
 
-			// Конвертируем операнды и считаем результат
-			if (!isaconst && !isbconst) { if (line.OpType=="-") res="0"; }
+            // Конвертируем операнды и считаем результат
+            if (!isaconst && !isbconst) { res = ComputeBothVar(line.OpType); }
+                //if (line.OpType=="-") res="0"; }
 			if (isaconst && (a == 1 || a == 0)) { res = ComputeVarRigth(a, line.RightOp, line.OpType); }
 			if (isbconst && (b == 1 || b == 0)) { res = ComputeVarLeft(line.LeftOp, b, line.OpType);  }
 
@@ -75,5 +77,20 @@ namespace SimpleLang.Optimizations
 					return null;
 			}
 		}
-	}
+        private string ComputeBothVar(string OpType) // Метод в зависимости от операции выполняет вычисление и возвращает значение.
+        {
+            switch (OpType)
+            {
+                case "-": return "0";
+                case "<": return "0"; 
+                case ">": return "0";
+                case "<=": return "1";
+                case ">=": return "1";
+                case "==": return "1";
+                case "!=": return "1";
+                default:
+                    return null;
+            }
+        }
+    }
 }
