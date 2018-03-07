@@ -1,5 +1,4 @@
 begin
-<<<<<<< HEAD
   
   begin
     b := 2;
@@ -57,7 +56,6 @@ begin
 end;
 
 
-=======
  a:=5;
  x:=a+0;
  x:=0+a;
@@ -70,5 +68,4 @@ end;
  x:=a/1;
  x:=a or 1;
  x:=a and 1;
->>>>>>> AlgebraIdentity
 end
