@@ -98,15 +98,15 @@ namespace ThreeAddr
             foreach (var bblock in baseBlocks)
                 _baseBlockByStart[bblock.StartLabel] = bblock;
 
-            foreach (var bblock in baseBlocks)
+            for (int i = 0; i < baseBlocks.Count; ++i)
             {
+                var bblock = baseBlocks[i];
                 Graph[bblock.StartLabel] = new List<int>();
-                var next = bblock.EndLabel + 1;
-                if (_baseBlockByStart.ContainsKey(next))
-                    Graph[bblock.StartLabel].Add(next);
+                if (i + 1 < baseBlocks.Count){
+                    Graph[bblock.StartLabel].Add(baseBlocks[i + 1].StartLabel);    
+                }
                 if (bblock.LastLine.OpType.EndsWith("goto"))
                     Graph[bblock.StartLabel].Add(int.Parse(bblock.LastLine.RightOp));
-
             }
         
 
