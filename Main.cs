@@ -27,8 +27,9 @@ namespace SimpleCompiler
             var optimizator = new BaseBlockOptimizator();
             optimizator.AddOptimization(new ConstantsOptimization());
             optimizator.AddOptimization(new IfGotoOptimization());
+			optimizator.AddOptimization(new AlgebraIdentity());
 
-            optimizator.Optimize(codeBlocks);
+			optimizator.Optimize(codeBlocks);
 
         }
 
