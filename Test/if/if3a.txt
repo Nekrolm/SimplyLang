@@ -1,0 +1,14 @@
+begin
+x := 7;
+y := 10;
+b := x > y;
+b := not b;
+if b goto m1;
+z := x + y;
+m1 b := y < x;
+if b goto m2;
+y := x + y;
+goto m3;
+m2 x := x + y;
+y := y * 2;
+m3 end

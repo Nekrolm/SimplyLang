@@ -1,0 +1,16 @@
+begin
+a := 5;
+b := a + 4;
+tc := b * 7;
+c := a + tc;
+t1d := a + c;
+t2d := b +8;
+d := t1d - t2d;;
+t1e := a * b;
+t2e := c * d;
+t1e := t1e + t2e;
+t2e := a * d;
+t3e := b * c;
+t2e := t2e + t3e;
+e := t1e - t2e;
+end

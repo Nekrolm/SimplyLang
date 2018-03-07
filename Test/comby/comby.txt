@@ -1,0 +1,26 @@
+begin
+a := 5;
+while b < e
+begin
+b := a +4;
+c := a + b * 7;
+d := (a + c) - (b + 8);
+e := (a * b + c * d) - (a * d + b * c);
+end
+x := a + 9;
+for i in (0, 100, 1)
+begin
+a := x * i;
+x := a* (x + i);
+end
+y := x * a;
+while x > 100000
+begin
+if y > x
+begin
+y := a + x;
+x := x - a;
+end
+else y := 0;
+end
+end

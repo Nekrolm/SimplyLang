@@ -1,0 +1,15 @@
+begin
+i := 10;
+m1 b := i < 100000;
+b := not b;
+if b goto m2;
+i := i * i;
+goto m1;
+m2 x := i;
+m3 b := x > 0;
+b := not b;
+if b goto m4;
+i := i - 1;
+x := i;
+goto m2;
+m4 end

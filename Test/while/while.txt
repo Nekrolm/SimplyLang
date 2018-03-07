@@ -1,0 +1,10 @@
+begin
+i := 10;
+while (i < 100000) i := i * i;
+x := i;
+while (x >0)
+begin
+i := i - 1;
+x := i;
+end
+end

@@ -1,0 +1,11 @@
+begin
+x := 7;
+y := 10;
+if x > y z := x + y;
+if y < x
+begin
+x := x + y;
+y := y * 2;
+end
+else y := x + y;
+end

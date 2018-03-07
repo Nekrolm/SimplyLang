@@ -53,8 +53,7 @@ namespace SimpleCompiler
 
             foreach (var block in codeBlocks)
                 Console.Write(block);
-
-
+            
         }
 
 

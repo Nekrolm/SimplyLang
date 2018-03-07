@@ -1,0 +1,7 @@
+Begin
+a := 5;
+b := a +4;
+c := a + b * 7;
+d := (a + c) - (b + 8);
+e := (a * b + c * d) - (a * d + b * c);
+end

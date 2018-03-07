@@ -1,0 +1,22 @@
+begin
+i := 0;
+m1 b := i < 10;
+b := not b;
+if b goto m2;
+x := x + i;
+i := i + 1;
+goto m1;
+m2 x := 0;
+y := 0;
+i := 3;
+m3 b := i < 15;
+b := not b;
+if b goto m4;
+x := x + i;
+y := x * (x + y * i);
+ty := y * i;
+ty := x + ty;
+y := x * ty;
+i := i + 3;
+goto m3;
+m4 end
