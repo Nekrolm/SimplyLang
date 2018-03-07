@@ -62,7 +62,6 @@
     <Compile Include="Optimizations\Optimization.cs" />
     <Compile Include="Optimizations\IfGotoOptimization.cs" />
     <Compile Include="Optimizations\CopyPropagationOptimization.cs" />
-    <Compile Include="Optimizations\EmptyClass.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

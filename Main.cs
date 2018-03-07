@@ -25,7 +25,7 @@ namespace SimpleCompiler
         {
             Console.WriteLine("Optimize");
             var optimizator = new BaseBlockOptimizator();
-            //optimizator.AddOptimization(new ConstantsOptimization());
+            optimizator.AddOptimization(new ConstantsOptimization());
             optimizator.AddOptimization(new IfGotoOptimization());
             optimizator.AddOptimization(new CopyPropagationOptimization());
 
