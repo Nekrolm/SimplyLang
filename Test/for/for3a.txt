@@ -13,7 +13,6 @@ m3 b := i < 15;
 b := not b;
 if b goto m4;
 x := x + i;
-y := x * (x + y * i);
 ty := y * i;
 ty := x + ty;
 y := x * ty;
