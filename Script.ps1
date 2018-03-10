@@ -14,7 +14,6 @@ $variable=9
 
 
 
-
 do {
 Write-Host "какой тест?"
 
@@ -31,11 +30,11 @@ Write-Host "0. Выход."
 $variable = Read-Host
 switch ($variable) {
 
-1 {.\bin\Debug\SimpleLang.exe .\Test\as.txt}
-2 {.\bin\Debug\SimpleLang.exe .\Test\if.txt}
-3 {.\bin\Debug\SimpleLang.exe .\Test\for.txt}
-4 {.\bin\Debug\SimpleLang.exe .\Test\while.txt}
-5 {.\bin\Debug\SimpleLang.exe .\Test\comby.txt}
+1 {.\bin\Debug\SimpleLang.exe .\Test\as\as.txt}
+2 {.\bin\Debug\SimpleLang.exe .\Test\if\if.txt}
+3 {.\bin\Debug\SimpleLang.exe .\Test\for\for.txt}
+4 {.\bin\Debug\SimpleLang.exe .\Test\while\while.txt}
+5 {.\bin\Debug\SimpleLang.exe .\Test\comby\comby.txt}
 0 {Write-Host "выход"}
 Default {Write-Host "ошибка"}
 }
