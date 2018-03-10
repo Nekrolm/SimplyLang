@@ -1,4 +1,4 @@
-#!/bin/sh
+﻿#!/bin/sh
 
 #  Script.sh
 #  
@@ -20,19 +20,19 @@ read variable # чтение
 
 case $variable in
 1)
-./bin/Debug/SimpleLang.exe .../Test/as.txt
+./bin/Debug/SimpleLang.exe ./Test/as/as.txt
 ;;
-"2")
-./bin/Debug/SimpleLang.exe .../Test/if.txt
+2)
+./bin/Debug/SimpleLang.exe ./Test/if/if.txt
 ;;
-"3")
-./bin/Debug/SimpleLang.exe .../Test/for.txt
+3)
+./bin/Debug/SimpleLang.exe ./Test/for/for.txt
 ;;
-"4")
-./bin/Debug/SimpleLang.exe .../Test/while.txt
+4)
+./bin/Debug/SimpleLang.exe ./Test/while/while.txt
 ;;
 5)
-./bin/Debug/SimpleLang.exe .../Test/comby.txt
+./bin/Debug/SimpleLang.exe ./Test/comby/comby.txt
 ;;
 0)
 echo "выход"
