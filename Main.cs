@@ -52,9 +52,27 @@ namespace SimpleCompiler
 
             Optimize(codeBlocks);
 
+            foreach (var block in codeBlocks)
+                Console.Write(block);
+
+
+            var code = BaseBlockHelper.JoinBaseBlocks(codeBlocks);
+            BaseBlockHelper.FixLabelsNumeration(code);
+            codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
+
+            var CFG = new ControlFlowGraph(codeBlocks);
+
+            codeBlocks = CFG.GetAliveBlocks();
 
             foreach (var block in codeBlocks)
                 Console.Write(block);
+
+            code = BaseBlockHelper.JoinBaseBlocks(codeBlocks);
+            BaseBlockHelper.FixLabelsNumeration(code);
+            codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
+
+            CFG = new ControlFlowGraph(codeBlocks);
+
             
         }
 

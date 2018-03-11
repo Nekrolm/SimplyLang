@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 
@@ -26,10 +27,19 @@ namespace ThreeAddr
         public const string Write = "write";
         public const string Read = "read";
 
+        public static bool IsGoto(String opType)
+        {
+            return opType == Goto || opType == IfGoto;
+        }
+
         public static List<String> Computable = new List<string>{
             Plus, Minus, Div, Mul, Less, Greater, LessOrEq, GreaterOrEq, Eq, UnEq, Not, Or, And 
         };
 
+        public static bool IsDefinition(string opType)
+        {
+            return opType != Nop && opType != Write && opType != Goto && opType != IfGoto;
+        }
 
     }
 
@@ -85,40 +95,39 @@ namespace ThreeAddr
         }
     }
 
-    public class ControlFlowGraph
+   
+    public static class BaseBlockHelper
     {
-        public Dictionary<int, List<int>> Graph { get; set; }
-        public int StartBlockId { get; set; }
+        public static List<ThreeAddrLine> JoinBaseBlocks(List<BaseBlock> bblocks)
+        {
+            return bblocks.SelectMany(block => block.Code).ToList();
+        }
 
-        private Dictionary<int, BaseBlock> _baseBlockByStart;
-
-        public ControlFlowGraph(List<BaseBlock> baseBlocks){
-            Graph = new Dictionary<int, List<int>>();
-            StartBlockId = baseBlocks[0].StartLabel;
-            _baseBlockByStart = new Dictionary<int, BaseBlock>();
-            foreach (var bblock in baseBlocks)
-                _baseBlockByStart[bblock.StartLabel] = bblock;
-
-            for (int i = 0; i < baseBlocks.Count; ++i)
+        public static void FixLabelsNumeration(List<ThreeAddrLine> code)
+        {
+            int count = 0;
+            Dictionary<String, int> convert = new Dictionary<string, int>();
+            foreach (var line in code)
             {
-                var bblock = baseBlocks[i];
-                Graph[bblock.StartLabel] = new List<int>();
-                if (i + 1 < baseBlocks.Count){
-                    Graph[bblock.StartLabel].Add(baseBlocks[i + 1].StartLabel);    
+                if (line.Label == null)
+                {
+                    line.Label = (count++).ToString();
+                }else{
+                    convert[line.Label] = count++;
+                    line.Label = convert[line.Label].ToString();
                 }
-                if (bblock.LastLine.OpType.EndsWith("goto"))
-                    Graph[bblock.StartLabel].Add(int.Parse(bblock.LastLine.RightOp));
             }
-        
+
+            foreach(var line in code)
+            {
+                if (ThreeAddrOpType.IsGoto(line.OpType))
+                {
+                    line.RightOp = convert[line.RightOp].ToString();
+                }
+            }
 
         }
 
-
-
-    }
-
-    public static class BaseBlockHelper
-    {
 
         public static List<BaseBlock> GenBaseBlocks(List<ThreeAddrLine> code)
         {
@@ -127,7 +136,7 @@ namespace ThreeAddr
             _isNewBlock.Initialize();
             _isNewBlock[0] = true;
             for (int i = 0; i < code.Count; ++i)
-                if (code[i].OpType.EndsWith("goto"))
+                if (ThreeAddrOpType.IsGoto(code[i].OpType))
                 {
                     _isNewBlock[i + 1] = true;
                     int dst = int.Parse(code[i].RightOp);
