@@ -1,0 +1,21 @@
+﻿<Properties StartupConfiguration="{12B9D996-7B4A-4EE4-9AD8-2E24EAF3F574}|Default">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Optimizations/ControlFlowGraph.cs">
+    <Files>
+      <File FileName="Main.cs" Line="27" Column="35" />
+      <File FileName="ProgramTree.cs" Line="139" Column="6" />
+      <File FileName="Visitors/Visitor.cs" Line="1" Column="1" />
+      <File FileName="Visitors/AutoVisitor.cs" Line="1" Column="1" />
+      <File FileName="ThreeAddr.cs" Line="1" Column="1" />
+      <File FileName="Optimizations/ReachingDefinitions.cs" Line="77" Column="17" />
+      <File FileName="Optimizations/IfGotoOptimization.cs" Line="1" Column="1" />
+      <File FileName="Optimizations/ControlFlowGraph.cs" Line="143" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.SimpleLang2 PreferredExecutionTarget="MonoDevelop.Default" />
+</Properties>
