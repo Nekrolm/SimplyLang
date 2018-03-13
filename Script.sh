@@ -34,6 +34,10 @@ case $variable in
 5)
 ./bin/Debug/SimpleLang.exe ./Test/comby/comby.txt
 ;;
+6)
+./bin/Debug/SimpleLang.exe ./Test/logic/logic.txt
+;;
+
 0)
 echo "выход"
 ;;

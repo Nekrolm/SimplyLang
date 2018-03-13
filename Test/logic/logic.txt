@@ -1,0 +1,6 @@
+begin
+x := 1 or 0;
+y := x and 1;
+z := (x < y) and (10 > (not x));
+if ((x < 100) and (y or 1)) z := z + x * y;
+end
