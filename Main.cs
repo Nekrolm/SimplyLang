@@ -29,9 +29,10 @@ namespace SimpleCompiler
             optimizator.AddOptimization(new IfGotoOptimization());
             optimizator.AddOptimization(new CopyPropagationOptimization());
 			optimizator.AddOptimization(new AlgebraIdentity());
+            optimizator.AddOptimization(new NopDeleteOptimization());
 
 
-			optimizator.Optimize(codeBlocks);
+            optimizator.Optimize(codeBlocks);
 
         }
 
