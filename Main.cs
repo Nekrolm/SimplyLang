@@ -9,6 +9,7 @@ using SimpleLang.Visitors;
 using ThreeAddr;
 using SimpleLang.Optimizations;
 
+
 namespace SimpleCompiler
 {
     public class CapitalizerVisitor : AutoVisitor
@@ -29,12 +30,41 @@ namespace SimpleCompiler
             optimizator.AddOptimization(new IfGotoOptimization());
             optimizator.AddOptimization(new CopyPropagationOptimization());
 			optimizator.AddOptimization(new AlgebraIdentity());
+<<<<<<< HEAD
             optimizator.AddOptimization(new NopDeleteOptimization());
-
+=======
+			
 
             optimizator.Optimize(codeBlocks);
+        }
+>>>>>>> origin/master
+
+        public static void PrintOut(HashSet<int> s){
+            Console.WriteLine("Out defs:");
+            foreach (int x in s)
+                Console.Write($"{x} ");
+            Console.WriteLine("\n-------");
+        }
+
+<<<<<<< HEAD
+            optimizator.Optimize(codeBlocks);
+=======
+        public static void DefsOptimize(List<BaseBlock> codeBlocks)
+        {
+            var CFG = new ControlFlowGraph(codeBlocks);
+            CFG.GenerateGenAndKillSets();
+            var (inp, outp) = CFG.GenerateInputOutputDefs(codeBlocks);
+
+            for (int i = 0; i < codeBlocks.Count; ++i)
+            {
+                Console.WriteLine(codeBlocks[i]);
+                PrintOut(inp[i]);
+                PrintOut(outp[i]);
+            }
+>>>>>>> origin/master
 
         }
+
 
         public static void Compile(BlockNode prog)
         {
@@ -53,10 +83,30 @@ namespace SimpleCompiler
 
             Optimize(codeBlocks);
 
+            foreach (var block in codeBlocks)
+                Console.Write(block);
+
+
+            var code = BaseBlockHelper.JoinBaseBlocks(codeBlocks);
+            BaseBlockHelper.FixLabelsNumeration(code);
+            codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
+
+            var CFG = new ControlFlowGraph(codeBlocks);
+            codeBlocks = CFG.GetAliveBlocks();
+
+            code = BaseBlockHelper.JoinBaseBlocks(codeBlocks);
+            BaseBlockHelper.FixLabelsNumeration(code);
+            codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
+
 
             foreach (var block in codeBlocks)
                 Console.Write(block);
-            
+
+            DefsOptimize(codeBlocks);
+
+
+
+
         }
 
 
