@@ -20,27 +20,20 @@ namespace SimpleCompiler
         }
     }
 
+
+
+
     public class SimpleCompilerMain
     {
-        public static void Optimize(List<BaseBlock> codeBlocks)
+
+        public static void PrintOut(HashSet<int> s)
         {
-            Console.WriteLine("Optimize");
-            var optimizator = new BaseBlockOptimizator();
-            optimizator.AddOptimization(new ConstantsOptimization());
-            optimizator.AddOptimization(new IfGotoOptimization());
-            optimizator.AddOptimization(new CopyPropagationOptimization());
-			optimizator.AddOptimization(new AlgebraIdentity());
-			
-
-            optimizator.Optimize(codeBlocks);
-        }
-
-        public static void PrintOut(HashSet<int> s){
             Console.WriteLine("Out defs:");
             foreach (int x in s)
                 Console.Write($"{x} ");
             Console.WriteLine("\n-------");
         }
+
 
         public static void DefsOptimize(List<BaseBlock> codeBlocks)
         {
@@ -50,12 +43,29 @@ namespace SimpleCompiler
 
             for (int i = 0; i < codeBlocks.Count; ++i)
             {
-                Console.WriteLine(codeBlocks[i]);
-                PrintOut(inp[i]);
-                PrintOut(outp[i]);
+                Console.Write(codeBlocks[i]);
+                //PrintOut(inp[i]);
+                //PrintOut(outp[i]);
             }
-
         }
+
+
+        public static void Optimize(List<BaseBlock> codeBlocks)
+        {
+            Console.WriteLine("Optimize");
+            var optimizator = new BaseBlockOptimizator();
+            optimizator.AddOptimization(new NopDeleteOptimization());
+            optimizator.AddOptimization(new ConstantsOptimization());
+            optimizator.AddOptimization(new IfGotoOptimization());
+            optimizator.AddOptimization(new CopyPropagationOptimization());
+            optimizator.AddOptimization(new AlgebraIdentity());
+
+
+
+            optimizator.Optimize(codeBlocks);
+        }
+
+        
 
 
         public static void Compile(BlockNode prog)
