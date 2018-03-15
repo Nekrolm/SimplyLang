@@ -34,7 +34,6 @@ namespace SimpleLang.Optimizations
 
             // Конвертируем операнды и считаем результат
             if (!isaconst && !isbconst) { res = ComputeBothVar(line.OpType); }
-                //if (line.OpType=="-") res="0"; }
 			if (isaconst && (a == 1 || a == 0)) { res = ComputeVarRigth(a, line.RightOp, line.OpType); }
 			if (isbconst && (b == 1 || b == 0)) { res = ComputeVarLeft(line.LeftOp, b, line.OpType);  }
 

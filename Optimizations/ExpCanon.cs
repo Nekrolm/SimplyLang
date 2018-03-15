@@ -23,15 +23,38 @@ namespace SimpleLang.Optimizations
             int a = 0, b = 0;
             bool isaconst = int.TryParse(line.LeftOp, out a);
             bool isbconst = int.TryParse(line.RightOp, out b);
+            string firstop=null;
+            string secondop=null;
 
             if (line.LeftOp == null)
             {
                 isaconst = true;
                 a = 0;
             }
-            if (isaconst || isbconst) return false;
+            if (isCommutative(line.OpType))
+                {
+                        if (isaconst) { firstop=line.RightOp; secondop=line.LeftOp;}
+                        else if (isbconst) { firstop=line.LeftOp; secondop= line.RightOp; }
+                        else{ 
+                                if (string.Compare(line.LeftOp,line.RightOp)<0) {firstop=line.LeftOp; secondop=line.RightOp;}
+                                 else {firstop=line.RightOp; secondop=line.LeftOp;}
+                            }
+                 }
+            if (firstop!=null) {
+                line.LeftOp = firstop;
+                line.RightOp = secondop;
+                return true;
+                    }
+             return false;
 
+}
+        private bool isCommutative(string OpType)
+        {
+            if (OpType == ThreeAddrOpType.And || OpType == ThreeAddrOpType.Or || OpType == ThreeAddrOpType.Mul || OpType == ThreeAddrOpType.Plus ||
+            OpType == ThreeAddrOpType.Eq || OpType == ThreeAddrOpType.UnEq) return true;
+            else return false;
         }
+    }
+    
        
     }
-}
