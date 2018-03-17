@@ -1,13 +1,9 @@
 ﻿<Properties StartupConfiguration="{12B9D996-7B4A-4EE4-9AD8-2E24EAF3F574}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="ThreeAddr.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Optimizations/CommonSubexpressionOptimization.cs">
     <Files>
-      <File FileName="Main.cs" Line="51" Column="9" />
-      <File FileName="Optimizations/ReachingDefinitions.cs" Line="79" Column="10" />
-      <File FileName="Optimizations/ActiveDefinitions.cs" Line="30" Column="9" />
-      <File FileName="Optimizations/ControlFlowGraph.cs" Line="105" Column="9" />
-      <File FileName="Optimizations/AvaliableExprs.cs" Line="25" Column="40" />
-      <File FileName="Optimizations/DeadCodeOptimization.cs" Line="60" Column="22" />
-      <File FileName="ThreeAddr.cs" Line="35" Column="36" />
+      <File FileName="Main.cs" Line="64" Column="59" />
+      <File FileName="Optimizations/CommonSubexpressionOptimization.cs" Line="48" Column="29" />
+      <File FileName="Optimizations/ConstantsOptimization.cs" Line="39" Column="35" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />

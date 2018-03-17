@@ -64,7 +64,7 @@ namespace SimpleCompiler
             optimizator.AddOptimization(new IfGotoOptimization());
             optimizator.AddOptimization(new CopyPropagationOptimization());
             optimizator.AddOptimization(new DeadCodeOptimization());
-
+            optimizator.AddOptimization(new CommonSubexpressionOptimization());
             optimizator.Optimize(codeBlocks);
         }
 

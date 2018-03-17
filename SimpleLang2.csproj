@@ -69,6 +69,7 @@
     <Compile Include="Optimizations\DeadCodeOptimization.cs" />
     <Compile Include="Optimizations\ActiveDefinitions.cs" />
     <Compile Include="Optimizations\AvaliableExprs.cs" />
+    <Compile Include="Optimizations\CommonSubexpressionOptimization.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
