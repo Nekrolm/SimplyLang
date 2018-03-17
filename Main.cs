@@ -60,6 +60,7 @@ namespace SimpleCompiler
             optimizator.AddOptimization(new ExprCanon());
             optimizator.AddOptimization(new IfGotoOptimization());
             optimizator.AddOptimization(new CopyPropagationOptimization());
+            optimizator.AddOptimization(new DeadCodeOptimization());
 
             optimizator.Optimize(codeBlocks);
         }

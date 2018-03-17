@@ -66,6 +66,7 @@
     <Compile Include="Optimizations\ReachingDefinitions.cs" />
     <Compile Include="Optimizations\ControlFlowGraph.cs" />
     <Compile Include="Optimizations\ExprCanon.cs" />
+    <Compile Include="Optimizations\DeadCodeOptimization.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
