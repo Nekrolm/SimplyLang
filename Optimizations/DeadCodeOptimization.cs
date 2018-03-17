@@ -59,15 +59,15 @@ namespace SimpleLang.Optimizations
                     else
                     {
                         UpdateDead(bblock.Code[i].Accum);
-                    }
 
-                    if (!IsConst(bblock.Code[i].RightOp))
-                    {
-                        UpdateLive(bblock.Code[i].RightOp);
-                    }
-                    if (bblock.Code[i].LeftOp != null && !IsConst(bblock.Code[i].LeftOp))
-                    {
-                        UpdateLive(bblock.Code[i].RightOp);
+                        if (!IsConst(bblock.Code[i].RightOp))
+                        {
+                            UpdateLive(bblock.Code[i].RightOp);
+                        }
+                        if (bblock.Code[i].LeftOp != null && !IsConst(bblock.Code[i].LeftOp))
+                        {
+                            UpdateLive(bblock.Code[i].LeftOp);
+                        }
                     }
                     continue;
                 }

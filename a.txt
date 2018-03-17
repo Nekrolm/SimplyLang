@@ -3,4 +3,5 @@ begin
   d := a + 5;
   a := b;
   c := x + y;
+  x := x + y;
 end

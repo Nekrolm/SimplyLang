@@ -23,38 +23,26 @@ namespace SimpleLang.Optimizations
                    
                     string leftOp = line.LeftOp;
                     string rightOp = line.RightOp;
-                    // Console.WriteLine("    " + leftOp + ":" + rightOp);
 
-                    // Обратный обход строк (начиная с (i-1)-ой), предшествующих i-ой строке
-                    for (int j = i - 1; j >= 0; j--)
+                    for (int j = i + 1; j < bblock.Code.Count; ++j)
                     {   
                         
-                        ThreeAddrLine prevLine = bblock.Code[j];
+                        ThreeAddrLine nextLine = bblock.Code[j];
 
-                        // Проверяем изменялись ли leftOp и rightOp
-                        if ((prevLine.Accum == leftOp) || (prevLine.Accum == rightOp))
+
+                        if ((leftOp == nextLine.LeftOp) && (opType == nextLine.OpType) && (rightOp == nextLine.RightOp) )
                         {
-                            //Console.WriteLine("    " + leftOp + ":" + rightOp);
-                            break;   
-                        }
-
-
-                        if ((leftOp == prevLine.LeftOp) && (opType == prevLine.OpType) && (rightOp == prevLine.RightOp) )
-                        {
-                            for (int k = j + 1; k < i; k++)
-                            {
-                                ThreeAddrLine nextLine = bblock.Code[k];
-                                if (nextLine.Accum == prevLine.Accum){
-                                    return false;
-                                }
-                            }
-
-
-                            line.OpType = ThreeAddrOpType.Assign;
-                            line.LeftOp = null;
-                            line.RightOp = prevLine.Accum;
+                            nextLine.OpType = ThreeAddrOpType.Assign;
+                            nextLine.LeftOp = null;
+                            nextLine.RightOp = line.Accum;
                             return true;
                         }
+
+                        if (nextLine.Accum == line.Accum ||
+                            nextLine.Accum == rightOp ||
+                            nextLine.Accum == leftOp)
+                            break;
+
                     }
                 }
             }
