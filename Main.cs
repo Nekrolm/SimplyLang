@@ -38,8 +38,11 @@ namespace SimpleCompiler
         public static void DefsOptimize(List<BaseBlock> codeBlocks)
         {
             var CFG = new ControlFlowGraph(codeBlocks);
-            CFG.GenerateGenAndKillSets();
-            var (inp, outp) = CFG.GenerateInputOutputDefs(codeBlocks);
+           
+            var (inp, outp) = CFG.GenerateInputOutputReachingDefs(codeBlocks);
+
+            CFG.GenerateInputOutputAvaliableExpr(codeBlocks);
+            CFG.GenerateInputOutputActiveDefs(codeBlocks);
 
             for (int i = 0; i < codeBlocks.Count; ++i)
             {
