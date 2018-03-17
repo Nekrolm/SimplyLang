@@ -56,17 +56,15 @@ namespace SimpleCompiler
             var optimizator = new BaseBlockOptimizator();
             optimizator.AddOptimization(new NopDeleteOptimization());
             optimizator.AddOptimization(new ConstantsOptimization());
+            optimizator.AddOptimization(new AlgebraIdentity());
+            optimizator.AddOptimization(new ExprCanon());
             optimizator.AddOptimization(new IfGotoOptimization());
             optimizator.AddOptimization(new CopyPropagationOptimization());
-            optimizator.AddOptimization(new AlgebraIdentity());
-
-
 
             optimizator.Optimize(codeBlocks);
         }
 
-        
-
+       
 
         public static void Compile(BlockNode prog)
         {

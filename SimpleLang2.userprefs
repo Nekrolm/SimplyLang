@@ -1,13 +1,15 @@
-﻿<Properties StartupConfiguration="{12B9D996-7B4A-4EE4-9AD8-2E24EAF3F574}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Optimizations/NopDeleteOptimization.cs">
+﻿<Properties>
+  <MonoDevelop.Ide.Workbench ActiveDocument="Optimizations/AlgebraIdentity.cs">
     <Files>
       <File FileName="ShiftReduceParserCode.cs" Line="1" Column="1" />
-      <File FileName="Main.cs" Line="10" Column="23" />
-      <File FileName="SimpleLex.cs" Line="104" Column="6" />
+      <File FileName="Main.cs" Line="48" Column="37" />
+      <File FileName="SimpleLex.cs" Line="1" Column="1" />
       <File FileName="Optimizations/ConstantsOptimization.cs" Line="27" Column="51" />
       <File FileName="Optimizations/CopyPropagationOptimization.cs" Line="14" Column="30" />
-      <File FileName="ThreeAddr.cs" Line="33" Column="9" />
-      <File FileName="Optimizations/NopDeleteOptimization.cs" Line="12" Column="18" />
+      <File FileName="ThreeAddr.cs" Line="1" Column="1" />
+      <File FileName="Optimizations/NopDeleteOptimization.cs" Line="1" Column="1" />
+      <File FileName="Optimizations/ExpCanon.cs" Line="54" Column="10" />
+      <File FileName="Optimizations/AlgebraIdentity.cs" Line="13" Column="12" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
@@ -16,5 +18,4 @@
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MultiItemStartupConfigurations />
-  <MonoDevelop.Ide.ItemProperties.SimpleLang2 PreferredExecutionTarget="MonoDevelop.Default" />
 </Properties>
