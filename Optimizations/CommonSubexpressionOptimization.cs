@@ -6,6 +6,7 @@ using ThreeAddr;
 
 namespace SimpleLang.Optimizations
 {
+    // Нужно выполнять после 
     public class CommonSubexpressionOptimization : BaseBlockOptimization
     {
         public override bool Optimize(BaseBlock bblock)
@@ -39,7 +40,16 @@ namespace SimpleLang.Optimizations
 
 
                         if ((leftOp == prevLine.LeftOp) && (opType == prevLine.OpType) && (rightOp == prevLine.RightOp) )
-                        {                            
+                        {
+                            for (int k = j + 1; k < i; k++)
+                            {
+                                ThreeAddrLine nextLine = bblock.Code[k];
+                                if (nextLine.Accum == prevLine.Accum){
+                                    return false;
+                                }
+                            }
+
+
                             line.OpType = ThreeAddrOpType.Assign;
                             line.LeftOp = null;
                             line.RightOp = prevLine.Accum;

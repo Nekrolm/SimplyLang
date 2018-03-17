@@ -1,5 +1,6 @@
 begin 
-  a := b / c;
-  b := f;
-  e := b / c;
+  a := x + y;
+  d := a + 5;
+  a := b;
+  c := x + y;
 end
