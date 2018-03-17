@@ -1,13 +1,14 @@
 ﻿<Properties StartupConfiguration="{12B9D996-7B4A-4EE4-9AD8-2E24EAF3F574}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Optimizations/CopyPropagationOptimization.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Optimizations/ExpCanon.cs">
     <Files>
       <File FileName="ShiftReduceParserCode.cs" Line="1" Column="1" />
-      <File FileName="Main.cs" Line="1" Column="1" />
+      <File FileName="Main.cs" Line="35" Column="10" />
       <File FileName="SimpleLex.cs" Line="104" Column="6" />
       <File FileName="Optimizations/ConstantsOptimization.cs" Line="27" Column="51" />
       <File FileName="Optimizations/CopyPropagationOptimization.cs" Line="14" Column="30" />
-      <File FileName="ThreeAddr.cs" Line="33" Column="6" />
-      <File FileName="Optimizations/EmptyClass.cs" Line="1" Column="1" />
+      <File FileName="ThreeAddr.cs" Line="1" Column="1" />
+      <File FileName="Optimizations/NopDeleteOptimization.cs" Line="21" Column="27" />
+      <File FileName="Optimizations/ExpCanon.cs" Line="8" Column="6" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />

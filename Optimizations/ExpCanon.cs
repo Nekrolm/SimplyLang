@@ -23,38 +23,61 @@ namespace SimpleLang.Optimizations
             int a = 0, b = 0;
             bool isaconst = int.TryParse(line.LeftOp, out a);
             bool isbconst = int.TryParse(line.RightOp, out b);
-            string firstop=null;
-            string secondop=null;
+            string firstop = null;
+            string secondop = null;
+            string newop = line.OpType;
 
             if (line.LeftOp == null)
             {
                 isaconst = true;
                 a = 0;
             }
-            if (isCommutative(line.OpType))
+            if (IsCommutative(line.OpType) || IsCompare(line.OpType))
+            {
+                if (isaconst) { firstop = line.RightOp; secondop = line.LeftOp; newop = GetOppositeOp(line.OpType); }
+                else if (isbconst) { firstop = line.LeftOp; secondop = line.RightOp; }
+                else
                 {
-                        if (isaconst) { firstop=line.RightOp; secondop=line.LeftOp;}
-                        else if (isbconst) { firstop=line.LeftOp; secondop= line.RightOp; }
-                        else{ 
-                                if (string.Compare(line.LeftOp,line.RightOp)<0) {firstop=line.LeftOp; secondop=line.RightOp;}
-                                 else {firstop=line.RightOp; secondop=line.LeftOp;}
-                            }
-                 }
-            if (firstop!=null) {
+                    if (string.Compare(line.LeftOp, line.RightOp) < 0) { firstop = line.LeftOp; secondop = line.RightOp; }
+                    else { firstop = line.RightOp; secondop = line.LeftOp; newop = GetOppositeOp(line.OpType); }
+                }
+            }
+            if (firstop != null)
+            {
                 line.LeftOp = firstop;
                 line.RightOp = secondop;
+                line.OpType = newop;
                 return true;
-                    }
-             return false;
+            }
+            return false;
 
-}
-        private bool isCommutative(string OpType)
+        }
+
+        private bool IsCompare(string OpType)
         {
-            if (OpType == ThreeAddrOpType.And || OpType == ThreeAddrOpType.Or || OpType == ThreeAddrOpType.Mul || OpType == ThreeAddrOpType.Plus ||
-            OpType == ThreeAddrOpType.Eq || OpType == ThreeAddrOpType.UnEq) return true;
-            else return false;
+            return OpType == ThreeAddrOpType.Less || OpType == ThreeAddrOpType.Greater 
+                                            || OpType == ThreeAddrOpType.GreaterOrEq ||
+                                            OpType == ThreeAddrOpType.LessOrEq;
+        } 
+
+        string GetOppositeOp(string OpType){
+            if (OpType == ThreeAddrOpType.Less)
+                return ThreeAddrOpType.Greater;
+            if (OpType == ThreeAddrOpType.Greater)
+                return ThreeAddrOpType.Less;
+            if (OpType == ThreeAddrOpType.LessOrEq)
+                return ThreeAddrOpType.GreaterOrEq;
+            if (OpType == ThreeAddrOpType.GreaterOrEq)
+                return ThreeAddrOpType.LessOrEq;
+            return OpType;
+        }
+
+        private bool IsCommutative(string OpType)
+        {
+            return (OpType == ThreeAddrOpType.And || OpType == ThreeAddrOpType.Or || OpType == ThreeAddrOpType.Mul || OpType == ThreeAddrOpType.Plus ||
+                    OpType == ThreeAddrOpType.Eq || OpType == ThreeAddrOpType.UnEq) 
         }
     }
-    
-       
-    }
+
+
+}
