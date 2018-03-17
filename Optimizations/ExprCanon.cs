@@ -42,7 +42,7 @@ namespace SimpleLang.Optimizations
                     else { firstop = line.RightOp; secondop = line.LeftOp; newop = GetOppositeOp(line.OpType); }
                 }
             }
-            if (firstop != null)
+            if (firstop != null && firstop.CompareTo(line.LeftOp) != 0)
             {
                 line.LeftOp = firstop;
                 line.RightOp = secondop;
@@ -75,7 +75,7 @@ namespace SimpleLang.Optimizations
         private bool IsCommutative(string OpType)
         {
             return (OpType == ThreeAddrOpType.And || OpType == ThreeAddrOpType.Or || OpType == ThreeAddrOpType.Mul || OpType == ThreeAddrOpType.Plus ||
-                    OpType == ThreeAddrOpType.Eq || OpType == ThreeAddrOpType.UnEq) 
+                    OpType == ThreeAddrOpType.Eq || OpType == ThreeAddrOpType.UnEq); 
         }
     }
 
