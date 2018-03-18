@@ -131,12 +131,6 @@ namespace ThreeAddr
 
         }
 
-
-        public static void RemoveUsefullGoto(List<ThreeAddrLine> code, int ind)
-        {
-
-        }
-
         public static List<BaseBlock> GenBaseBlocks(List<ThreeAddrLine> code)
         {
 
