@@ -6,7 +6,8 @@ using System.Text;
 
 namespace ThreeAddr
 {
-    public static class ThreeAddrOpType{
+    public static class ThreeAddrOpType
+    {
         public const string Plus = "+";
         public const string Minus = "-";
         public const string Mul = "*";
@@ -33,7 +34,7 @@ namespace ThreeAddr
         }
 
         public static List<String> Computable = new List<string>{
-            Plus, Minus, Div, Mul, Less, Greater, LessOrEq, GreaterOrEq, Eq, UnEq, Not, Or, And 
+            Plus, Minus, Div, Mul, Less, Greater, LessOrEq, GreaterOrEq, Eq, UnEq, Not, Or, And
         };
 
         public static bool IsDefinition(string opType)
@@ -60,7 +61,7 @@ namespace ThreeAddr
                    string.IsNullOrEmpty(OpType);
         }
 
-        public override String ToString() 
+        public override String ToString()
         {
             return $"{Label}: {Accum} = {LeftOp} {OpType} {RightOp}";
         }
@@ -74,9 +75,9 @@ namespace ThreeAddr
         public BaseBlock() { Code = new List<ThreeAddrLine>(); }
 
         public int StartLabel { get { return int.Parse(Code[0].Label); } }
-        public int EndLabel { get { return int.Parse(Code[Code.Count-1].Label); } }
-    
-        public ThreeAddrLine LastLine { get { return Code[Code.Count - 1]; }}
+        public int EndLabel { get { return int.Parse(Code[Code.Count - 1].Label); } }
+
+        public ThreeAddrLine LastLine { get { return Code[Code.Count - 1]; } }
 
         public override string ToString()
         {
@@ -95,7 +96,7 @@ namespace ThreeAddr
         }
     }
 
-   
+
     public static class BaseBlockHelper
     {
         public static List<ThreeAddrLine> JoinBaseBlocks(List<BaseBlock> bblocks)
@@ -112,13 +113,15 @@ namespace ThreeAddr
                 if (line.Label == null)
                 {
                     line.Label = (count++).ToString();
-                }else{
+                }
+                else
+                {
                     convert[line.Label] = count++;
                     line.Label = convert[line.Label].ToString();
                 }
             }
 
-            foreach(var line in code)
+            foreach (var line in code)
             {
                 if (ThreeAddrOpType.IsGoto(line.OpType))
                 {
@@ -129,6 +132,11 @@ namespace ThreeAddr
         }
 
 
+        public static void RemoveUsefullGoto(List<ThreeAddrLine> code, int ind)
+        {
+
+        }
+
         public static List<BaseBlock> GenBaseBlocks(List<ThreeAddrLine> code)
         {
 
@@ -138,6 +146,22 @@ namespace ThreeAddr
             for (int i = 0; i < code.Count; ++i)
                 if (ThreeAddrOpType.IsGoto(code[i].OpType))
                 {
+                    // replace useless goto on Nop
+                    if ((Int32.Parse(code[i].Label) + 1) == Int32.Parse(code[i].RightOp))
+                    {
+                        int label = Int32.Parse(code[i].Label);
+                        code[i].OpType = ThreeAddrOpType.Nop;
+                        code[i].RightOp = "";
+                        for (int j = i; j < code.Count; j++)
+                        {
+                            if (ThreeAddrOpType.IsGoto(code[j].OpType) && Int32.Parse(code[j].RightOp) == label)
+                            {
+                                code[j].RightOp = (label + 1).ToString();
+                            }
+                        }
+                        continue;
+                    }
+
                     _isNewBlock[i + 1] = true;
                     int dst = int.Parse(code[i].RightOp);
                     _isNewBlock[dst] = true;
@@ -145,7 +169,8 @@ namespace ThreeAddr
 
             var baseBlocks = new List<BaseBlock>();
 
-            for (int i = 0; i < code.Count; ++i) {
+            for (int i = 0; i < code.Count; ++i)
+            {
                 if (_isNewBlock[i])
                     baseBlocks.Add(new BaseBlock());
                 baseBlocks[baseBlocks.Count - 1].Code.Add(code[i]);
@@ -153,12 +178,12 @@ namespace ThreeAddr
 
 
             }
-                    
+
             return baseBlocks;
         }
 
-      }
-          
+    }
+
 
 
 }
