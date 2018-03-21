@@ -15,7 +15,7 @@ namespace SimpleLang.Optimizations
     {
 
         // returns true if optimization was succesfully applied;
-        public abstract bool Optimize(List<BaseBlock> codeBlocks);
+        public abstract bool Optimize(List<BaseBlock> code);
     }
 
 
@@ -28,7 +28,7 @@ namespace SimpleLang.Optimizations
             bool res = false;
 
             foreach (var bblock in code){
-                OptimizeBlock(bblock);
+                res |= OptimizeBlock(bblock);
             }
 
             return res;
