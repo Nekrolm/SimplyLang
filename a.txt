@@ -1,5 +1,12 @@
 begin
   
+   
+  
+   a := 5;
+   read a;
+
+   zz := a or 0;	
+	
   begin
     b := 2;
     a := b + b;
@@ -56,4 +63,16 @@ begin
 end;
 
 
+ a:=5;
+ x:=a+0;
+ x:=0+a;
+ x:=a*1;
+ x:=a-a;
+ x:=1*a;
+ x:=a*0;
+ x:=0*a;
+ x:=a-0;
+ x:=a/1;
+ x:=a or 1;
+ x:=a and 1;
 end

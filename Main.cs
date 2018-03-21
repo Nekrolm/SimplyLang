@@ -9,6 +9,7 @@ using SimpleLang.Visitors;
 using ThreeAddr;
 using SimpleLang.Optimizations;
 
+
 namespace SimpleCompiler
 {
     public class CapitalizerVisitor : AutoVisitor
@@ -19,19 +20,55 @@ namespace SimpleCompiler
         }
     }
 
+
+
+
     public class SimpleCompilerMain
     {
+
+        public static void PrintOut(HashSet<int> s)
+        {
+            Console.WriteLine("Out defs:");
+            foreach (int x in s)
+                Console.Write($"{x} ");
+            Console.WriteLine("\n-------");
+        }
+
+
+        public static void DefsOptimize(List<BaseBlock> codeBlocks)
+        {
+            var CFG = new ControlFlowGraph(codeBlocks);
+           
+            var (inp, outp) = CFG.GenerateInputOutputReachingDefs(codeBlocks);
+
+            CFG.GenerateInputOutputAvaliableExpr(codeBlocks);
+            CFG.GenerateInputOutputActiveDefs(codeBlocks);
+
+            for (int i = 0; i < codeBlocks.Count; ++i)
+            {
+                Console.Write(codeBlocks[i]);
+                //PrintOut(inp[i]);
+                //PrintOut(outp[i]);
+            }
+        }
+
+
         public static void Optimize(List<BaseBlock> codeBlocks)
         {
             Console.WriteLine("Optimize");
             var optimizator = new BaseBlockOptimizator();
+            optimizator.AddOptimization(new NopDeleteOptimization());
             optimizator.AddOptimization(new ConstantsOptimization());
+            optimizator.AddOptimization(new AlgebraIdentity());
+            optimizator.AddOptimization(new ExprCanon());
             optimizator.AddOptimization(new IfGotoOptimization());
             optimizator.AddOptimization(new CopyPropagationOptimization());
-
+            optimizator.AddOptimization(new DeadCodeOptimization());
+            optimizator.AddOptimization(new CommonSubexpressionOptimization());
             optimizator.Optimize(codeBlocks);
-
         }
+
+       
 
         public static void Compile(BlockNode prog)
         {
@@ -41,19 +78,46 @@ namespace SimpleCompiler
             prog.Visit(varRenamerVisitor);
             prog.Visit(threeAddressGenerationVisitor);
 
+
+            var code = threeAddressGenerationVisitor.Data;
+            var codeSz = code.Count;
+
+
             var codeBlocks = BaseBlockHelper.GenBaseBlocks(threeAddressGenerationVisitor.Data);
+                
+            foreach (var block in codeBlocks)
+                Console.Write(block);
 
+
+            while (true){
+                codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
+                Optimize(codeBlocks);
+                code = BaseBlockHelper.JoinBaseBlocks(codeBlocks);
+                BaseBlockHelper.FixLabelsNumeration(code);
+                codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
+
+                var CFG = new ControlFlowGraph(codeBlocks);
+                codeBlocks = CFG.GetAliveBlocks();
+
+                code = BaseBlockHelper.JoinBaseBlocks(codeBlocks);
+                BaseBlockHelper.FixLabelsNumeration(code);
+                codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
+
+                if (code.Count == codeSz) break;
+                codeSz = code.Count;
+            }
 
 
             foreach (var block in codeBlocks)
                 Console.Write(block);
 
-            Optimize(codeBlocks);
 
 
-            foreach (var block in codeBlocks)
-                Console.Write(block);
-            
+            DefsOptimize(codeBlocks);
+
+
+
+
         }
 
 
@@ -96,7 +160,6 @@ namespace SimpleCompiler
                 Console.WriteLine("Синтаксическая ошибка. " + e.Message);
             }
 
-            Console.ReadLine();
         }
     }
 }

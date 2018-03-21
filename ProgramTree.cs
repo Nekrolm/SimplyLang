@@ -105,6 +105,24 @@ namespace ProgramTree
     {
     }
 
+    public class ReadNode : StatementNode
+    {
+        public IdNode Id { get; set; }
+
+        public ReadNode(IdNode id)
+        {
+            Id = id;
+        }
+
+        public override void Visit(Visitor v)
+        {
+            v.VisitReadNode(this);
+        }
+
+
+
+    }
+
     public class WriteNode : StatementNode
     {
         public override void Visit(Visitor v)

@@ -10,8 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SimpleLang</RootNamespace>
     <AssemblyName>SimpleLang</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -43,7 +42,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Optimizations\AlgebraIdentity.cs" />
     <Compile Include="Optimizations\ConstantsOptimization.cs" />
+    <Compile Include="Optimizations\NopDeleteOptimization.cs" />
     <Compile Include="Utility\ToStringHelper.cs" />
     <Compile Include="Visitors\AssignCountVisitor.cs" />
     <Compile Include="Visitors\AutoVisitor.cs" />
@@ -62,6 +63,13 @@
     <Compile Include="Optimizations\Optimization.cs" />
     <Compile Include="Optimizations\IfGotoOptimization.cs" />
     <Compile Include="Optimizations\CopyPropagationOptimization.cs" />
+    <Compile Include="Optimizations\ReachingDefinitions.cs" />
+    <Compile Include="Optimizations\ControlFlowGraph.cs" />
+    <Compile Include="Optimizations\ExprCanon.cs" />
+    <Compile Include="Optimizations\DeadCodeOptimization.cs" />
+    <Compile Include="Optimizations\ActiveDefinitions.cs" />
+    <Compile Include="Optimizations\AvaliableExprs.cs" />
+    <Compile Include="Optimizations\CommonSubexpressionOptimization.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 
 namespace ThreeAddr
 {
-    public static class ThreeAddrOpType{
+    public static class ThreeAddrOpType
+    {
         public const string Plus = "+";
         public const string Minus = "-";
         public const string Mul = "*";
@@ -14,7 +16,7 @@ namespace ThreeAddr
         public const string Less = "<";
         public const string Greater = ">";
         public const string LessOrEq = "<=";
-        public const string GreaterOrEq = "<=";
+        public const string GreaterOrEq = ">=";
         public const string Eq = "==";
         public const string UnEq = "!=";
         public const string Goto = "goto";
@@ -24,11 +26,21 @@ namespace ThreeAddr
         public const string Or = "or";
         public const string And = "and";
         public const string Write = "write";
+        public const string Read = "read";
+
+        public static bool IsGoto(String opType)
+        {
+            return opType == Goto || opType == IfGoto;
+        }
 
         public static List<String> Computable = new List<string>{
-            Plus, Minus, Div, Mul, Less, Greater, LessOrEq, GreaterOrEq, Eq, UnEq, Not, Or, And 
+            Plus, Minus, Div, Mul, Less, Greater, LessOrEq, GreaterOrEq, Eq, UnEq, Not, Or, And
         };
 
+        public static bool IsDefinition(string opType)
+        {
+            return opType != Nop && opType != Write && opType != Goto && opType != IfGoto;
+        }
 
     }
 
@@ -49,7 +61,7 @@ namespace ThreeAddr
                    string.IsNullOrEmpty(OpType);
         }
 
-        public override String ToString() 
+        public override String ToString()
         {
             return $"{Label}: {Accum} = {LeftOp} {OpType} {RightOp}";
         }
@@ -63,9 +75,9 @@ namespace ThreeAddr
         public BaseBlock() { Code = new List<ThreeAddrLine>(); }
 
         public int StartLabel { get { return int.Parse(Code[0].Label); } }
-        public int EndLabel { get { return int.Parse(Code[Code.Count-1].Label); } }
-    
-        public ThreeAddrLine LastLine { get { return Code[Code.Count - 1]; }}
+        public int EndLabel { get { return int.Parse(Code[Code.Count - 1].Label); } }
+
+        public ThreeAddrLine LastLine { get { return Code[Code.Count - 1]; } }
 
         public override string ToString()
         {
@@ -84,40 +96,40 @@ namespace ThreeAddr
         }
     }
 
-    public class ControlFlowGraph
-    {
-        public Dictionary<int, List<int>> Graph { get; set; }
-        public int StartBlockId { get; set; }
-
-        private Dictionary<int, BaseBlock> _baseBlockByStart;
-
-        public ControlFlowGraph(List<BaseBlock> baseBlocks){
-            Graph = new Dictionary<int, List<int>>();
-            StartBlockId = baseBlocks[0].StartLabel;
-            _baseBlockByStart = new Dictionary<int, BaseBlock>();
-            foreach (var bblock in baseBlocks)
-                _baseBlockByStart[bblock.StartLabel] = bblock;
-
-            foreach (var bblock in baseBlocks)
-            {
-                Graph[bblock.StartLabel] = new List<int>();
-                var next = bblock.EndLabel + 1;
-                if (_baseBlockByStart.ContainsKey(next))
-                    Graph[bblock.StartLabel].Add(next);
-                if (bblock.LastLine.OpType.EndsWith("goto"))
-                    Graph[bblock.StartLabel].Add(int.Parse(bblock.LastLine.RightOp));
-
-            }
-        
-
-        }
-
-
-
-    }
 
     public static class BaseBlockHelper
     {
+        public static List<ThreeAddrLine> JoinBaseBlocks(List<BaseBlock> bblocks)
+        {
+            return bblocks.SelectMany(block => block.Code).ToList();
+        }
+
+        public static void FixLabelsNumeration(List<ThreeAddrLine> code)
+        {
+            int count = 0;
+            Dictionary<String, int> convert = new Dictionary<string, int>();
+            foreach (var line in code)
+            {
+                if (line.Label == null)
+                {
+                    line.Label = (count++).ToString();
+                }
+                else
+                {
+                    convert[line.Label] = count++;
+                    line.Label = convert[line.Label].ToString();
+                }
+            }
+
+            foreach (var line in code)
+            {
+                if (ThreeAddrOpType.IsGoto(line.OpType))
+                {
+                    line.RightOp = convert[line.RightOp].ToString();
+                }
+            }
+
+        }
 
         public static List<BaseBlock> GenBaseBlocks(List<ThreeAddrLine> code)
         {
@@ -126,8 +138,15 @@ namespace ThreeAddr
             _isNewBlock.Initialize();
             _isNewBlock[0] = true;
             for (int i = 0; i < code.Count; ++i)
-                if (code[i].OpType.EndsWith("goto"))
+                if (ThreeAddrOpType.IsGoto(code[i].OpType))
                 {
+                    // replace useless goto on Nop
+                    if ((Int32.Parse(code[i].Label) + 1) == Int32.Parse(code[i].RightOp))
+                    {
+                        code[i].OpType = ThreeAddrOpType.Nop;
+                        continue;
+                    }
+
                     _isNewBlock[i + 1] = true;
                     int dst = int.Parse(code[i].RightOp);
                     _isNewBlock[dst] = true;
@@ -135,7 +154,8 @@ namespace ThreeAddr
 
             var baseBlocks = new List<BaseBlock>();
 
-            for (int i = 0; i < code.Count; ++i) {
+            for (int i = 0; i < code.Count; ++i)
+            {
                 if (_isNewBlock[i])
                     baseBlocks.Add(new BaseBlock());
                 baseBlocks[baseBlocks.Count - 1].Code.Add(code[i]);
@@ -143,12 +163,12 @@ namespace ThreeAddr
 
 
             }
-                    
+
             return baseBlocks;
         }
 
-      }
-          
+    }
+
 
 
 }

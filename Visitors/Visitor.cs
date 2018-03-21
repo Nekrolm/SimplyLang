@@ -12,7 +12,10 @@ namespace SimpleLang.Visitors
         {
         }
 
-
+        public virtual void VisitReadNode(ReadNode rd)
+        {
+            
+        }
         
         public virtual void VisitIntNumNode(IntNumNode num)
         {
