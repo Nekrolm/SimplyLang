@@ -38,7 +38,8 @@ namespace SimpleCompiler
         public static void DefsOptimize(List<BaseBlock> codeBlocks)
         {
             var CFG = new ControlFlowGraph(codeBlocks);
-           
+
+
             var (inp, outp) = CFG.GenerateInputOutputReachingDefs(codeBlocks);
 
             CFG.GenerateInputOutputAvaliableExpr(codeBlocks);
