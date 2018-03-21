@@ -1,0 +1,26 @@
+begin
+x := 10;
+y := 50;
+if (x > y)
+begin
+for i in (x, y, 1)
+begin
+x := x + y;
+end
+end
+else begin
+x := 7;
+x := 8;
+y := y + x;
+end;
+z := 100;
+f := 2;
+while z < f
+begin
+x := x + y + z * f;
+end;
+for i in (f, z, 10)
+begin
+x := i * y + i * z * f;
+end
+end

@@ -16,6 +16,8 @@ echo "2. Условие."
 echo "3. Цикл FOR."
 echo "4. Цикл While."
 echo "5. Комбинированный вариант."
+echo "6. Логика."
+echo "7. Тест множиств."
 read variable # чтение
 
 case $variable in
@@ -36,6 +38,10 @@ case $variable in
 ;;
 6)
 ./bin/Debug/SimpleLang.exe ./Test/logic/logic.txt
+;;
+
+7)
+./bin/Debug/SimpleLang.exe ./Test/TestingSets/TS_1.txt
 ;;
 
 0)
