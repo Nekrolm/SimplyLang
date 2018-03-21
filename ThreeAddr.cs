@@ -143,16 +143,7 @@ namespace ThreeAddr
                     // replace useless goto on Nop
                     if ((Int32.Parse(code[i].Label) + 1) == Int32.Parse(code[i].RightOp))
                     {
-                        int label = Int32.Parse(code[i].Label);
                         code[i].OpType = ThreeAddrOpType.Nop;
-                        code[i].RightOp = "";
-                        for (int j = i; j < code.Count; j++)
-                        {
-                            if (ThreeAddrOpType.IsGoto(code[j].OpType) && Int32.Parse(code[j].RightOp) == label)
-                            {
-                                code[j].RightOp = (label + 1).ToString();
-                            }
-                        }
                         continue;
                     }
 

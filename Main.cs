@@ -78,33 +78,40 @@ namespace SimpleCompiler
             prog.Visit(varRenamerVisitor);
             prog.Visit(threeAddressGenerationVisitor);
 
+
+            var code = threeAddressGenerationVisitor.Data;
+            var codeSz = code.Count;
+
+
             var codeBlocks = BaseBlockHelper.GenBaseBlocks(threeAddressGenerationVisitor.Data);
+                
+            foreach (var block in codeBlocks)
+                Console.Write(block);
 
+
+            while (true){
+                codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
+                Optimize(codeBlocks);
+                code = BaseBlockHelper.JoinBaseBlocks(codeBlocks);
+                BaseBlockHelper.FixLabelsNumeration(code);
+                codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
+
+                var CFG = new ControlFlowGraph(codeBlocks);
+                codeBlocks = CFG.GetAliveBlocks();
+
+                code = BaseBlockHelper.JoinBaseBlocks(codeBlocks);
+                BaseBlockHelper.FixLabelsNumeration(code);
+                codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
+
+                if (code.Count == codeSz) break;
+                codeSz = code.Count;
+            }
 
 
             foreach (var block in codeBlocks)
                 Console.Write(block);
 
-            Optimize(codeBlocks);
 
-            foreach (var block in codeBlocks)
-                Console.Write(block);
-
-
-            var code = BaseBlockHelper.JoinBaseBlocks(codeBlocks);
-            BaseBlockHelper.FixLabelsNumeration(code);
-            codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
-
-            var CFG = new ControlFlowGraph(codeBlocks);
-            codeBlocks = CFG.GetAliveBlocks();
-
-            code = BaseBlockHelper.JoinBaseBlocks(codeBlocks);
-            BaseBlockHelper.FixLabelsNumeration(code);
-            codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
-
-
-            foreach (var block in codeBlocks)
-                Console.Write(block);
 
             DefsOptimize(codeBlocks);
 
@@ -153,7 +160,6 @@ namespace SimpleCompiler
                 Console.WriteLine("Синтаксическая ошибка. " + e.Message);
             }
 
-            Console.ReadLine();
         }
     }
 }

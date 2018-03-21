@@ -1,9 +1,13 @@
 ﻿<Properties StartupConfiguration="{12B9D996-7B4A-4EE4-9AD8-2E24EAF3F574}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Main.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Optimizations/ReachingDefinitions.cs">
     <Files>
-      <File FileName="Main.cs" Line="49" Column="46" />
+      <File FileName="Main.cs" Line="92" Column="13" />
       <File FileName="Optimizations/CommonSubexpressionOptimization.cs" Line="8" Column="2" />
       <File FileName="Optimizations/ConstantsOptimization.cs" Line="39" Column="35" />
+      <File FileName="Optimizations/ControlFlowGraph.cs" Line="11" Column="16" />
+      <File FileName="ThreeAddr.cs" Line="127" Column="18" />
+      <File FileName="Optimizations/Optimization.cs" Line="36" Column="36" />
+      <File FileName="Optimizations/ReachingDefinitions.cs" Line="10" Column="16" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
