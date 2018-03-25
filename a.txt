@@ -1,8 +1,12 @@
 begin
   
+   
+  
    a := 5;
    read a;
 
+   zz := a or 0;	
+	
   begin
     b := 2;
     a := b + b;

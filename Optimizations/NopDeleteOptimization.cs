@@ -12,43 +12,36 @@ namespace SimpleLang.Optimizations
         public override bool Optimize(BaseBlock bblock)
         {
             bool answer = false; // Индикатор того, что хоть один раз, но оптимизация была выполнена.
-            List<int> bbLabel = new List<int>(); // Здесь будет храниться номера строк блока, в которых nop
+            List<int> bbFromDelete = new List<int>(); // Здесь будет храниться номера строк блока, в которых nop
             int i = 0;
+            int startLabel = bblock.StartLabel;
             //ищем строки с nop
             foreach (var line in bblock.Code) // Проход по всему базовому блоку.
             {
-                if (line.OpType == "nop")
-                    bbLabel.Add(i);
+                if (line.OpType == ThreeAddrOpType.Nop)
+                    bbFromDelete.Add(i);
                 i++;
             }
 
             //если блок состоит из nop, то оставляем только первый nop
-            if ((bblock.Code.Count() != 0) && (bbLabel.Count() == bblock.Code.Count()))
-                bbLabel.RemoveAt(0);
+            if ((bblock.Code.Count() != 0) && (bbFromDelete.Count() == bblock.Code.Count()))
+                bbFromDelete.RemoveAt(0);
             //проверяем была ли найдена хоть один nop
-            if (bbLabel.Count() != 0)
+            if (bbFromDelete.Count() != 0)
             {
                 //удаляе строки nop
                 i = 0;
-                foreach (var line in bbLabel) // Проход по всему базовому блоку.
+                foreach (var line in bbFromDelete) // Проход по всему базовому блоку.
                 {
                     bblock.Code.RemoveAt(line - i);
                     i++;
                 }
                 //далее обновляем метки
-                if (bbLabel[0] != 0)
-                    i = bblock.StartLabel;
-                else
-                {
-                    int val = 0;
-                    while ((bbLabel.Count() > val + 1) && ((bbLabel[val + 1] - val) == 1))
-                        val = bbLabel[val + 1];
-                    i = bblock.StartLabel - val - 1;
-                }
-                
+                i = startLabel;
                 foreach (var line in bblock.Code) // Проход по всему базовому блоку.
                 {
                     line.Label = i.ToString();
+
                     i++;
                 }
 

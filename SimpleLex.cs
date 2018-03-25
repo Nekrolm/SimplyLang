@@ -33,11 +33,11 @@ using QUT.Gppg;
 using System.Linq;
 
 namespace SimpleScanner
-{   
+{
     /// <summary>
     /// Summary Canonical example of GPLEX automaton
     /// </summary>
-    
+
 #if STANDALONE
     //
     // These are the dummy declarations for stand-alone GPLEX applications
@@ -81,7 +81,7 @@ namespace SimpleScanner
     }
 
 #endif // STANDALONE
-    
+
     // If the compiler can't find the scanner base class maybe you
     // need to run GPPG with the /gplex option, or GPLEX with /noparser
 #if BABEL
@@ -102,7 +102,7 @@ namespace SimpleScanner
                    currentStart = startState[value]; }
         }
 #else  // BABEL
-     public sealed partial class Scanner : ScanBase
+    public sealed partial class Scanner : ScanBase
     {
         private ScanBuff buffer;
         int currentScOrd;  // start condition ordinal
@@ -802,7 +802,7 @@ yylloc = new LexLocation(tokLin, tokCol, tokELin, tokECol);
         
 #region UserCodeSection
 
-public override void yyerror(string format, params object[] args) // об�?або�?ка син�?акси�?ески�? о�?ибок
+public override void yyerror(string format, params object[] args) // ?????????????????? ???????????????????????????? ????????????
 {
   var ww = args.Skip(1).Cast<string>().ToArray();
   string errorMsg = string.Format("({0},{1}): found {2}, expected {3}", yyline, yycol, args[0], string.Join(" or ", ww));
@@ -840,7 +840,7 @@ class ScannerHelper
 
   public static int GetIDToken(string s)
   {
-    if (keywords.ContainsKey(s.ToLower())) // яз�?к не�?�?вс�?ви�?елен к �?егис�?�?�?
+    if (keywords.ContainsKey(s.ToLower())) // ???????? ???????????????????????????? ?? ????????????????
       return keywords[s];
     else
       return (int)Tokens.ID;

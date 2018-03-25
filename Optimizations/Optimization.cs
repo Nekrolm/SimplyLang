@@ -11,6 +11,14 @@ namespace SimpleLang.Optimizations
     }
 
 
+    public abstract class CrossBlocksOptimization
+    {
+
+        // returns true if optimization was succesfully applied;
+        public abstract bool Optimize(List<BaseBlock> code);
+    }
+
+
     public class BaseBlockOptimizator{
         private List<BaseBlockOptimization> _opts = new List<BaseBlockOptimization>();
 
@@ -20,7 +28,7 @@ namespace SimpleLang.Optimizations
             bool res = false;
 
             foreach (var bblock in code){
-                OptimizeBlock(bblock);
+                res |= OptimizeBlock(bblock);
             }
 
             return res;
