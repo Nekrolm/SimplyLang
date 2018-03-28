@@ -70,6 +70,7 @@
     <Compile Include="Optimizations\ActiveDefinitions.cs" />
     <Compile Include="Optimizations\AvaliableExprs.cs" />
     <Compile Include="Optimizations\CommonSubexpressionOptimization.cs" />
+    <Compile Include="Optimizations\AliveBlocksOptimization.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
