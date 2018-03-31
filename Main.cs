@@ -59,6 +59,7 @@ namespace SimpleCompiler
             Console.WriteLine("Optimize");
             var bboptimizator = new BaseBlockOptimizator();
             bboptimizator.AddOptimization(new NopDeleteOptimization());
+            bboptimizator.AddOptimization(new TemporaryExprPropagation());
             bboptimizator.AddOptimization(new ConstantsOptimization());
             bboptimizator.AddOptimization(new AlgebraIdentity());
             bboptimizator.AddOptimization(new ExprCanon());
@@ -69,6 +70,7 @@ namespace SimpleCompiler
 
             var cboptimizator = new CrossBlocksOptimizator();
             cboptimizator.AddOptimization(new AliveBlocksOptimization());
+            cboptimizator.AddOptimization(new CrossBlocksDeadCodeOptimization());
 
 
             while (bboptimizator.Optimize(codeBlocks) || cboptimizator.Optimize(codeBlocks) ) {};
