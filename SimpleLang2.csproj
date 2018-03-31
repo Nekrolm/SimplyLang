@@ -71,6 +71,7 @@
     <Compile Include="Optimizations\AvaliableExprs.cs" />
     <Compile Include="Optimizations\CommonSubexpressionOptimization.cs" />
     <Compile Include="Optimizations\AliveBlocksOptimization.cs" />
+    <Compile Include="Optimizations\Semilattice.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
