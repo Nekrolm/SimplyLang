@@ -35,7 +35,7 @@ namespace SimpleCompiler
         }
 
 
-        public static void DefsOptimize(List<BaseBlock> codeBlocks)
+        public static void DefsOptimize(Dictionary<string, int> IDDict, List<BaseBlock> codeBlocks)
         {
             var CFG = new ControlFlowGraph(codeBlocks);
 
@@ -45,11 +45,16 @@ namespace SimpleCompiler
             CFG.GenerateInputOutputAvaliableExpr(codeBlocks);
             CFG.GenerateInputOutputActiveDefs(codeBlocks);
 
-            for (int i = 0; i < codeBlocks.Count; ++i)
+            var isNoInitVars = new IsNoInitVars();
+
+            if (isNoInitVars.Optimize(IDDict, codeBlocks))
             {
-                Console.Write(codeBlocks[i]);
-                //PrintOut(inp[i]);
-                //PrintOut(outp[i]);
+                for (int i = 0; i < codeBlocks.Count; ++i)
+                {
+                    Console.Write(codeBlocks[i]);
+                    //PrintOut(inp[i]);
+                    //PrintOut(outp[i]);
+                }
             }
         }
 
@@ -66,6 +71,7 @@ namespace SimpleCompiler
             optimizator.AddOptimization(new CopyPropagationOptimization());
             optimizator.AddOptimization(new DeadCodeOptimization());
             optimizator.AddOptimization(new CommonSubexpressionOptimization());
+
             optimizator.Optimize(codeBlocks);
         }
 
@@ -78,7 +84,6 @@ namespace SimpleCompiler
 
             prog.Visit(varRenamerVisitor);
             prog.Visit(threeAddressGenerationVisitor);
-
 
             var code = threeAddressGenerationVisitor.Data;
             var codeSz = code.Count;
@@ -114,7 +119,7 @@ namespace SimpleCompiler
 
 
 
-            DefsOptimize(codeBlocks);
+            DefsOptimize(varRenamerVisitor.IDDict, codeBlocks);
 
 
 
@@ -147,6 +152,7 @@ namespace SimpleCompiler
 
                     Compile(parser.root);
                 }
+                Console.ReadLine();
             }
             catch (FileNotFoundException)
             {
