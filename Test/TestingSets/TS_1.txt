@@ -6,8 +6,8 @@ begin
 for i in (x, y, 1)
 begin
 x := x + y;
-end
-end
+end;
+end;
 else begin
 x := 7;
 x := 8;
@@ -22,18 +22,18 @@ end;
 for i in (f, z, 10)
 begin
 x := i * y + i * z * f;
-end
+end;
 
 gen:=x+y;
 if (10 > 5)
-begin
+begin;
 k := 10;
 l := 50;
 test1 := k +1;
 test2:=l+10;
 k:=test1;
 l:=test2;
-end
+end;
 else 
 begin
 dead_var:=50;
@@ -43,14 +43,14 @@ test1 := k +1;
 test2:=l+10;
 k:=test1;
 l:=test2;
-end
+end;
 
 gen:=x+y;
 start:=k+10;
 if (start>100)
 begin
 start:=k+10;
-end
+end;
 start:=start+10;
 
 i:=5;
@@ -63,8 +63,8 @@ j:=j-1;
 if (i>j)
 begin
 a:=k;
-end
+end;
 i:=start;
-end
+end;
 
 end
