@@ -38,7 +38,8 @@ namespace SimpleCompiler
         public static void DefsOptimize(List<BaseBlock> codeBlocks)
         {
             var CFG = new ControlFlowGraph(codeBlocks);
-           
+
+
             var (inp, outp) = CFG.GenerateInputOutputReachingDefs(codeBlocks);
 
             CFG.GenerateInputOutputAvaliableExpr(codeBlocks);
@@ -56,16 +57,23 @@ namespace SimpleCompiler
         public static void Optimize(List<BaseBlock> codeBlocks)
         {
             Console.WriteLine("Optimize");
-            var optimizator = new BaseBlockOptimizator();
-            optimizator.AddOptimization(new NopDeleteOptimization());
-            optimizator.AddOptimization(new ConstantsOptimization());
-            optimizator.AddOptimization(new AlgebraIdentity());
-            optimizator.AddOptimization(new ExprCanon());
-            optimizator.AddOptimization(new IfGotoOptimization());
-            optimizator.AddOptimization(new CopyPropagationOptimization());
-            optimizator.AddOptimization(new DeadCodeOptimization());
-            optimizator.AddOptimization(new CommonSubexpressionOptimization());
-            optimizator.Optimize(codeBlocks);
+            var bboptimizator = new BaseBlockOptimizator();
+            bboptimizator.AddOptimization(new NopDeleteOptimization());
+            bboptimizator.AddOptimization(new TemporaryExprPropagation());
+            bboptimizator.AddOptimization(new ConstantsOptimization());
+            bboptimizator.AddOptimization(new AlgebraIdentity());
+            bboptimizator.AddOptimization(new ExprCanon());
+            bboptimizator.AddOptimization(new IfGotoOptimization());
+            bboptimizator.AddOptimization(new CopyPropagationOptimization());
+            bboptimizator.AddOptimization(new DeadCodeOptimization());
+            bboptimizator.AddOptimization(new CommonSubexpressionOptimization());
+
+            var cboptimizator = new CrossBlocksOptimizator();
+            cboptimizator.AddOptimization(new AliveBlocksOptimization());
+            cboptimizator.AddOptimization(new CrossBlocksDeadCodeOptimization());
+
+
+            while (bboptimizator.Optimize(codeBlocks) || cboptimizator.Optimize(codeBlocks) ) {};
         }
 
        
@@ -82,42 +90,20 @@ namespace SimpleCompiler
             var code = threeAddressGenerationVisitor.Data;
             var codeSz = code.Count;
 
-
             var codeBlocks = BaseBlockHelper.GenBaseBlocks(threeAddressGenerationVisitor.Data);
                 
             foreach (var block in codeBlocks)
                 Console.Write(block);
 
 
-            while (true){
-                codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
-                Optimize(codeBlocks);
-                code = BaseBlockHelper.JoinBaseBlocks(codeBlocks);
-                BaseBlockHelper.FixLabelsNumeration(code);
-                codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
-
-                var CFG = new ControlFlowGraph(codeBlocks);
-                codeBlocks = CFG.GetAliveBlocks();
-
-                code = BaseBlockHelper.JoinBaseBlocks(codeBlocks);
-                BaseBlockHelper.FixLabelsNumeration(code);
-                codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
-
-                if (code.Count == codeSz) break;
-                codeSz = code.Count;
-            }
+            codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
+            Optimize(codeBlocks);
 
 
             foreach (var block in codeBlocks)
                 Console.Write(block);
-
-
-
+            
             DefsOptimize(codeBlocks);
-
-
-
-
         }
 
 

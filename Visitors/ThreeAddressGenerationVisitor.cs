@@ -199,10 +199,20 @@ namespace SimpleLang.Visitors
             Console.WriteLine(Tag + " VisitForCycleNoe");
 
             fc.Step.Visit(this);
+
+            if (GetLastLine().Accum.StartsWith(TempVariableName)){
+                GetLastLine().Accum = "lc" + GetLastLine().Label;
+            }
+
             var step = GetLastLine().Accum;
             fc.LeftBound.Visit(this);
             var L = GetLastLine().Accum;
             fc.RightBound.Visit(this);
+
+            if (GetLastLine().Accum.StartsWith(TempVariableName))
+            {
+                GetLastLine().Accum = "lr" + GetLastLine().Label;
+            }
             var R = GetLastLine().Accum;
 
             var initCounterLine = new ThreeAddrLine();

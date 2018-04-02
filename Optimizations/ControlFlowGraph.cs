@@ -139,7 +139,7 @@ namespace SimpleLang.Optimizations
                 for (int i = 0; i < bblocks.Count(); ++i)
                 {
                     var st = bblocks[i].StartLabel;
-                    Out[i] = new VarsSet(Next[st].SelectMany(p => Out[startToId[p]]));
+                    Out[i] = new VarsSet(Next[st].SelectMany(p => In[startToId[p]]));
                     int sz = In[i].Count;
 
                     In[i] = ActiveDefinitions.TransferByUseAndDef(Out[i], _useByStart[st], _defByStart[st]);
@@ -263,6 +263,23 @@ namespace SimpleLang.Optimizations
 
                 }
             }
+
+            //Propagate empty blocks
+            foreach (var k in visited)
+            {
+                var bblock = _baseBlockByStart[k];
+                if (ThreeAddrOpType.IsGoto(bblock.LastLine.OpType)){
+                    int to = int.Parse(bblock.LastLine.RightOp);
+                    var tobl = _baseBlockByStart[to];
+                    if (tobl.Code[0].OpType == ThreeAddrOpType.Goto){
+                        bblock.LastLine.RightOp = tobl.Code[0].RightOp;
+                    }else if (tobl.Code.Count == 1 && tobl.Code[0].OpType == ThreeAddrOpType.Nop){
+                        if (Next[to].Count == 1)
+                            bblock.LastLine.RightOp = Next[to][0].ToString();
+                    }
+                }
+            }
+
               
             return visited.OrderBy(x=>x)
                           .Select(x=>_baseBlockByStart[x]).ToList();
