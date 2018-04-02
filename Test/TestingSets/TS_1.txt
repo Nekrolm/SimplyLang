@@ -23,4 +23,48 @@ for i in (f, z, 10)
 begin
 x := i * y + i * z * f;
 end
+
+gen:=x+y;
+if (10 > 5)
+begin
+k := 10;
+l := 50;
+test1 := k +1;
+test2:=l+10;
+k:=test1;
+l:=test2;
+end
+else 
+begin
+dead_var:=50;
+k := 10;
+l := 50;
+test1 := k +1;
+test2:=l+10;
+k:=test1;
+l:=test2;
+end
+
+gen:=x+y;
+start:=k+10;
+if (start>100)
+begin
+start:=k+10;
+end
+start:=start+10;
+
+i:=5;
+j:=10;
+a:=15;
+for gen in (1,2,3)
+begin
+i:=i+1;
+j:=j-1;
+if (i>j)
+begin
+a:=k;
+end
+i:=start;
+end
+
 end
