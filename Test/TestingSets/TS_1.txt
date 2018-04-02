@@ -7,7 +7,7 @@ for i in (x, y, 1)
 begin
 x := x + y;
 end;
-end;
+end
 else begin
 x := 7;
 x := 8;
@@ -33,7 +33,7 @@ test1 := k +1;
 test2:=l+10;
 k:=test1;
 l:=test2;
-end;
+end
 else 
 begin
 dead_var:=50;
