@@ -25,16 +25,6 @@ namespace SimpleLang.Optimizations
             bool ret = false;
 
 
-            Console.WriteLine("Try opt!");
-            Console.WriteLine(bblock.ToString());
-            Console.WriteLine("Defs");
-            foreach (var s in active_vars){
-                Console.Write(s + " ");
-            }
-            Console.WriteLine();
-
-
-
             HashSet<String> living = new HashSet<string>();
             for (int i = bblock.Code.Count - 1; i >= 0; --i){
                 var line = bblock.Code[i];

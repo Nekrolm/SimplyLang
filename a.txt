@@ -1,5 +1,22 @@
 begin
   
+  begin
+i:=5;
+j:=10;
+a:=15;
+k:=100;
+for gen in (1,2,3)
+begin
+i:=i+1;
+j:=j-1;
+if (i>j)
+begin
+a:=k;
+end;
+i:=start;
+end;
+
+end;
    
   
    a := 5;

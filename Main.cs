@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 using SimpleScanner;
@@ -35,24 +34,6 @@ namespace SimpleCompiler
         }
 
 
-        public static void DefsOptimize(List<BaseBlock> codeBlocks)
-        {
-            var CFG = new ControlFlowGraph(codeBlocks);
-
-
-            var (inp, outp) = CFG.GenerateInputOutputReachingDefs(codeBlocks);
-
-            CFG.GenerateInputOutputAvaliableExpr(codeBlocks);
-            CFG.GenerateInputOutputActiveDefs(codeBlocks);
-
-            for (int i = 0; i < codeBlocks.Count; ++i)
-            {
-                Console.Write(codeBlocks[i]);
-                //PrintOut(inp[i]);
-                //PrintOut(outp[i]);
-            }
-        }
-
 
         public static void Optimize(List<BaseBlock> codeBlocks)
         {
@@ -73,7 +54,9 @@ namespace SimpleCompiler
             cboptimizator.AddOptimization(new CrossBlocksDeadCodeOptimization());
 
 
+
             while (bboptimizator.Optimize(codeBlocks) || cboptimizator.Optimize(codeBlocks) ) {};
+
         }
 
        
@@ -103,7 +86,6 @@ namespace SimpleCompiler
             foreach (var block in codeBlocks)
                 Console.Write(block);
             
-            DefsOptimize(codeBlocks);
         }
 
 

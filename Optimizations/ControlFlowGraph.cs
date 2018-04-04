@@ -228,7 +228,7 @@ namespace SimpleLang.Optimizations
             while (change){
                 change = false;
 
-                for (int i = 1; i < bblocks.Count(); ++i){
+                for (int i = 0; i < bblocks.Count(); ++i){
                     var st = bblocks[i].StartLabel;
                     In[i] = new LabelSet(Prev[st].SelectMany(p=>Out[startToId[p]]));
                     int sz = Out[i].Count;
