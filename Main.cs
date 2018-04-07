@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 using SimpleScanner;
@@ -8,7 +7,8 @@ using SimpleParser;
 using SimpleLang.Visitors;
 using ThreeAddr;
 using SimpleLang.Optimizations;
-
+using SimpleLang.Utility;
+using System.Linq;
 
 namespace SimpleCompiler
 {
@@ -19,9 +19,6 @@ namespace SimpleCompiler
             id.Name = id.Name[0].ToString().ToUpper() + id.Name.Substring(1);
         }
     }
-
-
-
 
     public class SimpleCompilerMain
     {
@@ -35,47 +32,29 @@ namespace SimpleCompiler
         }
 
 
-        public static void DefsOptimize(Dictionary<string, int> IDDict, List<BaseBlock> codeBlocks)
-        {
-            var CFG = new ControlFlowGraph(codeBlocks);
-
-
-            var (inp, outp) = CFG.GenerateInputOutputReachingDefs(codeBlocks);
-
-            CFG.GenerateInputOutputAvaliableExpr(codeBlocks);
-            CFG.GenerateInputOutputActiveDefs(codeBlocks);
-
-            var isNoInitVars = new IsNoInitVars();
-
-            if (isNoInitVars.Optimize(IDDict, codeBlocks))
-            {
-                for (int i = 0; i < codeBlocks.Count; ++i)
-                {
-                    Console.Write(codeBlocks[i]);
-                    //PrintOut(inp[i]);
-                    //PrintOut(outp[i]);
-                }
-            }
-        }
-
 
         public static void Optimize(List<BaseBlock> codeBlocks)
         {
             Console.WriteLine("Optimize");
-            var optimizator = new BaseBlockOptimizator();
-            optimizator.AddOptimization(new NopDeleteOptimization());
-            optimizator.AddOptimization(new ConstantsOptimization());
-            optimizator.AddOptimization(new AlgebraIdentity());
-            optimizator.AddOptimization(new ExprCanon());
-            optimizator.AddOptimization(new IfGotoOptimization());
-            optimizator.AddOptimization(new CopyPropagationOptimization());
-            optimizator.AddOptimization(new DeadCodeOptimization());
-            optimizator.AddOptimization(new CommonSubexpressionOptimization());
+            var bboptimizator = new BaseBlockOptimizator();
+            bboptimizator.AddOptimization(new NopDeleteOptimization());
+            bboptimizator.AddOptimization(new TemporaryExprPropagation());
+            bboptimizator.AddOptimization(new ConstantsOptimization());
+            bboptimizator.AddOptimization(new AlgebraIdentity());
+            bboptimizator.AddOptimization(new ExprCanon());
+            bboptimizator.AddOptimization(new IfGotoOptimization());
+            bboptimizator.AddOptimization(new CopyPropagationOptimization());
+            bboptimizator.AddOptimization(new DeadCodeOptimization());
+            bboptimizator.AddOptimization(new CommonSubexpressionOptimization());
 
-            optimizator.Optimize(codeBlocks);
+            var cboptimizator = new CrossBlocksOptimizator();
+            cboptimizator.AddOptimization(new AliveBlocksOptimization());
+            cboptimizator.AddOptimization(new CrossBlocksDeadCodeOptimization());
+            cboptimizator.AddOptimization(new IsNotInitVariable());
+
+            while (bboptimizator.Optimize(codeBlocks) || cboptimizator.Optimize(codeBlocks) ) {};
+
         }
-
-       
 
         public static void Compile(BlockNode prog)
         {
@@ -85,9 +64,9 @@ namespace SimpleCompiler
             prog.Visit(varRenamerVisitor);
             prog.Visit(threeAddressGenerationVisitor);
 
+
             var code = threeAddressGenerationVisitor.Data;
             var codeSz = code.Count;
-
 
             var codeBlocks = BaseBlockHelper.GenBaseBlocks(threeAddressGenerationVisitor.Data);
                 
@@ -95,35 +74,13 @@ namespace SimpleCompiler
                 Console.Write(block);
 
 
-            while (true){
-                codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
-                Optimize(codeBlocks);
-                code = BaseBlockHelper.JoinBaseBlocks(codeBlocks);
-                BaseBlockHelper.FixLabelsNumeration(code);
-                codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
-
-                var CFG = new ControlFlowGraph(codeBlocks);
-                codeBlocks = CFG.GetAliveBlocks();
-
-                code = BaseBlockHelper.JoinBaseBlocks(codeBlocks);
-                BaseBlockHelper.FixLabelsNumeration(code);
-                codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
-
-                if (code.Count == codeSz) break;
-                codeSz = code.Count;
-            }
+            codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
+            Optimize(codeBlocks);
 
 
             foreach (var block in codeBlocks)
                 Console.Write(block);
-
-
-
-            DefsOptimize(varRenamerVisitor.IDDict, codeBlocks);
-
-
-
-
+            
         }
 
 
@@ -166,7 +123,23 @@ namespace SimpleCompiler
             {
                 Console.WriteLine("Синтаксическая ошибка. " + e.Message);
             }
+            catch (NotInitVariableException e)
+            {
+                string Text = File.ReadAllText(FileName);
 
+                Scanner scanner = new Scanner();
+                scanner.SetSource(Text, 0);
+
+                Parser parser = new Parser(scanner);
+                var b = parser.Parse();
+
+                var varRenamerVisitor = new VariableIdUnificationVisitor();
+                parser.root.Visit(varRenamerVisitor);
+
+                foreach (var i in e.parm)
+                    Console.WriteLine("Переменная {0} не инициализирована", varRenamerVisitor.IDDict.First(a => i=="v" + a.Value).Key);
+                Console.ReadLine();
+            }
         }
     }
 }
