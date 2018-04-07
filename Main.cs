@@ -9,6 +9,8 @@ using ThreeAddr;
 using SimpleLang.Optimizations;
 using SimpleLang.Utility;
 using System.Linq;
+using CommandLine;
+
 
 namespace SimpleCompiler
 {
@@ -20,18 +22,23 @@ namespace SimpleCompiler
         }
     }
 
+
+    public class Options
+    {
+        [Option('w', "write", Required = false, Default = "a.out",
+                HelpText = "Output file")]
+        public string OutputFile { get; set; }
+
+        [Option("binary", Default = false)]
+        public bool OutBinary { get; set; }
+
+        [Value(0, MetaName = "input", HelpText = "Filt to Compile", Default = "../../a.txt")]
+        public String InputFile { get; set; }
+    }
+
+
     public class SimpleCompilerMain
     {
-
-        public static void PrintOut(HashSet<int> s)
-        {
-            Console.WriteLine("Out defs:");
-            foreach (int x in s)
-                Console.Write($"{x} ");
-            Console.WriteLine("\n-------");
-        }
-
-
 
         public static void Optimize(List<BaseBlock> codeBlocks)
         {
@@ -85,23 +92,18 @@ namespace SimpleCompiler
         }
 
 
-        public static void Main(String[] arg)
-        {   
-            string FileName = "../../a.txt";
+        public static void CompileMain(Options opt){
+            var varRenamerVisitor = new VariableIdUnificationVisitor();
 
-            if (arg.Length == 1) FileName = arg[0];
-
-            var varRenamerVisitor = new VariableIdUnificationVisitor();    
-                
             try
             {
-                string Text = File.ReadAllText(FileName);
+                string Text = File.ReadAllText(opt.InputFile);
 
                 Scanner scanner = new Scanner();
                 scanner.SetSource(Text, 0);
 
 
-                Parser parser = new Parser(scanner);
+                SimpleParser.Parser parser = new SimpleParser.Parser(scanner);
 
 
                 var b = parser.Parse();
@@ -117,7 +119,7 @@ namespace SimpleCompiler
             }
             catch (FileNotFoundException)
             {
-                Console.WriteLine("Файл {0} не найден", FileName);
+                Console.WriteLine("Файл {0} не найден", opt.InputFile);
             }
             catch (LexException e)
             {
@@ -130,8 +132,17 @@ namespace SimpleCompiler
             catch (NotInitVariableException e)
             {
                 foreach (var i in e.VarList)
-                    Console.WriteLine("Переменная {0} -> {1} не инициализирована", i,  varRenamerVisitor.IDDict.First(a => i == "v" + a.Value).Key);
+                    Console.WriteLine("Переменная {0} -> {1} не инициализирована", i, varRenamerVisitor.IDDict.First(a => i == "v" + a.Value).Key);
             }
+        }
+
+
+        public static void Main(String[] args)
+        {   
+            CommandLine.Parser.Default.ParseArguments<Options>(args)
+                               .WithNotParsed((ers)=>Console.WriteLine("Wrong command args"))
+                               .WithParsed(opts => CompileMain(opts) );
+    
         }
     }
 }
