@@ -13,7 +13,7 @@ if (i>j)
 begin
 a:=k;
 end;
-i:=start;
+i:=5;
 end;
 
 end;
@@ -41,7 +41,7 @@ end;
   end;
 
   begin
-  for b in (x, y, z)
+  for b in (x, 49, 2)
   begin
 	c := 5;
   end;

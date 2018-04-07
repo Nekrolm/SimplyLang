@@ -74,6 +74,8 @@
     <Compile Include="Optimizations\Semilattice.cs" />
     <Compile Include="Optimizations\TemporaryExprPropagation.cs" />
     <Compile Include="Optimizations\CrossBlocksDeadCodeOptimization.cs" />
+    <Compile Include="Optimizations\IsNotInitVariable.cs" />
+    <Compile Include="Utility\NotInitVariableException.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
