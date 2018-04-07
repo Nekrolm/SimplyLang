@@ -1,17 +1,18 @@
 ﻿<Properties StartupConfiguration="{12B9D996-7B4A-4EE4-9AD8-2E24EAF3F574}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="Optimizations/IsNotInitVariable.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Optimizations/CrossBlocksDeadCodeOptimization.cs">
     <Files>
-      <File FileName="Main.cs" Line="131" Column="44" />
+      <File FileName="Main.cs" Line="54" Column="63" />
       <File FileName="Optimizations/CommonSubexpressionOptimization.cs" Line="1" Column="1" />
-      <File FileName="Optimizations/ControlFlowGraph.cs" Line="1" Column="1" />
-      <File FileName="ThreeAddr.cs" Line="87" Column="14" />
-      <File FileName="Optimizations/Optimization.cs" Line="1" Column="1" />
-      <File FileName="Optimizations/ReachingDefinitions.cs" Line="1" Column="1" />
-      <File FileName="Optimizations/AlgebraIdentity.cs" Line="1" Column="1" />
-      <File FileName="Optimizations/DeadCodeOptimization.cs" Line="1" Column="1" />
+      <File FileName="Optimizations/ControlFlowGraph.cs" Line="306" Column="9" />
+      <File FileName="ThreeAddr.cs" Line="36" Column="36" />
+      <File FileName="Optimizations/ReachingDefinitions.cs" Line="78" Column="21" />
+      <File FileName="Optimizations/AlgebraIdentity.cs" Line="23" Column="4" />
+      <File FileName="Optimizations/DeadCodeOptimization.cs" Line="7" Column="35" />
       <File FileName="Visitors/ThreeAddressGenerationVisitor.cs" Line="1" Column="1" />
-      <File FileName="Utility/NotInitVariableException.cs" Line="15" Column="10" />
-      <File FileName="Optimizations/IsNotInitVariable.cs" Line="13" Column="30" />
+      <File FileName="Optimizations/CrossBlockConstantPropagation.cs" Line="50" Column="82" />
+      <File FileName="Optimizations/ReachingValues.cs" Line="55" Column="13" />
+      <File FileName="Optimizations/TemporaryExprPropagation.cs" Line="22" Column="89" />
+      <File FileName="Optimizations/CrossBlocksDeadCodeOptimization.cs" Line="37" Column="22" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />

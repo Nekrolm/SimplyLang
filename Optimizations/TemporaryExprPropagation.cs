@@ -6,17 +6,39 @@ namespace SimpleLang.Optimizations
     {
         public override bool Optimize(BaseBlock bblock)
         {
-            foreach(var line in bblock.Code){
+            for (int i = 0; i < bblock.Code.Count; ++i){
+
+                var line = bblock.Code[i];
+
                 if (ThreeAddrOpType.IsDefinition(line.OpType) && line.Accum.StartsWith("p") ){
-                    foreach (var line_acc in bblock.Code){
+
+                    bool ok = false;
+                    bool can_del = true;
+
+                    for (int j = i+1; j < bblock.Code.Count; ++j){
+
+                        var line_acc = bblock.Code[j];
+                    
                         if (line_acc.OpType == ThreeAddrOpType.Assign && line.Accum == line_acc.RightOp){
                             line_acc.OpType = line.OpType;
                             line_acc.RightOp = line.RightOp;
                             line_acc.LeftOp = line.LeftOp;
-                            line.OpType = ThreeAddrOpType.Nop;
-                            return true;
+                            ok = true;
+                            continue;
+                        }
+
+                        if (line.Accum == line_acc.RightOp || line.Accum == line_acc.LeftOp ){
+                            can_del = false;
                         }
                     }
+
+                    if (ok){
+                        if (can_del){
+                            line.OpType = ThreeAddrOpType.Nop;
+                        }
+                        return true;
+                    }
+
                 }
             }
             return false;

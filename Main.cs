@@ -47,15 +47,16 @@ namespace SimpleCompiler
             bboptimizator.AddOptimization(new DeadCodeOptimization());
             bboptimizator.AddOptimization(new CommonSubexpressionOptimization());
 
+
             var cboptimizator = new CrossBlocksOptimizator();
+            cboptimizator.AddOptimization(new IsNotInitVariable());
             cboptimizator.AddOptimization(new AliveBlocksOptimization());
             cboptimizator.AddOptimization(new CrossBlocksDeadCodeOptimization());
+            cboptimizator.AddOptimization(new CrossBlockConstantPropagation());
 
             while (bboptimizator.Optimize(codeBlocks) || cboptimizator.Optimize(codeBlocks) ) {};
 
 
-            cboptimizator.AddOptimization(new IsNotInitVariable());
-            cboptimizator.Optimize(codeBlocks);
 
         }
 

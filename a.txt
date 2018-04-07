@@ -5,7 +5,7 @@ i:=5;
 j:=10;
 a:=15;
 k:=100;
-for gen in (1,2,3)
+for gen in (1,10,3)
 begin
 i:=i+1;
 j:=j-1;
@@ -15,6 +15,9 @@ a:=k;
 end;
 i:=5;
 end;
+
+print a;
+print i;
 
 end;
    
@@ -29,7 +32,8 @@ end;
     a := b + b;
     b := 9;
     x := b;
-
+	
+	h := 5;
 
     b := h;
     c := b + b;
@@ -53,6 +57,8 @@ end;
   b := 2;
   a := 3;
   a := not -5;
+  
+  y := 5;
   
   z := x or y and (not 5);
 

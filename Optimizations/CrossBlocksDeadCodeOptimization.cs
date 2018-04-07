@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ThreeAddr;
+using SimpleLang.Utility;
 
 namespace SimpleLang.Optimizations
 {
@@ -35,9 +36,9 @@ namespace SimpleLang.Optimizations
                         continue;
                     }
                 }
-                if (line.RightOp != null && int.TryParse(line.RightOp, out var x))
+                if (line.RightOp != null && !ComputeHelper.IsConst(line.RightOp))
                     living.Add(line.RightOp);
-                if (line.LeftOp != null && int.TryParse(line.LeftOp, out var f))
+                if (line.LeftOp != null && !ComputeHelper.IsConst(line.LeftOp))
                     living.Add(line.LeftOp);
             }
             return ret;

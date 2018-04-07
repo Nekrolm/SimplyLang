@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SimpleLang.Utility;
 using ThreeAddr;
 
 namespace SimpleLang.Optimizations
@@ -34,7 +35,7 @@ namespace SimpleLang.Optimizations
 
             if (!isaconst || !isbconst) return false;
             // Получаем правый оперант.
-            var res = Calculate(a, b, line.OpType).ToString(); // Записываем вправо вычисленное значение.
+            var res = ComputeHelper.Calculate(a, b, line.OpType).ToString(); // Записываем вправо вычисленное значение.
             if (res != null){
                 line.LeftOp = null; // Просто зануляем.
                 line.OpType = ThreeAddrOpType.Assign; // записываем в тип операции assign.
@@ -43,32 +44,6 @@ namespace SimpleLang.Optimizations
             }
             return false;
         }
-        private int? Calculate(int a, int b, string OpType) // Метод в зависимости от операции выполняет вычисление и возвращает значение.
-        {
-            switch (OpType)
-            {
-                case "+": return a + b; // Если найден плюс: вернётся сумма.
-                case "-": return a - b; // Если минус: то разность.
-                case "*": return a * b;
-                case "/": return a / b;
-                case "<": if (a < b) return 1; else return 0; // Если a меньше b, верн\тся 1: иначе 0.
-                case ">": if (a > b) return 1; else return 0;
-                case "<=": if (a <= b) return 1; else return 0; // Если a меньше b, верн\тся 1: иначе 0.
-                case ">=": if (a >= b) return 1; else return 0;
-               
-                case ThreeAddrOpType.Eq: 
-                    if (a == b) return 1; else return 0;
-                case ThreeAddrOpType.UnEq: 
-                    if (a != b) return 1; else return 0;
-                case ThreeAddrOpType.Not: 
-                    if (b == 0) return 1; else return 0;
-                case ThreeAddrOpType.And: 
-                    if (Convert.ToBoolean(a) && Convert.ToBoolean(b)) return 1; else return 0;
-                case ThreeAddrOpType.Or:
-                    if (Convert.ToBoolean(a) || Convert.ToBoolean(b)) return 1; else return 0;
-                default: 
-                    return null; // В остальных случаях нельзя вычислить
-            }
-        }
+
     }
 }

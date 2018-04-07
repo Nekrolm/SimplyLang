@@ -76,6 +76,9 @@
     <Compile Include="Optimizations\CrossBlocksDeadCodeOptimization.cs" />
     <Compile Include="Optimizations\IsNotInitVariable.cs" />
     <Compile Include="Utility\NotInitVariableException.cs" />
+    <Compile Include="Optimizations\CrossBlockConstantPropagation.cs" />
+    <Compile Include="Optimizations\ReachingValues.cs" />
+    <Compile Include="Utility\ComputeHelper.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

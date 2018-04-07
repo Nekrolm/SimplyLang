@@ -11,6 +11,7 @@ namespace SimpleLang.Optimizations
     using KillSet = Dictionary<int, String>;
     using LabelSet = HashSet<int>;
     using VarsSet = HashSet<String>;
+    using ValueSet = Dictionary<String, String>;
     using ExprSet = HashSet<(String, String, String)>;
 
 
@@ -153,6 +154,61 @@ namespace SimpleLang.Optimizations
 
         }
 
+        private ValueSet GenFullValueSet(IEnumerable<ThreeAddrLine> lines){
+            ValueSet ret = new ValueSet();
+            foreach (var l in lines)
+                if (ThreeAddrOpType.IsDefinition(l.OpType))
+                    ret[l.Accum] = "NAC";
+            return ret;
+        }
+
+        public (List<ValueSet>, List<ValueSet>) GenerateInputOutputValues(List<BaseBlock> bblocks)
+        {
+            var In = new List<ValueSet>();
+            var Out = new List<ValueSet>();
+
+            var startToId = new Dictionary<int, int>();
+
+            var code = BaseBlockHelper.JoinBaseBlocks(bblocks);
+
+            for (int i = 0; i < bblocks.Count(); ++i)
+            {
+                startToId[bblocks[i].StartLabel] = i;
+                In.Add(GenFullValueSet(code));
+                Out.Add(GenFullValueSet(code));
+            }
+
+
+            bool change = true;
+            while (change)
+            {
+                change = false;
+
+                for (int i = 0; i < bblocks.Count; ++i)
+                {
+                    var st = bblocks[i].StartLabel;
+
+                    if (Prev[st].Count() != 0){
+                        In[i] = ReachingValues.Combine(Prev[st].Select(l => Out[startToId[l]]));
+                    }
+
+                    var nOut = ReachingValues.TransferByBBlock(In[i], bblocks[i]);
+
+                    foreach (var vk in nOut)
+                        if (vk.Value != Out[i][vk.Key]){
+                            change = true;
+                            break;
+                        }
+
+                    Out[i] = nOut;
+                }
+
+            }
+
+            return (In, Out);
+
+        }
+
 
         public (List<ExprSet>, List<ExprSet>) GenerateInputOutputAvaliableExpr(List<BaseBlock> bblocks)
         {
@@ -211,7 +267,8 @@ namespace SimpleLang.Optimizations
 
 
 
-        public (List<LabelSet>, List<LabelSet>) GenerateInputOutputReachingDefs(List<BaseBlock> bblocks){
+        public (List<LabelSet>, List<LabelSet>) GenerateInputOutputReachingDefs(List<BaseBlock> bblocks)
+        {
             var In = new List<LabelSet>();
             var Out = new List<LabelSet>();
 
@@ -225,12 +282,14 @@ namespace SimpleLang.Optimizations
             }
 
             bool change = true;
-            while (change){
+            while (change)
+            {
                 change = false;
 
-                for (int i = 0; i < bblocks.Count(); ++i){
+                for (int i = 0; i < bblocks.Count(); ++i)
+                {
                     var st = bblocks[i].StartLabel;
-                    In[i] = new LabelSet(Prev[st].SelectMany(p=>Out[startToId[p]]));
+                    In[i] = new LabelSet(Prev[st].SelectMany(p => Out[startToId[p]]));
                     int sz = Out[i].Count;
 
                     Out[i] = ReachingDefinitions.TransferByGenAndKill(In[i], _genByStart[st], _killByStart[st]);
@@ -243,6 +302,8 @@ namespace SimpleLang.Optimizations
             return (In, Out);
 
         }
+
+
 
 
         public List<BaseBlock> GetAliveBlocks()
