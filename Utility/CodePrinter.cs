@@ -19,6 +19,14 @@ namespace SimpleLang.Utility
             ModeFlag = Mode;
         }
 
-        public void Write(List<ThreeAddrLine> LT); // метод в зависимоти от флага запустит необходимый вывод.
+        public void Write(List<ThreeAddrLine> LT) // метод в зависимоти от флага запустит необходимый вывод.
+        {
+            if (ModeFlag) // Если флаг есть?
+            {
+                WriteBinaryFile(LT); // Выбрасываем как бинарный файл,
+                WriteTextFile(LT); // Так и текстовый.
+            }
+            else WriteBinaryFile(LT); // иначе только бинарный.
+        }
     }
 }
