@@ -17,11 +17,11 @@ namespace SimpleLang.Utility
         {
             string Empty = "    "; // вместа таба.
             string Space = " "; // пробел.
-            List<string> Code;
-for (int i = 0; i < LT.Count; i++)
+            List<string> Code; // Список строк кода.
+for (int i = 0; i < LT.Count; i++) // Проход по всему списку.
             {
-                string NewLine = new string();
-                switch (LT[i].OpType)
+                string NewLine = new string(); // строка в которой формируются строки для вывода.
+                switch (LT[i].OpType) // Переключатель, определяющий вывод строк разного типа.
                 {
                     case ThreeAddrOpType.Nop: { NewLine = LT[i].Label + Space + LT[i].OpType; break; }
                     case ThreeAddrOpType.Write: { NewLine = LT[i].Label + Space + LT[i].OpType + Space + Empty + Space + Empty + LT[i].RightOp; break; }
@@ -37,9 +37,9 @@ for (int i = 0; i < LT.Count; i++)
                         }
                     default: NewLine = LT[i].Label + Space + LT[i].OpType + Space + LT[i].Accum + Space + LT[i].LeftOp + Space + LT[i].RightOp;
                 }
-                Code.Add(NewLine);
+                Code.Add(NewLine); // Заброс строки в список.
             }
-            File.WriteAllLines(Name, Code);
+            File.WriteAllLines(Name, Code); // Запись списка в файл.
         }
 
         CodePrinter(string FileName, bool Mode) // Конструктор установит значения приватных полей.
