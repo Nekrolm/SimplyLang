@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using ThreeAddr
 
 namespace SimpleLang.Utility
@@ -12,7 +13,18 @@ namespace SimpleLang.Utility
     {
         private string Name = new string(); // Имя файла задаётся конструктором.
         private bool ModeFlag = new bool(); // Флаг режима вывода задаётся конструктором.
-        private void WriteBinaryFile(List<ThreeAddrLine> LT); // Метод выкинет на диск бинарный файл.
+        private void WriteBinaryFile(List<ThreeAddrLine> LT) // Метод выкинет на диск бинарный файл.
+        {
+            BinaryFormatter Formater = new BinaryFormatter();
+            using (FileStream fs = new FileStream(Name + ".nsl", FileMode.OpenOrCreate))
+            {
+                foreach (ThreeAddrLine il in LT)
+                {
+                    Formater.Serialize(fs, il);
+                }
+            }
+        }
+
         private void WriteTextFile(List<ThreeAddrLine> LT) // метод выкинет на диск текстовый файл.
         {
             string Empty = "    "; // вместа таба.
