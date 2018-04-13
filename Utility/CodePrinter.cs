@@ -18,10 +18,7 @@ namespace SimpleLang.Utility
             BinaryFormatter Formater = new BinaryFormatter();
             using (FileStream fs = new FileStream(Name + ".nsl", FileMode.OpenOrCreate))
             {
-                foreach (ThreeAddrLine il in LT)
-                {
-                    Formater.Serialize(fs, il);
-                }
+                    Formater.Serialize(fs, LT);
             }
         }
 
@@ -53,6 +50,19 @@ for (int i = 0; i < LT.Count; i++) // Проход по всему списку.
             }
             File.WriteAllLines(Name, Code); // Запись списка в файл.
         }
+
+        public List<ThreeAddrLine> RiadBinaryFile(string FilePash) // Метод читает трёхадерсную программу из файла.
+        {
+            BinaryFormatter Formater = new BinaryFormatter();
+            List<ThreeAddrLine> Code;
+            using (FileStream FS = new FileStream(FilePash, FileMode.OpenOrCreate))
+            {
+                Code = (List<ThreeAddrLine>)Formater.Deserialize(FS);
+            }
+            return Code;
+        }
+
+        CodePrinter() { } // Пригодится конструктор без параметров?
 
         CodePrinter(string FileName, bool Mode) // Конструктор установит значения приватных полей.
         {
