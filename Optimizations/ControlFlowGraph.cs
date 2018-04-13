@@ -237,7 +237,7 @@ namespace SimpleLang.Optimizations
             {
                 change = false;
 
-                for (int i = 1; i < bblocks.Count(); ++i)
+                for (int i = 0; i < bblocks.Count(); ++i)
                 {
                     var st = bblocks[i].StartLabel;
 

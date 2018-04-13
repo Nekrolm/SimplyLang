@@ -32,7 +32,7 @@ namespace SimpleCompiler
         [Option("binary", Default = false)]
         public bool OutBinary { get; set; }
 
-        [Value(0, MetaName = "input", HelpText = "Filt to Compile", Default = "../../a.txt")]
+        [Value(0, MetaName = "input", HelpText = "File to Compile", Default = "../../a.txt")]
         public String InputFile { get; set; }
     }
 
