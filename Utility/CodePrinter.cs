@@ -5,13 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using ThreeAddr
+using ThreeAddr;
 
 namespace SimpleLang.Utility
 {
     class CodePrinter
     {
-        private string Name = new string(); // Имя файла задаётся конструктором.
+        private string Name; // Имя файла задаётся конструктором.
         private bool ModeFlag = new bool(); // Флаг режима вывода задаётся конструктором.
         private void WriteBinaryFile(List<ThreeAddrLine> LT) // Метод выкинет на диск бинарный файл.
         {
@@ -26,10 +26,10 @@ namespace SimpleLang.Utility
         {
             string Empty = "    "; // вместа таба.
             string Space = " "; // пробел.
-            List<string> Code; // Список строк кода.
+            List<string> Code = new List<string>(); // Список строк кода.
 for (int i = 0; i < LT.Count; i++) // Проход по всему списку.
             {
-                string NewLine = new string(); // строка в которой формируются строки для вывода.
+                string NewLine; // строка в которой формируются строки для вывода.
                 switch (LT[i].OpType) // Переключатель, определяющий вывод строк разного типа.
                 {
                     case ThreeAddrOpType.Nop: { NewLine = LT[i].Label + Space + LT[i].OpType; break; }
@@ -44,11 +44,11 @@ for (int i = 0; i < LT.Count; i++) // Проход по всему списку.
                             else NewLine = LT[i].Label + Space + LT[i].OpType + Space + LT[i].Accum + Space + Empty + Space + LT[i].RightOp;
                             break;
                         }
-                    default: NewLine = LT[i].Label + Space + LT[i].OpType + Space + LT[i].Accum + Space + LT[i].LeftOp + Space + LT[i].RightOp;
+                    default: {NewLine = LT[i].Label + Space + LT[i].OpType + Space + LT[i].Accum + Space + LT[i].LeftOp + Space + LT[i].RightOp; break;}
                 }
                 Code.Add(NewLine); // Заброс строки в список.
             }
-            File.WriteAllLines(Name, Code); // Запись списка в файл.
+            File.WriteAllLines(Name + ".txt", Code); // Запись списка в файл.
         }
 
         public List<ThreeAddrLine> RiadBinaryFile(string FilePash) // Метод читает трёхадерсную программу из файла.
@@ -62,9 +62,9 @@ for (int i = 0; i < LT.Count; i++) // Проход по всему списку.
             return Code;
         }
 
-        CodePrinter() { } // Пригодится конструктор без параметров?
+        public CodePrinter() { } // Пригодится конструктор без параметров?
 
-        CodePrinter(string FileName, bool Mode) // Конструктор установит значения приватных полей.
+        public CodePrinter(string FileName, bool Mode) // Конструктор установит значения приватных полей.
         {
             Name = FileName;
             ModeFlag = Mode;
