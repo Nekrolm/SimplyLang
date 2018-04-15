@@ -29,6 +29,11 @@ namespace SimpleLang.Optimizations
         private Dictionary<int, ExprSet> _genExprByStart;
 
 
+        public IEnumerable<BaseBlock> PrevBlocks(BaseBlock bblock)
+        {
+            return Prev[bblock.StartLabel].Select(id => _baseBlockByStart[id]);
+        }
+
         public ControlFlowGraph(List<BaseBlock> baseBlocks)
         {
             Next = new Dictionary<int, List<int>>();

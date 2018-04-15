@@ -60,6 +60,7 @@ namespace SimpleCompiler
             cboptimizator.AddOptimization(new AliveBlocksOptimization());
             cboptimizator.AddOptimization(new CrossBlocksDeadCodeOptimization());
             cboptimizator.AddOptimization(new CrossBlockConstantPropagation());
+            cboptimizator.AddOptimization(new GlobalCommonSubexpressionsOptimization());
 
             while (bboptimizator.Optimize(codeBlocks) || cboptimizator.Optimize(codeBlocks) ) {};
 

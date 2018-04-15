@@ -1,5 +1,19 @@
 begin
   
+read a;
+read z;
+b := 5;
+if a 
+c := a + z
+else
+d := a + z;
+
+e := a + z;
+  
+print e;
+print d;
+print c;
+  
   begin
 i:=5;
 j:=10;

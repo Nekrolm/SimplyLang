@@ -111,6 +111,7 @@
     <Compile Include="Optimizations\CrossBlockConstantPropagation.cs" />
     <Compile Include="Optimizations\ReachingValues.cs" />
     <Compile Include="Utility\ComputeHelper.cs" />
+    <Compile Include="Optimizations\GlobalCommonSubexpressionsOptimization.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
