@@ -11,7 +11,7 @@ namespace SimpleLang.Optimizations
         {
             var CFG = new ControlFlowGraph(codeBlocks);
 
-            var active = CFG.GenerateInputOutputActiveDefs(codeBlocks).Item2;
+            var active = CFG.GenerateInputOutputActiveDefs().Item2;
 
             bool ret = false;
 

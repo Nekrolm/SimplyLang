@@ -14,7 +14,7 @@ namespace SimpleLang.Optimizations
         public override bool Optimize(List<BaseBlock> codeBlocks)
         {
             var CFG = new ControlFlowGraph(codeBlocks);
-            var (InExprs, OutExpr) = CFG.GenerateInputOutputAvaliableExpr(codeBlocks);
+            var (InExprs, OutExpr) = CFG.GenerateInputOutputAvaliableExpr();
 
 
             var startToId = new Dictionary<int, int>();

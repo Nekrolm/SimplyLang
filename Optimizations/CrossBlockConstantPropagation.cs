@@ -14,7 +14,7 @@ namespace SimpleLang.Optimizations
         {
             var CFG = new ControlFlowGraph(codeBlocks);
 
-            var Invals = CFG.GenerateInputOutputValues(codeBlocks).Item1;
+            var Invals = CFG.GenerateInputOutputValues().Item1;
 
             bool ret = false;
 

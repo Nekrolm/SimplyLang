@@ -29,6 +29,9 @@ namespace SimpleLang.Optimizations
         private Dictionary<int, ExprSet> _genExprByStart;
 
 
+        private List<BaseBlock> _bblocks;
+
+
         public IEnumerable<BaseBlock> PrevBlocks(BaseBlock bblock)
         {
             return Prev[bblock.StartLabel].Select(id => _baseBlockByStart[id]);
@@ -40,6 +43,9 @@ namespace SimpleLang.Optimizations
             Prev = new Dictionary<int, List<int>>();
 
             StartBlockId = baseBlocks[0].StartLabel;
+
+            _bblocks = baseBlocks;
+
             _baseBlockByStart = new Dictionary<int, BaseBlock>();
             _genByStart = new Dictionary<int, GenSet>();
             _killByStart = new Dictionary<int, KillSet>();
@@ -123,16 +129,28 @@ namespace SimpleLang.Optimizations
         }
 
 
-        public (List<VarsSet>, List<VarsSet>) GenerateInputOutputActiveDefs(List<BaseBlock> bblocks)
+        private Dictionary<int, int> GetStartToId(List<BaseBlock> bblocks)
         {
-            var In = new List<VarsSet>();
-            var Out = new List<VarsSet>();
-
             var startToId = new Dictionary<int, int>();
 
             for (int i = 0; i < bblocks.Count(); ++i)
             {
                 startToId[bblocks[i].StartLabel] = i;
+            }
+
+            return startToId;
+        }
+
+
+        public (List<VarsSet>, List<VarsSet>) GenerateInputOutputActiveDefs()
+        {
+            var In = new List<VarsSet>();
+            var Out = new List<VarsSet>();
+
+            var startToId = GetStartToId(_bblocks);
+
+            for (int i = 0; i < _bblocks.Count(); ++i)
+            {
                 In.Add(new VarsSet());
                 Out.Add(new VarsSet());
             }
@@ -142,9 +160,9 @@ namespace SimpleLang.Optimizations
             {
                 change = false;
 
-                for (int i = 0; i < bblocks.Count(); ++i)
+                for (int i = 0; i < _bblocks.Count(); ++i)
                 {
-                    var st = bblocks[i].StartLabel;
+                    var st = _bblocks[i].StartLabel;
                     Out[i] = new VarsSet(Next[st].SelectMany(p => In[startToId[p]]));
                     int sz = In[i].Count;
 
@@ -167,18 +185,17 @@ namespace SimpleLang.Optimizations
             return ret;
         }
 
-        public (List<ValueSet>, List<ValueSet>) GenerateInputOutputValues(List<BaseBlock> bblocks)
+        public (List<ValueSet>, List<ValueSet>) GenerateInputOutputValues()
         {
             var In = new List<ValueSet>();
             var Out = new List<ValueSet>();
 
-            var startToId = new Dictionary<int, int>();
+            var startToId = GetStartToId(_bblocks);
 
-            var code = BaseBlockHelper.JoinBaseBlocks(bblocks);
+            var code = BaseBlockHelper.JoinBaseBlocks(_bblocks);
 
-            for (int i = 0; i < bblocks.Count(); ++i)
+            for (int i = 0; i < _bblocks.Count(); ++i)
             {
-                startToId[bblocks[i].StartLabel] = i;
                 In.Add(GenFullValueSet(code));
                 Out.Add(GenFullValueSet(code));
             }
@@ -189,15 +206,15 @@ namespace SimpleLang.Optimizations
             {
                 change = false;
 
-                for (int i = 0; i < bblocks.Count; ++i)
+                for (int i = 0; i < _bblocks.Count; ++i)
                 {
-                    var st = bblocks[i].StartLabel;
+                    var st = _bblocks[i].StartLabel;
 
                     if (Prev[st].Count() != 0){
                         In[i] = ReachingValues.Combine(Prev[st].Select(l => Out[startToId[l]]));
                     }
 
-                    var nOut = ReachingValues.TransferByBBlock(In[i], bblocks[i]);
+                    var nOut = ReachingValues.TransferByBBlock(In[i], _bblocks[i]);
 
                     foreach (var vk in nOut)
                         if (vk.Value != Out[i][vk.Key]){
@@ -215,18 +232,169 @@ namespace SimpleLang.Optimizations
         }
 
 
-        public (List<ExprSet>, List<ExprSet>) GenerateInputOutputAvaliableExpr(List<BaseBlock> bblocks)
+        public bool IsReducible(){
+            var ret = TopSort();
+
+            var retreat = ret.Item2;
+            var reverse = ret.Item3;
+
+            return retreat.IsSubsetOf(reverse) && reverse.IsSubsetOf(retreat);
+
+        }
+
+        // returns sorted order of bblocks, retreat edges, reverse edges 
+        // in terms of initial bblocks ordering
+        public (List<int>, HashSet<(int, int)>, HashSet<(int,int)>) TopSort(){
+            
+            var order = new List<int>();
+
+            var used = new HashSet<int>();
+
+            dfs(StartBlockId, used, order);
+
+            order.Reverse();
+
+            Dictionary<int, int> orderedToId = new Dictionary<int, int>();
+            for (int i = 0; i < order.Count; ++i){
+                orderedToId[order[i]] = i;
+            }
+
+            var startToId = GetStartToId(_bblocks);
+            var domms = FindDommBlocks();
+
+            HashSet<(int, int)> retreat = new HashSet<(int, int)>();
+            HashSet<(int, int)> reverse = new HashSet<(int, int)>();
+
+
+
+
+            foreach(var v in order){
+                foreach (var to in Next[v])
+                {
+                    if (orderedToId[v] >= orderedToId[to]){
+                        retreat.Add((startToId[v], startToId[to]));
+                    }
+
+                    if (domms[startToId[v]].Contains(startToId[to])){
+                        reverse.Add((startToId[v], startToId[to]));
+                    }
+                }
+            }
+
+
+            return (order.Select(st => startToId[st]).ToList(), retreat, reverse);
+
+        }
+
+        private void dfs(int v, HashSet<int> used, List<int> order)
+        {
+            if (used.Contains(v)) return;
+
+            used.Add(v);
+            foreach(var to in Next[v]){
+                dfs(to, used, order);
+            }
+            order.Add(v);
+        }
+
+
+        public List<int> CalcDommTree(){
+            var tree = new List<int>(Enumerable.Range(0, _bblocks.Count));
+
+            var domms = FindDommBlocks();
+
+            for (int i = 0; i < domms.Count; ++i)
+                domms[i].Remove(i);
+
+            var Q = new Queue<int>();
+            Q.Enqueue(0);
+
+            while (Q.Count > 0){
+                int v = Q.Dequeue();
+                for (int to = 0; to < domms.Count; ++to){
+                    if (domms[to].Count == 1 && domms[to].Contains(v)){
+                        tree[to] = v;
+                        Q.Enqueue(to);
+                    }
+                    domms[to].Remove(v);
+                }
+            }
+
+            return tree;
+        }
+
+        public List<HashSet<int>> FindDommBlocks()
+        {
+            var In = new List<HashSet<int>>();
+            var Out = new List<HashSet<int>>();
+
+            var startToId = GetStartToId(_bblocks);
+
+            var allIds = Enumerable.Range(0, _bblocks.Count);
+
+            for (int i = 0; i < _bblocks.Count(); ++i)
+            {
+                In.Add(null);
+                Out.Add(new HashSet<int>(allIds));
+            }
+
+
+            bool change = true;
+            while (change)
+            {
+                change = false;
+
+                for (int i = 0; i < _bblocks.Count(); ++i)
+                {
+                    var st = _bblocks[i].StartLabel;
+
+                    In[i] = null;
+
+                    foreach (var p in Prev[st])
+                    {
+                        if (In[i] == null)
+                        {
+                            In[i] = new HashSet<int>(Out[startToId[p]]);
+                        }
+                        else
+                        {
+                            In[i].IntersectWith(Out[startToId[p]]);
+                        }
+                    }
+
+                    int sz = Out[i].Count;
+
+                    if (In[i] == null){
+                        Out[i] = new HashSet<int>{i};
+                    }else{
+                        Out[i] = In[i];
+                        Out[i].Add(i);
+                    }
+
+                    change |= sz != Out[i].Count;
+                }
+
+            }
+
+            return Out;
+
+        }
+
+
+
+
+
+        public (List<ExprSet>, List<ExprSet>) GenerateInputOutputAvaliableExpr()
         {
             var In = new List<ExprSet>();
             var Out = new List<ExprSet>();
 
-            var startToId = new Dictionary<int, int>();
+            var startToId = GetStartToId(_bblocks);
 
 
-
-            for (int i = 0; i < bblocks.Count(); ++i)
+            for (int i = 0; i < _bblocks.Count(); ++i)
             {
-                startToId[bblocks[i].StartLabel] = i;
+                
                 In.Add(null);
                 Out.Add(new ExprSet());
 
@@ -242,9 +410,9 @@ namespace SimpleLang.Optimizations
             {
                 change = false;
 
-                for (int i = 0; i < bblocks.Count(); ++i)
+                for (int i = 0; i < _bblocks.Count(); ++i)
                 {
-                    var st = bblocks[i].StartLabel;
+                    var st = _bblocks[i].StartLabel;
 
                     In[i] = null;
 
@@ -272,16 +440,15 @@ namespace SimpleLang.Optimizations
 
 
 
-        public (List<LabelSet>, List<LabelSet>) GenerateInputOutputReachingDefs(List<BaseBlock> bblocks)
+        public (List<LabelSet>, List<LabelSet>) GenerateInputOutputReachingDefs()
         {
             var In = new List<LabelSet>();
             var Out = new List<LabelSet>();
 
-            var startToId = new Dictionary<int, int>();
+            var startToId = GetStartToId(_bblocks);
 
-            for (int i = 0; i < bblocks.Count(); ++i)
+            for (int i = 0; i < _bblocks.Count(); ++i)
             {
-                startToId[bblocks[i].StartLabel] = i;
                 In.Add(new LabelSet());
                 Out.Add(new LabelSet());
             }
@@ -291,9 +458,9 @@ namespace SimpleLang.Optimizations
             {
                 change = false;
 
-                for (int i = 0; i < bblocks.Count(); ++i)
+                for (int i = 0; i < _bblocks.Count(); ++i)
                 {
-                    var st = bblocks[i].StartLabel;
+                    var st = _bblocks[i].StartLabel;
                     In[i] = new LabelSet(Prev[st].SelectMany(p => Out[startToId[p]]));
                     int sz = Out[i].Count;
 
