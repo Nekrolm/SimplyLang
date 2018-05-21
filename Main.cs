@@ -91,6 +91,17 @@ namespace SimpleCompiler
 
             foreach (var block in codeBlocks)
                 Console.Write(block);
+
+
+            List<ThreeAddrLine> codeFromTxt = CP.ReadTextFile("../../a_ThreeAddrLine.txt");
+    
+            Console.Write("\nCode from txt\n");
+
+            foreach (var line in codeFromTxt){
+                Console.Write(line);
+                Console.Write('\n');
+            }
+               
             
         }
 
@@ -146,6 +157,9 @@ namespace SimpleCompiler
                                .WithNotParsed((ers)=>Console.WriteLine("Wrong command args"))
                                .WithParsed(opts => CompileMain(opts) );
     
+
+
+
         }
     }
 }

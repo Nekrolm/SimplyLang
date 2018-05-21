@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using ThreeAddr;
+using System.Text.RegularExpressions;
+
+
 
 namespace SimpleLang.Utility
 {
@@ -24,43 +27,130 @@ namespace SimpleLang.Utility
 
         private void WriteTextFile(List<ThreeAddrLine> LT) // метод выкинет на диск текстовый файл.
         {
-            string Empty = "    "; // вместа таба.
-            string Space = " "; // пробел.
             List<string> Code = new List<string>(); // Список строк кода.
-for (int i = 0; i < LT.Count; i++) // Проход по всему списку.
+            for (int i = 0; i < LT.Count; i++) // Проход по всему списку.
             {
-                string NewLine; // строка в которой формируются строки для вывода.
-                switch (LT[i].OpType) // Переключатель, определяющий вывод строк разного типа.
-                {
-                    case ThreeAddrOpType.Nop: { NewLine = LT[i].Label + Space + LT[i].OpType; break; }
-                    case ThreeAddrOpType.Write: { NewLine = LT[i].Label + Space + LT[i].OpType + Space + Empty + Space + Empty + LT[i].RightOp; break; }
-                    case ThreeAddrOpType.Read: { NewLine = LT[i].Label + Space + LT[i].Accum; break; }
-                    case ThreeAddrOpType.IfGoto: { NewLine = LT[i].Label + Space + LT[i].OpType + Space + Empty + Space + LT[i].LeftOp + Space + LT[i].RightOp; break; }
-                    case ThreeAddrOpType.Goto: { NewLine = LT[i].Label + Space + LT[i].OpType + Space + Empty + Space + Empty + LT[i].RightOp; break; }
-                    case ThreeAddrOpType.Not: { NewLine = LT[i].Label + Space + LT[i].OpType + Space + LT[i].Accum + Space + Empty + LT[i].RightOp; break; }
-                    case ThreeAddrOpType.Minus:
-                        {
-                            if (LT[i].LeftOp == null) NewLine = LT[i].Label + Space + LT[i].OpType + Space + LT[i].Accum + Space + Empty + Space + LT[i].RightOp;
-                            else NewLine = LT[i].Label + Space + LT[i].OpType + Space + LT[i].Accum + Space + Empty + Space + LT[i].RightOp;
-                            break;
-                        }
-                    default: {NewLine = LT[i].Label + Space + LT[i].OpType + Space + LT[i].Accum + Space + LT[i].LeftOp + Space + LT[i].RightOp; break;}
-                }
-                Code.Add(NewLine); // Заброс строки в список.
+                Code.Add(LT[i].ToString()); // Заброс строки в список.
             }
-            File.WriteAllLines(Name + ".txt", Code); // Запись списка в файл.
+            File.WriteAllLines(Name.Replace(".txt", "_ThreeAddrLine") + ".txt", Code); // Запись списка в файл.
         }
 
-        public List<ThreeAddrLine> RiadBinaryFile(string FilePash) // Метод читает трёхадерсную программу из файла.
+        public List<ThreeAddrLine> ReadBinaryFile(string FilePath) // Метод читает трёхадерсную программу из бинарного файла.
         {
             BinaryFormatter Formater = new BinaryFormatter();
             List<ThreeAddrLine> Code;
-            using (FileStream FS = new FileStream(FilePash, FileMode.OpenOrCreate))
+            using (FileStream FS = new FileStream(FilePath, FileMode.OpenOrCreate))
             {
                 Code = (List<ThreeAddrLine>)Formater.Deserialize(FS);
             }
             return Code;
         }
+
+        public List<ThreeAddrLine> ReadTextFile(string FilePath) // Метод читает трёхадерсную программу из текстового файла.
+        {
+            BinaryFormatter Formater = new BinaryFormatter();
+            List<ThreeAddrLine> Code = new List<ThreeAddrLine>();
+            using (StreamReader FS = new StreamReader(FilePath))
+            {
+                string line;
+                while ((line = FS.ReadLine()) != null)
+                {
+                    
+                    line = line.Replace("=", " ");
+                    line = line.Replace(":", " ");
+                    line = Regex.Replace(line, @"\s+", " ");
+
+                    string[] tokens = line.Split(' ');
+                    int size_tokens = tokens.Count();
+
+                    ThreeAddrLine threeAddrLine = new ThreeAddrLine();
+
+                    threeAddrLine.Label = tokens[0];
+
+                    // 1
+                    if (tokens[1] == "nop") // 35:  =  nop 
+                    {
+                        threeAddrLine.OpType = "nop";
+                        Code.Add(threeAddrLine);
+                        continue;
+                    }
+
+                    if (tokens[1] == "write" ||
+                        tokens[1] == "goto"
+                       ) // 39:  =  write p11
+                    {
+                        threeAddrLine.OpType = tokens[1];
+                        threeAddrLine.RightOp = tokens[2];
+                        Code.Add(threeAddrLine);
+                        continue;
+                    }
+
+                    // 2
+                    if (tokens[2] == "nop" ||
+                        tokens[2] == "read"
+                       ) // 40: 5 =  nop 
+                    {
+                        threeAddrLine.OpType = tokens[2];
+                        threeAddrLine.Accum = tokens[1];
+                        Code.Add(threeAddrLine);
+                        continue;
+                    }
+
+                    if (tokens[2] == "ifgoto") // 78:  = p29 ifgoto 80
+                    {
+                        threeAddrLine.OpType = "ifgoto";
+                        threeAddrLine.LeftOp = tokens[1];
+                        threeAddrLine.RightOp = tokens[3];
+                        Code.Add(threeAddrLine);
+                        continue;
+                    }
+
+                    if (tokens[2] == "assign" ||
+                        tokens[2] == "not"
+                       ) // 36: p10 =  assign v2
+                    {
+                        threeAddrLine.OpType = tokens[2];
+                        threeAddrLine.Accum = tokens[1];
+                        threeAddrLine.RightOp = tokens[3];
+                        Code.Add(threeAddrLine);
+                        continue;
+                    }
+
+
+                    // 3
+                    if (tokens[3] == "or" ||
+                        tokens[3] == "and" ||
+                        tokens[3] == "+" ||
+                        tokens[3] == "-" ||
+                        tokens[3] == "/" ||
+                        tokens[3] == "*" ||
+                        tokens[3] == "<" ||
+                        tokens[3] == ">" ||
+                        tokens[3] == "<=" ||
+                        tokens[3] == ">=" ||
+                        tokens[3] == "==" ||
+                        tokens[3] == "!=" ||
+                        tokens[3] == "assign"
+                       )  // 45: p12 = p13 or 0
+                    {
+                       
+                        threeAddrLine.OpType = tokens[3];
+                        threeAddrLine.Accum = tokens[1];
+                        threeAddrLine.LeftOp = tokens[2];
+                        threeAddrLine.RightOp = tokens[4];
+
+                        Code.Add(threeAddrLine);
+                        continue;
+                    }
+
+
+                   
+                }
+            }
+            return Code;
+        }
+
+
 
         public CodePrinter() { } // Пригодится конструктор без параметров?
 
