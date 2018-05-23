@@ -68,7 +68,7 @@ namespace SimpleCompiler
 
         }
 
-        public static void Compile(BlockNode prog)
+        public static void Compile(BlockNode prog, Options opt)
         {
             var threeAddressGenerationVisitor = new ThreeAddressGenerationVisitor();
             prog.Visit(threeAddressGenerationVisitor);
@@ -86,10 +86,13 @@ namespace SimpleCompiler
             codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
             Optimize(codeBlocks);
 
+            var JoindCode = BaseBlockHelper.JoinBaseBlocks(codeBlocks);
+
+            CodeIO CP = new CodeIO(opt.OutputFile, opt.OutBinary);
+            CP.Write(JoindCode);
 
             foreach (var block in codeBlocks)
                 Console.Write(block);
-            
         }
 
 
@@ -114,7 +117,7 @@ namespace SimpleCompiler
                 {
                     parser.root.Visit(varRenamerVisitor);
                     Console.WriteLine("Программа распознана");
-                    Compile(parser.root);
+                    Compile(parser.root, opt);
                 }
 
             }
@@ -139,11 +142,14 @@ namespace SimpleCompiler
 
 
         public static void Main(String[] args)
-        {   
+        {
             CommandLine.Parser.Default.ParseArguments<Options>(args)
                                .WithNotParsed((ers)=>Console.WriteLine("Wrong command args"))
                                .WithParsed(opts => CompileMain(opts) );
     
+
+
+
         }
     }
 }
