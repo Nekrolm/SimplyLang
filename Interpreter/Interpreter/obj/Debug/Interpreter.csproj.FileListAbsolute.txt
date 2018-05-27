@@ -1,0 +1,10 @@
+C:\Users\сергей\Desktop\Interpreter\Interpreter\bin\Debug\Iterator.exe.config
+C:\Users\сергей\Desktop\Interpreter\Interpreter\bin\Debug\Iterator.exe
+C:\Users\сергей\Desktop\Interpreter\Interpreter\bin\Debug\Iterator.pdb
+C:\Users\сергей\Desktop\Interpreter\Interpreter\bin\Debug\CommandLine.dll
+C:\Users\сергей\Desktop\Interpreter\Interpreter\bin\Debug\System.ValueTuple.dll
+C:\Users\сергей\Desktop\Interpreter\Interpreter\bin\Debug\CommandLine.xml
+C:\Users\сергей\Desktop\Interpreter\Interpreter\bin\Debug\System.ValueTuple.xml
+C:\Users\сергей\Desktop\Interpreter\Interpreter\obj\Debug\Interpreter.csprojResolveAssemblyReference.cache
+C:\Users\сергей\Desktop\Interpreter\Interpreter\obj\Debug\Iterator.exe
+C:\Users\сергей\Desktop\Interpreter\Interpreter\obj\Debug\Iterator.pdb
