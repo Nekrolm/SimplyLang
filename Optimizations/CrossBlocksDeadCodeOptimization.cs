@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ThreeAddr;
+using SimpleLang.Utility;
 
 namespace SimpleLang.Optimizations
 {
@@ -10,7 +11,7 @@ namespace SimpleLang.Optimizations
         {
             var CFG = new ControlFlowGraph(codeBlocks);
 
-            var active = CFG.GenerateInputOutputActiveDefs(codeBlocks).Item2;
+            var active = CFG.GenerateInputOutputActiveDefs().Item2;
 
             bool ret = false;
 
@@ -25,16 +26,6 @@ namespace SimpleLang.Optimizations
             bool ret = false;
 
 
-            Console.WriteLine("Try opt!");
-            Console.WriteLine(bblock.ToString());
-            Console.WriteLine("Defs");
-            foreach (var s in active_vars){
-                Console.Write(s + " ");
-            }
-            Console.WriteLine();
-
-
-
             HashSet<String> living = new HashSet<string>();
             for (int i = bblock.Code.Count - 1; i >= 0; --i){
                 var line = bblock.Code[i];
@@ -45,9 +36,9 @@ namespace SimpleLang.Optimizations
                         continue;
                     }
                 }
-                if (line.RightOp != null && int.TryParse(line.RightOp, out var x))
+                if (line.RightOp != null && !ComputeHelper.IsConst(line.RightOp))
                     living.Add(line.RightOp);
-                if (line.LeftOp != null && int.TryParse(line.LeftOp, out var f))
+                if (line.LeftOp != null && !ComputeHelper.IsConst(line.LeftOp))
                     living.Add(line.LeftOp);
             }
             return ret;

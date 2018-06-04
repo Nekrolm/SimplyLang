@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.IO;
 using System.Collections.Generic;
 using SimpleScanner;
@@ -8,6 +7,9 @@ using SimpleParser;
 using SimpleLang.Visitors;
 using ThreeAddr;
 using SimpleLang.Optimizations;
+using SimpleLang.Utility;
+using System.Linq;
+using CommandLine;
 
 
 namespace SimpleCompiler
@@ -21,38 +23,22 @@ namespace SimpleCompiler
     }
 
 
+    public class Options
+    {
+        [Option('w', "write", Required = false, Default = "a.out",
+                HelpText = "Output file")]
+        public string OutputFile { get; set; }
+
+        [Option("binary", Default = false)]
+        public bool OutBinary { get; set; }
+
+        [Value(0, MetaName = "input", HelpText = "File to Compile", Default = "../../a.txt")]
+        public String InputFile { get; set; }
+    }
 
 
     public class SimpleCompilerMain
     {
-
-        public static void PrintOut(HashSet<int> s)
-        {
-            Console.WriteLine("Out defs:");
-            foreach (int x in s)
-                Console.Write($"{x} ");
-            Console.WriteLine("\n-------");
-        }
-
-
-        public static void DefsOptimize(List<BaseBlock> codeBlocks)
-        {
-            var CFG = new ControlFlowGraph(codeBlocks);
-
-
-            var (inp, outp) = CFG.GenerateInputOutputReachingDefs(codeBlocks);
-
-            CFG.GenerateInputOutputAvaliableExpr(codeBlocks);
-            CFG.GenerateInputOutputActiveDefs(codeBlocks);
-
-            for (int i = 0; i < codeBlocks.Count; ++i)
-            {
-                Console.Write(codeBlocks[i]);
-                //PrintOut(inp[i]);
-                //PrintOut(outp[i]);
-            }
-        }
-
 
         public static void Optimize(List<BaseBlock> codeBlocks)
         {
@@ -68,22 +54,23 @@ namespace SimpleCompiler
             bboptimizator.AddOptimization(new DeadCodeOptimization());
             bboptimizator.AddOptimization(new CommonSubexpressionOptimization());
 
+
             var cboptimizator = new CrossBlocksOptimizator();
+            cboptimizator.AddOptimization(new IsNotInitVariable());
             cboptimizator.AddOptimization(new AliveBlocksOptimization());
             cboptimizator.AddOptimization(new CrossBlocksDeadCodeOptimization());
-
+            cboptimizator.AddOptimization(new CrossBlockConstantPropagation());
+            cboptimizator.AddOptimization(new GlobalCommonSubexpressionsOptimization());
 
             while (bboptimizator.Optimize(codeBlocks) || cboptimizator.Optimize(codeBlocks) ) {};
+
+
+
         }
 
-       
-
-        public static void Compile(BlockNode prog)
+        public static void Compile(BlockNode prog, Options opt)
         {
             var threeAddressGenerationVisitor = new ThreeAddressGenerationVisitor();
-            var varRenamerVisitor = new VariableIdUnificationVisitor();    
-
-            prog.Visit(varRenamerVisitor);
             prog.Visit(threeAddressGenerationVisitor);
 
 
@@ -99,43 +86,44 @@ namespace SimpleCompiler
             codeBlocks = BaseBlockHelper.GenBaseBlocks(code);
             Optimize(codeBlocks);
 
+            var JoindCode = BaseBlockHelper.JoinBaseBlocks(codeBlocks);
+
+            CodeIO CP = new CodeIO(opt.OutputFile, opt.OutBinary);
+            CP.Write(JoindCode);
 
             foreach (var block in codeBlocks)
                 Console.Write(block);
-            
-            DefsOptimize(codeBlocks);
         }
 
 
-        public static void Main(String[] arg)
-        {   
-            string FileName = "../../a.txt";
-
-            if (arg.Length == 1) FileName = arg[0];
+        public static void CompileMain(Options opt){
+            var varRenamerVisitor = new VariableIdUnificationVisitor();
 
             try
             {
-                string Text = File.ReadAllText(FileName);
+                string Text = File.ReadAllText(opt.InputFile);
 
                 Scanner scanner = new Scanner();
                 scanner.SetSource(Text, 0);
 
 
-                Parser parser = new Parser(scanner);
+                SimpleParser.Parser parser = new SimpleParser.Parser(scanner);
+
 
                 var b = parser.Parse();
                 if (!b)
                     Console.WriteLine("Ошибка");
                 else
                 {
+                    parser.root.Visit(varRenamerVisitor);
                     Console.WriteLine("Программа распознана");
-
-                    Compile(parser.root);
+                    Compile(parser.root, opt);
                 }
+
             }
             catch (FileNotFoundException)
             {
-                Console.WriteLine("Файл {0} не найден", FileName);
+                Console.WriteLine("Файл {0} не найден", opt.InputFile);
             }
             catch (LexException e)
             {
@@ -145,6 +133,22 @@ namespace SimpleCompiler
             {
                 Console.WriteLine("Синтаксическая ошибка. " + e.Message);
             }
+            catch (NotInitVariableException e)
+            {
+                foreach (var i in e.VarList)
+                    Console.WriteLine("Переменная {0} -> {1} не инициализирована", i, varRenamerVisitor.IDDict.First(a => i == "v" + a.Value).Key);
+            }
+        }
+
+
+        public static void Main(String[] args)
+        {
+            CommandLine.Parser.Default.ParseArguments<Options>(args)
+                               .WithNotParsed((ers)=>Console.WriteLine("Wrong command args"))
+                               .WithParsed(opts => CompileMain(opts) );
+    
+
+
 
         }
     }

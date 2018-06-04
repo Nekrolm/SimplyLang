@@ -44,6 +44,7 @@ namespace ThreeAddr
 
     }
 
+    [Serializable]
     public class ThreeAddrLine
     {
         public string Label { get; set; }

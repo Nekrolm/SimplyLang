@@ -1,62 +1,25 @@
 begin
-x := 10;
-y := 50;
-if (x > y)
-begin
-for i in (x, y, 1)
-begin
-x := x + y;
-end;
-end
-else begin
-x := 7;
-x := 8;
-y := y + x;
-end;
-z := 100;
-f := 2;
-while z < f
-begin
-x := x + y + z * f;
-end;
-for i in (f, z, 10)
-begin
-x := i * y + i * z * f;
-end;
+  
+read a;
+read z;
+b := 5;
+if a 
+c := a + z
+else
+d := a + z;
 
-gen:=x+y;
-if (10 > 5)
-begin;
-k := 10;
-l := 50;
-test1 := k +1;
-test2:=l+10;
-k:=test1;
-l:=test2;
-end
-else 
-begin
-dead_var:=50;
-k := 10;
-l := 50;
-test1 := k +1;
-test2:=l+10;
-k:=test1;
-l:=test2;
-end;
-
-gen:=x+y;
-start:=k+10;
-if (start>100)
-begin
-start:=k+10;
-end;
-start:=start+10;
-
+e := a + z;
+  
+print e;
+print d;
+print c;
+  
+  begin
 i:=5;
 j:=10;
 a:=15;
-for gen in (1,2,3)
+k:=100;
+for gen in (1,10,3)
 begin
 i:=i+1;
 j:=j-1;
@@ -64,7 +27,89 @@ if (i>j)
 begin
 a:=k;
 end;
-i:=start;
+i:=5;
 end;
 
+print a;
+print i;
+
+end;
+   
+  
+   a := 5;
+   read a;
+
+   zz := a or 0;	
+	
+  begin
+    b := 2;
+    a := b + b;
+    b := 9;
+    x := b;
+	
+	h := 5;
+
+    b := h;
+    c := b + b;
+
+
+    b := a + x;
+    h := b + b;
+
+  end;
+
+  begin
+  for b in (x, 49, 2)
+  begin
+	c := 5;
+  end;
+
+
+  begin
+    d := 4;
+  end; 
+  b := 2;
+  a := 3;
+  a := not -5;
+  
+  y := 5;
+  
+  z := x or y and (not 5);
+
+ if a if b c := 5;
+
+  begin
+    d := 4;
+  end;
+  a := (b + (b * a) / (5 - 3)) < (a - b - 3);
+  while 3 a := c;
+  
+  if a
+  begin
+    b := c;
+  end
+  else
+    c := 1;
+    
+  print x + y;
+  
+  print (x * y - 5);  
+  
+  while (4 + 6) x := 5;
+  
+end;
+
+
+ a:=5;
+ x:=a+0;
+ x:=0+a;
+ x:=a*1;
+ x:=a-a;
+ x:=1*a;
+ x:=a*0;
+ x:=0*a;
+ x:=a-0;
+ x:=a/1;
+ x:=a or 1;
+ x:=a and 1;
 end
